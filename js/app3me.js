@@ -169,9 +169,9 @@ var renderer = new THREE.WebGLRenderer({
 var isMoverSelected = false;
 
 var onMouseDown = false;
-var theta = 0,
-    phi = 0;
-var currentRadius = 2000.0;
+var theta = 20,
+    phi = 10;
+var currentRadius = 5*2000.0;
 
 cameraPerspectiveHelper = new THREE.CameraHelper(camera);
 scene.add(cameraPerspectiveHelper);
@@ -319,6 +319,9 @@ var selectedMaterial = new THREE.MeshLambertMaterial({
     shininess: 50,
     emissive: 0x000000
 });
+
+// LIGHT
+
 // add subtle ambient lighting
 // directional lighting
 var directionalLight = new THREE.DirectionalLight(0x666666);
@@ -341,6 +344,8 @@ selectionLight.castShadow = true;
  var greenLight = new THREE.DirectionalLight(0x00aa00);
  greenLight.position.set(0, 1, 1);
  scene.add(greenLight);*/
+
+ // FRAMERATE
 
 var $real_framerate = $("#real_framerate");
 var $framerate = $("#framerate");
@@ -615,11 +620,13 @@ function render() {
 
             selectionMsg += '<br/>' + format2Vector(selection.mesh.position);
             selectionMsg += 'Dcam: ' + NumToFormat(selection.location.distanceTo(camera.position));
-            selectionMsg += '<br/>Mass: ' + NumToFormat(selection.mass)
-
+            selectionMsg += '<br/>Mass: ' + NumToFormat(selection.mass);
+           
             if (selection.biggest)
                 selectionMsg += ' BIGGEST';
 
+            selectionMsg += '<br/>Velocity: ' + NumToFormat(selection.velocity.length(),2);
+            
             $select_infos.html(selectionMsg);
             $select_infos.css('color', "#" + selection.mesh.material.color.getHexString());
         }
@@ -659,12 +666,10 @@ function NumToFormat(float, nbDigit, prefix) {
 
 
 function ListAlive() {
-
     for (var i = movers.length - 1; i >= 0; i--) {
         var m = movers[i];
 
         if (m.alive) {
-
             let isBIG;
             if (m.biggest) isBIG = 'BIG'
             else isBIG = '';
@@ -748,22 +753,15 @@ function initMouseEvent() {
                 }
                 else { // ADD NEW BALL MOVER
 
-                    // AddRandomMover(movers.length + 'm')
-
                     var mass = random(options.MIN_MASS, options.MAX_MASS);
 
-                    var max_distance = parseFloat(1000 / options.DENSITY);
-                    var max_speed = parseFloat(options.START_SPEED);
-
-                    var vel = raycaster.ray.direction.clone().multiplyScalar(options.START_SPEED);
+                    var vel = raycaster.ray.direction.clone().multiplyScalar(parseFloat(options.START_SPEED));
                     var loc = raycaster.ray.origin.clone();
 
                     var newObject = new Mover(mass, vel, loc, movers.length, 'm');
                     console.log("c2 > add " + newObject.id + " mass:" + newObject.mass.toFixed(0));
                     newObject.addToMovers();
 
-                    //movers.push(newObject);
-                    //addClickButtonEvent(name);
 
                     lastOne = newObject;
 
@@ -861,6 +859,7 @@ window.onresize = function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
 };
 
+console.time();
 
 // KEYBOARD 
 
@@ -869,8 +868,18 @@ var holdLeft = false,
     holdUp = false,
     holdDown = false;
 
-console.time();
-
+window.onkeyup = function (e) {
+    if (e.which == 37) {
+        holdLeft = false;
+    } else if (e.which == 38) {
+        holdUp = false;
+    } else if (e.which == 39) {
+        holdRight = false;
+    } else if (e.which == 40) {
+        holdDown = false;
+    }
+}
+    
 window.onkeydown = function (e) {
     var charTMP = String.fromCharCode(e.which);
     console.count("key:" + charTMP + ':' + e.which);
@@ -1001,18 +1010,6 @@ function LogFPS() {
     console.groupEnd();
 }
 
-window.onkeyup = function (e) {
-    if (e.which == 37) {
-        holdLeft = false;
-    } else if (e.which == 38) {
-        holdUp = false;
-    } else if (e.which == 39) {
-        holdRight = false;
-    } else if (e.which == 40) {
-        holdDown = false;
-    }
-}
-
 function reset() {
     console.log("RESET !")
     if (movers) {
@@ -1039,7 +1036,7 @@ function reset() {
     }
 
     // SVG LAST CONFIG OPTIONS
-    localStorage.setItem("options", JSON.stringify(options));
+    // localStorage.setItem("options", JSON.stringify(options));
 }
 
 function AddRandomMover(id) {
@@ -1075,8 +1072,6 @@ function AddBigMoverToCenter() {
 
     big.addToMovers();
 
-    //movers.push(big);
-    //addClickButtonEvent(name)
 }
 
 
@@ -1087,7 +1082,7 @@ function random(min, max) {
 //Set htmlButtons = new Set();
 var htmlButtons = [];
 
-// CLICK sur un BOUTON IHM
+// CLICK on GUI SELECTION BUTTON
 function addClickButtonEvent(name) {
 
     $(document).ready(function () {
@@ -1133,12 +1128,18 @@ function inverseSelectionStatus() {
         return selection.reborn()
 }
 
+function inverseDirection() {
+    if(selection)
+        selection.velocity.multiplyScalar(-1);
+}
 
 function lookSun(string) {
     console.log(string);
     document.getElementById('cbFPS').checked = false; 
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 }
+
+// MOVER CLASS
 
 function Mover(m, vel, loc, id, suffix) {
     this.location = loc,
@@ -1266,6 +1267,7 @@ function Mover(m, vel, loc, id, suffix) {
         this.selectionLight.intensity = 0.7; //ME
         scene.remove(this.mesh);
 
+        // HTML BUTTON
         this.htmlButton.label.data += 'k'
         this.htmlButton.style.backgroundColor = 'black'
         this.htmlButton.style.color = '#' + this.color.getHexString();
@@ -1308,7 +1310,7 @@ function Mover(m, vel, loc, id, suffix) {
     this.display = function () {
         if (isMoverSelected) {
             if (this.selected) {
-                this.selectionLight.intensity = 2;
+                this.selectionLight.intensity = 1;
                 this.htmlButton.style.border = "thick solid #FF0000";
             } else {
                 this.selectionLight.intensity = 1; // ME
