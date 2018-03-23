@@ -173,8 +173,11 @@ var theta = 20,
     phi = 10;
 var currentRadius = 5*2000.0;
 
-cameraPerspectiveHelper = new THREE.CameraHelper(camera);
-scene.add(cameraPerspectiveHelper);
+isShowCamPerspectiveHelper = false;
+if(isShowCamPerspectiveHelper){
+    cameraPerspectiveHelper = new THREE.CameraHelper(camera);
+    scene.add(cameraPerspectiveHelper);
+}
 
 setCamera();
 function setCamera() {
@@ -194,8 +197,8 @@ function setCamera() {
     camera.updateMatrix();
 }
 
-var control1O = new THREE.OrbitControls(camera, renderer.domElement);
-control1O.zoomSpeed = 100
+var controlOrbit = new THREE.OrbitControls(camera, renderer.domElement);
+controlOrbit.zoomSpeed = 100
 
 var control2FPS; /* = new THREE.FirstPersonControls(camera);
 	control2FPS.movementSpeed = 1000*5;
@@ -210,7 +213,7 @@ https://stackoverflow.com/questions/16506693/cannot-set-lookat-position-for-came
 	Avec ma Réponse sur lon = angle..
 	
 */
-var controls = control1O;
+var controls = controlOrbit;
 
 var direction;
 var svgCamera
@@ -454,7 +457,7 @@ var pause = false;
 
 	// BIG CUBE 
 	var geometry = new THREE.BoxGeometry( 1000, 1000, 1000 );
-	var material = new THREE.MeshBasicMaterial( {color: 0x00ff00, wireframe: true } );
+	var material = new THREE.MeshLambertMaterial( {color: 0x00ff00, wireframe: false } );
 	var BigCube = new THREE.Mesh( geometry, material );
 	BigCube.scale.multiplyScalar(5);
 	scene.add( BigCube );
@@ -487,8 +490,10 @@ var total_mass = 0;
 
 //var moveSpeed = 100;
 function render() {
-    cameraPerspectiveHelper.update();
-    cameraPerspectiveHelper.visible = true;
+    if(isShowCamPerspectiveHelper){
+        cameraPerspectiveHelper.update();
+        cameraPerspectiveHelper.visible = true;
+    }
 
     // DEPLACEMENT 
     var vector = new THREE.Vector3();
@@ -498,7 +503,15 @@ function render() {
     } else if (holdDown) {
         camera.position.sub(direction.multiplyScalar(moveSpeed));
     }
+    /*
+    if(holdLeft){
+        camera.rotation.y += 1/100;
+    } else if(holdRight){
+        camera.rotation.y -= 1/100;
+    }
+    */
 
+    // TIMER
     var timeNow = new Date();
     if (lastTimeCalled && timeNow.getMilliseconds() < lastTimeCalled.getMilliseconds()) {
         $real_framerate.html(countFramesPerSecond);
@@ -606,17 +619,18 @@ function render() {
         $largest_pos.html(largest_pos);
 
         // camera 
-        $camera_info.html('<br/>' + format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r'));
+        $camera_info.html('<br/>' + format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') );
 
         speedometer.innerHTML = 'XX'; // format2Vector(camera.position)
 
+        // selection info/debug
         if (selection) {
             var selectionMsg = ' id:' + selection.id;
 
             if (selection.alive)
                 selectionMsg += ' X';
             else
-                selectionMsg += ' Killed';
+                selectionMsg += ' Killed by ' + selection.killedBy;
 
             selectionMsg += '<br/>' + format2Vector(selection.mesh.position);
             selectionMsg += 'Dcam: ' + NumToFormat(selection.location.distanceTo(camera.position));
@@ -890,7 +904,7 @@ window.onkeydown = function (e) {
     if (e.which == 27) {
         //isCameraLookAt = !isCameraLookAt
 
-        AddArrowHelper(direction)
+        // AddArrowHelper(direction);
 
         var strControlName = "";
         if (controls instanceof (THREE.OrbitControls))
@@ -931,7 +945,7 @@ window.onkeydown = function (e) {
         return false;
 
     } else if (e.which === 49) { // 1 OrbitControls
-        controls = control1O
+        controls = controlOrbit
         console.log("O")
 
     } else if (e.which === 50) { // 2  FPS
@@ -945,11 +959,11 @@ window.onkeydown = function (e) {
         console.log(direction)
 
         angleX = direction.angleTo(new THREE.Vector3(1, 0, 0))
-        console.log("angleX:" + angleX); // direction.normalize())
+        console.log("angleX:" + NumToFormat(angleX,2)); // direction.normalize())
         controls.lon = - angleX * 180 / Math.PI;
 
         angleY = direction.angleTo(new THREE.Vector3(0, 1, 0))
-        console.log("angleY:" + angleY); // direction.normalize())
+        console.log("angleY:" + NumToFormat(angleY,2)); // direction.normalize())
         //controls.lat = - angleY * 180 / Math.PI;
 
         // https://stackoverflow.com/questions/12500874/three-js-first-person-controls
@@ -1002,10 +1016,10 @@ function LogFPS() {
         return;
     }
     console.group();
-    console.log("lon:" + controls.lon);
-    console.log("lat:" + controls.lat);
-    console.log("phi:" + controls.phi);
-    console.log("theta:" + controls.theta);
+    console.log("lon:" + NumToFormat(controls.lon,2));
+    console.log("lat:" + NumToFormat(controls.lat,2));
+    console.log("phi:" + NumToFormat(controls.phi,2));
+    console.log("theta:" + NumToFormat(controls.theta,2));
     //console.log(controls.target);
     console.groupEnd();
 }
@@ -1108,13 +1122,13 @@ function addClickButtonEvent(name) {
             }
 
             camera.lookAt(mover.mesh.position);
-
+/*
             direction = camera.getWorldDirection().clone();
 
             angleX = direction.angleTo(new THREE.Vector3(1, 0, 0))
             console.log("angleX:" + angleX); // direction.normalize())
             controls.lon = - angleX * 180 / Math.PI;
-
+*/
         });
     });
 }
@@ -1202,12 +1216,6 @@ function Mover(m, vel, loc, id, suffix) {
     //this.htmlButton.onclick = console.log(this.id);
     this.htmlButton.id = this.id;
 
-    //htmlButtons.push(this.htmlButton)
-
-    //this.Select
-    //alert(m.id) // this.Select
-    //this.htmlButton.addEventListener("click", alert(m.id)); // console.log(this) ); // this.Select);
-
     this.addToMovers = function () {
         movers.push(this);
         addClickButtonEvent(this.id);
@@ -1245,6 +1253,7 @@ function Mover(m, vel, loc, id, suffix) {
             (this.location.x * this.mass + m.location.x * m.mass) / newMass,
             (this.location.y * this.mass + m.location.y * m.mass) / newMass,
             (this.location.z * this.mass + m.location.z * m.mass) / newMass);
+
         var newVelocity = new THREE.Vector3(
             (this.velocity.x * this.mass + m.velocity.x * m.mass) / newMass,
             (this.velocity.y * this.mass + m.velocity.y * m.mass) / newMass,
@@ -1253,6 +1262,7 @@ function Mover(m, vel, loc, id, suffix) {
         this.location = newLocation;
         this.velocity = newVelocity;
         this.mass = newMass;
+        m.killedBy = this.id;
 
         if (m.selected) this.selected = true;
 
@@ -1262,7 +1272,7 @@ function Mover(m, vel, loc, id, suffix) {
     };
 
     this.kill = function () {
-        console.log(this.id + ' was killed - mass: ' + this.mass.toFixed(2))
+        console.log(this.id + ' was killed - mass: ' + NumToFormat(this.mass) )
         this.alive = false;
         this.selectionLight.intensity = 0.7; //ME
         scene.remove(this.mesh);
@@ -1274,7 +1284,7 @@ function Mover(m, vel, loc, id, suffix) {
 
         // IMPACT CUBE
         var geometry = new THREE.BoxGeometry(20, 20, 20);
-        var material = new THREE.MeshBasicMaterial({ color: this.color, wireframe: true });
+        var material = new THREE.MeshLambertMaterial({ color: this.color, wireframe: true });
         this.impactCube = new THREE.Mesh(geometry, material);
         this.impactCube.scale.multiplyScalar(this.scale * 5);
         this.impactCube.position.copy(this.mesh.position);
