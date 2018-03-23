@@ -11,3 +11,17 @@ Commands :
 - H : Show/Hide DAT GUI
 
 Contact : adalrik@gmail.com
+
+## History : 
+
+This project is a branch of this initial : http://codeblock.at/planets/ (demo)
+
+Source code : https://codepen.io/Grilly86/pen/GBaCE by https://codepen.io/Grilly86/
+
+## Other :
+
+Another JavaScript gravity engine (in 2D with p5.js) 
+
+https://bruno-m-.github.io/gravity/ (demo)
+
+https://github.com/Bruno-M-/gravity (source code)
