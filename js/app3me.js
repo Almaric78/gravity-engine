@@ -4,6 +4,7 @@ var options = {
     START_SPEED: 10,
     MOVER_COUNT: 32,
     TRAILS_DISPLAY: true,
+    TRAILS_DISPLAY_DEAD: false,
     TRAILS_LENGTH: 1000,
     MIN_MASS: .01,
     MAX_MASS: 1000,
@@ -43,6 +44,7 @@ fMoverCountE.onFinishChange(function (value) {
 f = gui.addFolder('Trails');
 f.open();
 f.add(options, 'TRAILS_DISPLAY');
+f.add(options, 'TRAILS_DISPLAY_DEAD');
 f.add(options, 'TRAILS_LENGTH', 0, 10000);
 
 f = gui.addFolder('Masses');
@@ -672,45 +674,6 @@ function ListAlive() {
     }
 }
 
-// TRAIL LINES ---------------
-
-function updateTrails(m) {
-    if (isMoverSelected) {
-        if (m.selected) {
-            if (options.TRAILS_DISPLAY) {
-                m.showTrails();
-            } else {
-                //m.showTrails();
-                m.hideTrails();
-            }
-            this.selectionLight.intensity = 1; // ME
-            //this.directionalLight.intensity = 0.5;
-            selectionLight.position = m.location;
-
-            // ?? 
-			/*
-            selectedMaterial.emissive = m.line.material.color;
-            selectionLight.color = m.line.material.color;
-            m.mesh.material = selectedMaterial;
-			*/
-        } else {
-            m.mesh.material = m.basicMaterial;
-            m.hideTrails();
-            //            if (displayTrails)
-            //                m.showTrails();
-            //            elsebasicm
-            //                m.hideTrails();
-        }
-    } else {
-        m.mesh.material = m.basicMaterial;
-        if (options.TRAILS_DISPLAY) {
-            m.showTrails();
-        } else {
-            m.hideTrails();
-        }
-    }
-}
-
 
 // MOUSE EVENT
 
@@ -884,8 +847,6 @@ function SelectMeshMover(clickedObj, str) {
 }
 
 function ClearSelection() {
-
-    // DISPLAY
     for (var i = movers.length - 1; i >= 0; i--) {
         var m = movers[i];
         if (m.selected) {
@@ -1372,13 +1333,21 @@ function Mover(m, vel, loc, id, suffix) {
             this.mesh.scale.y = this.scale;
             this.mesh.scale.z = this.scale;
 
+            this.htmlButton.style.display='inline';
+
             //this.line = new THREE.Line(this.lineGeometry,lineMaterial);
 
         } else {
             if (this.selected) {
                 this.impactCube.material.wireframe = false;
+                this.htmlButton.style.display='inline';
             } else {
                 this.impactCube.material.wireframe = true;
+                if(options.TRAILS_DISPLAY_DEAD){
+                    this.htmlButton.style.display='inline';
+                }else{
+                    this.htmlButton.style.display='none';
+                }
             }
             //this.selectionLight.intensity = 0.5; // ME ! a remettre à Zéro !
         }
@@ -1403,11 +1372,15 @@ function Mover(m, vel, loc, id, suffix) {
             }
             this.line = new THREE.Line(newLineGeometry, this.line.material);
             scene.add(this.line);
+            if(this.impactCube){
+                scene.add(this.impactCube);
+            }
         }
     }
     this.hideTrails = function () {
         if (this.lineDrawn) {
             scene.remove(this.line);
+            scene.remove(this.impactCube);
             this.lineDrawn = false;
         }
     }
@@ -1424,9 +1397,50 @@ function Mover(m, vel, loc, id, suffix) {
         console.log(this);
         selection = this;
     }
-
-
 }
+
+
+// TRAIL LINES ---------------
+
+function updateTrails(m) {
+    if (isMoverSelected) {
+        if (m.selected) {
+            if (options.TRAILS_DISPLAY) {
+                m.showTrails();
+            } else {
+                //m.showTrails();
+                m.hideTrails();
+            }
+            this.selectionLight.intensity = 1; // ME
+            //this.directionalLight.intensity = 0.5;
+            selectionLight.position = m.location;
+
+            // ?? 
+			/*
+            selectedMaterial.emissive = m.line.material.color;
+            selectionLight.color = m.line.material.color;
+            m.mesh.material = selectedMaterial;
+			*/
+        } else {
+            m.mesh.material = m.basicMaterial;
+            m.hideTrails();
+            //            if (displayTrails)
+            //                m.showTrails();
+            //            elsebasicm
+            //                m.hideTrails();
+        }
+    } else {
+        m.mesh.material = m.basicMaterial;
+        if (options.TRAILS_DISPLAY) {
+            if(m.alive || options.TRAILS_DISPLAY_DEAD){
+                m.showTrails();
+            } else m.hideTrails(); 
+        } else {
+            m.hideTrails();
+        }
+    }
+}
+
 
 function constrain(value, min, max) {
     if (value < min) return min;
