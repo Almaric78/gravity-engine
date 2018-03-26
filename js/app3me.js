@@ -23,7 +23,7 @@ if (localStorage && localStorage.getItem("options")){
       }
 }
 
-options.AddBigMoverToCenter = function () {
+options.AddBigStar = function () {
     AddBigMoverToCenter();
 }
 
@@ -31,7 +31,7 @@ options.RESET = function () {
     reset();
 }
 
-options.SAVE = function () {
+options.SAVECONFIG = function () {
     // SVG CONFIG OPTIONS
     localStorage.setItem("options", JSON.stringify(options));
 }
@@ -53,6 +53,7 @@ f = gui.addFolder('Trails & Labels');
 f.open();
 f.add(options, 'TRAILS_DISPLAY');
 f.add(options, 'TRAILS_LENGTH', 0, 10000);
+
 f.add(options, 'SHOW_DIED');
 f.add(options, 'SHOW_LABELS');
 
@@ -93,9 +94,9 @@ f.add(options, 'MoveSpeed', 1, 1000).onFinishChange(function (value) {
     console.log(moveSpeed);
 });
 
-f.add(options, 'AddBigMoverToCenter');
+f.add(options, 'AddBigStar');
 f.add(options, 'RESET');
-f.add(options, 'SAVE');
+f.add(options, 'SAVECONFIG');
 
 console.log(gui);
 
@@ -400,7 +401,7 @@ var $maximum_mass = $("#maximum_mass");
 var $largest_pos = $("#largest_pos");
 var $select_infos = $("#select_infos");
 var $camera_info = $("#camera_info");
-var speedometer = document.getElementById('speedometer');
+//var speedometer = document.getElementById('speedometer');
 var IHMButtons = document.getElementById('IHMButtons');
 var tracker;
 
@@ -636,22 +637,24 @@ function render() {
         // INFOS PANEL
 
         $movers_alive_count.html(movers_alive_count + ' / ' + movers.length);
-        $total_mass.html(total_mass.toLocaleString());
-        $maximum_mass.html(maximum_mass.toLocaleString()); // toFixed(2));
+        var rapportMasse = maximum_mass / total_mass * 100;
+        $maximum_mass.html(NumToFormat(maximum_mass));
+        $total_mass.html(NumToFormat(total_mass) + ' = ' + NumToFormat(rapportMasse) + '%' );
 
         $largest_pos.html(largest_pos);
+        $largest_pos.css('color', "#" + biggest.mesh.material.color.getHexString());
 
         // camera 
         $camera_info.html('<br/>' + format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') );
 
-        speedometer.innerHTML = 'XX'; // format2Vector(camera.position)
+        //speedometer.innerHTML = 'XX'; // format2Vector(camera.position)
 
         // selection info/debug
         if (selection) {
-            var selectionMsg = ' id:' + selection.id;
+            var selectionMsg = '<br/> id:' + selection.id;
 
             if (selection.alive)
-                selectionMsg += ' X';
+                selectionMsg += ' alive';
             else
                 selectionMsg += ' Killed by ' + selection.killedBy;
 
@@ -697,7 +700,7 @@ function NumToFormat(float, nbDigit, prefix) {
     if (!prefix)
         return ' ' + float.toLocaleString(undefined, { maximumFractionDigits: nbDigit });
     else {
-        if(prefix.startsWith('r')) { float *= 180/Math.PI; }
+        if(prefix.startsWith('r')) { float *= 180/Math.PI; } // conversion in degree for Rotation
         return prefix + ': ' + float.toLocaleString(undefined, { maximumFractionDigits: nbDigit }) + '<br/>';
     }
 }
@@ -1211,7 +1214,7 @@ function createTextLabel() {
         }
         
         var coords2d = this.get2DCoords(this.position, _this.camera);
-        if(coords2d.x < window.innerWidth && coords2d.y < window.innerHeight){
+        if(coords2d.x < window.innerWidth -30 && coords2d.y < window.innerHeight - 20){
             this.element.style.left = coords2d.x + 'px';
             this.element.style.top = coords2d.y + 'px';
             this.element.style.display = ''; // SHOW IT
@@ -1574,4 +1577,9 @@ function darkenColor(color, percent) {
         B = f & 0x0000FF;
     return (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
 }
+
+function randomLightColor() {
+    color = "hsl(" + Math.random() * 360 + ", 100%, 75%)";
+    return color;
+  }
 
