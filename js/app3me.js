@@ -4,7 +4,8 @@ var options = {
     START_SPEED: 10,
     MOVER_COUNT: 32,
     TRAILS_DISPLAY: true,
-    TRAILS_DISPLAY_DEAD: false,
+    SHOW_DIED: false,
+    SHOW_LABELS: true, 
     TRAILS_LENGTH: 1000,
     MIN_MASS: .01,
     MAX_MASS: 1000,
@@ -12,8 +13,15 @@ var options = {
     MoveSpeed: 500,
 };
 
-if (localStorage && localStorage.getItem("options"))
-    options = JSON.parse(localStorage.getItem("options"));
+// LOAD CONFIG 
+if (localStorage && localStorage.getItem("options")){
+    optionsSVG = JSON.parse(localStorage.getItem("options"));
+    for (var key in optionsSVG) {
+        console.log(key, optionsSVG[key]);
+        options.key = optionsSVG.key;
+        options[key] = optionsSVG[key];
+      }
+}
 
 options.AddBigMoverToCenter = function () {
     AddBigMoverToCenter();
@@ -41,17 +49,22 @@ fMoverCountE.onFinishChange(function (value) {
     //reset();
 });
 
-f = gui.addFolder('Trails');
+f = gui.addFolder('Trails & Labels');
 f.open();
 f.add(options, 'TRAILS_DISPLAY');
-f.add(options, 'TRAILS_DISPLAY_DEAD');
 f.add(options, 'TRAILS_LENGTH', 0, 10000);
+f.add(options, 'SHOW_DIED');
+f.add(options, 'SHOW_LABELS');
 
 f = gui.addFolder('Masses');
 f.open();
 
 var fMinMassChangeE = f.add(options, 'MIN_MASS', .00001, 10000.0);
 fMinMassChangeE.onFinishChange(function (value) {
+    if(options.MAX_MASS<options.MIN_MASS){
+        options.MAX_MASS = value;
+        fMaxMassChangeE.updateDisplay();
+    }
     //reset();
 });
 
@@ -144,6 +157,9 @@ var zoom = 1.0;
 var translate = new THREE.Vector3();
 
 var movers = [];
+//var container =  false; // ME
+//var textlabels = [];
+
 var now;
 var then = Date.now();
 var renderInterval = 1000 / parseInt(options.framerate);
@@ -216,7 +232,7 @@ https://stackoverflow.com/questions/16506693/cannot-set-lookat-position-for-came
 var controls = controlOrbit;
 
 var direction;
-var svgCamera
+var camera2FPS
 
 //cameraPerspectiveHelper.visible = true;
 
@@ -233,10 +249,10 @@ function SwitchControl(k) {
 
         console.log("FirstPersonControls");
         if (!control2FPS) {
-            svgCamera = camera.clone()
-            scene.add(svgCamera);
+            camera2FPS = camera.clone()
+            scene.add(camera2FPS);
 
-            control2FPS = new THREE.FirstPersonControls(svgCamera, renderer.domElement);
+            control2FPS = new THREE.FirstPersonControls(camera2FPS, renderer.domElement);
             control2FPS.movementSpeed = 1000 * 5;
             control2FPS.lookSpeed = 0.1;
             control2FPS.enabled = false;
@@ -248,11 +264,11 @@ function SwitchControl(k) {
         */
 
         controls = control2FPS;
-        camera = svgCamera;
+        camera = camera2FPS;
 
         camera.lookAt(direction);
 
-        camera.rotation.copy(svgCamera.rotation)
+        camera.rotation.copy(camera2FPS.rotation)
 
         //camera.rotation.set(svgCamera.rotation.x, svgCamera.rotation.y, svgCamera.rotation.z);
 		/*
@@ -592,7 +608,14 @@ function render() {
             m.display(displayMass); // ME déplacé ici 
             updateTrails(m);
         }
-
+/*
+        if(textlabels && !pause){
+            // UPDATE LABELS
+            for(var i=0; i<textlabels.length; i++) {
+                textlabels[i].updatePosition();
+            }
+        }
+*/
         // Fix FPS CAM if Enabled 
         if (isMoverSelected && document.getElementById('cbFPS').checked) {
             camera.lookAt(selection.mesh.position);
@@ -646,6 +669,7 @@ function render() {
         }
     }
 
+    // RENDERER
     controls.update(clock.getDelta());
     renderer.render(scene, camera);
 
@@ -1035,8 +1059,9 @@ function reset() {
             if(!movers[i].alive)
                 scene.remove(movers[i].impactCube);
 
-            console.log('Remove:', i, movers[i].id)
-            IHMButtons.removeChild(movers[i].htmlButton)
+            console.log('Remove:', i, movers[i].id);
+            IHMButtons.removeChild(movers[i].htmlButton);
+            document.body.removeChild(movers[i].text.element);
         }
     }
     movers = [];
@@ -1069,8 +1094,11 @@ function AddRandomMover(id) {
         random(-max_distance, max_distance),
         random(-max_distance, max_distance));
 
-    movers.push(new Mover(mass, vel, loc, id));
-    addClickButtonEvent(id);
+    //movers.push(new Mover(mass, vel, loc, id));
+    //addClickButtonEvent(id);
+
+    var newMover = new Mover(mass, vel, loc, id);
+    newMover.addToMovers();
 }
 
 function AddBigMoverToCenter() {
@@ -1153,6 +1181,55 @@ function lookSun(string) {
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 }
 
+
+function createTextLabel() {
+    var div = document.createElement('div');
+    div.className = 'text-label';
+    div.style.position = 'absolute';
+    div.style.width = 100;
+    div.style.height = 100;
+    div.innerHTML = "hi there!";
+    div.style.top = -1000;
+    div.style.left = -1000;
+    
+    var _this = this;
+    
+    return {
+      element: div,
+      parent: false,
+      position: new THREE.Vector3(0,0,0),
+      setHTML: function(html) {
+        this.element.innerHTML = html;
+      },
+      setParent: function(threejsobj) {
+        this.parent = threejsobj;
+      },
+
+      updatePosition: function() {
+        if(parent) {
+          this.position.copy(this.parent.position);
+        }
+        
+        var coords2d = this.get2DCoords(this.position, _this.camera);
+        if(coords2d.x < window.innerWidth && coords2d.y < window.innerHeight){
+            this.element.style.left = coords2d.x + 'px';
+            this.element.style.top = coords2d.y + 'px';
+            this.element.style.display = ''; // SHOW IT
+        }
+      },
+
+      get2DCoords: function(position, camera) {
+        var vector = position.project(camera);
+        vector.x = (vector.x + 1)/2 * window.innerWidth;
+        vector.y = -(vector.y - 1)/2 * window.innerHeight;
+        return vector;
+      }
+    };
+  }
+
+
+
+
 // MOVER CLASS
 
 function Mover(m, vel, loc, id, suffix) {
@@ -1215,10 +1292,25 @@ function Mover(m, vel, loc, id, suffix) {
     //this.htmlButton.mover = this; 	
     //this.htmlButton.onclick = console.log(this.id);
     this.htmlButton.id = this.id;
+    this.nbEat=0;
+
+    // LABEL 
+    this.text = createTextLabel();
+    this.text.setHTML(this.id);
+    this.text.setParent(this.mesh);
+    this.text.element.style.color = '#' + this.color.getHexString();
+
 
     this.addToMovers = function () {
         movers.push(this);
         addClickButtonEvent(this.id);
+
+        //textlabels.push(this.text);
+        document.body.appendChild(this.text.element);
+
+      //container.appendChild(this.text.element);
+      //container.appendChild(renderer.domElement);
+
     };
 
     this.applyForce = function (force) {
@@ -1266,7 +1358,8 @@ function Mover(m, vel, loc, id, suffix) {
 
         if (m.selected) this.selected = true;
 
-        this.htmlButton.label.data += '*';
+        this.nbEat+=1; 
+        this.htmlButton.label.data = this.id + 'x' + this.nbEat;
 
         m.kill();
     };
@@ -1322,13 +1415,23 @@ function Mover(m, vel, loc, id, suffix) {
             if (this.selected) {
                 this.selectionLight.intensity = 1;
                 this.htmlButton.style.border = "thick solid #FF0000";
+                if(options.SHOW_LABELS)
+                    this.text.updatePosition();
+                else
+                    this.text.element.style.display = 'none'
             } else {
                 this.selectionLight.intensity = 1; // ME
                 this.htmlButton.style.border = "";
+                this.text.element.style.display = 'none'
             }
         } else {
             this.selectionLight.intensity = 1; //MME 2 * this.mass / total_mass;
             this.htmlButton.style.border = "";
+            if(options.SHOW_LABELS)
+                this.text.updatePosition();
+            else
+                this.text.element.style.display = 'none' 
+
             /*
                 var emissiveColor = this.color.getHex().toString(16);
                 //emissiveColor = Math.random() * 0xffffff; 
@@ -1355,10 +1458,11 @@ function Mover(m, vel, loc, id, suffix) {
                 this.htmlButton.style.display='inline';
             } else {
                 this.impactCube.material.wireframe = true;
-                if(options.TRAILS_DISPLAY_DEAD){
+                if(options.SHOW_DIED){
                     this.htmlButton.style.display='inline';
                 }else{
                     this.htmlButton.style.display='none';
+                    this.text.element.style.display = 'none';
                 }
             }
             //this.selectionLight.intensity = 0.5; // ME ! a remettre à Zéro !
@@ -1444,7 +1548,7 @@ function updateTrails(m) {
     } else {
         m.mesh.material = m.basicMaterial;
         if (options.TRAILS_DISPLAY) {
-            if(m.alive || options.TRAILS_DISPLAY_DEAD){
+            if(m.alive || options.SHOW_DIED){
                 m.showTrails();
             } else m.hideTrails(); 
         } else {
