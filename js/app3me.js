@@ -550,6 +550,7 @@ function render() {
     if (movers && movers.length) {
         if (!pause) {
 
+            // FIRST LOOP
             for (var i = movers.length - 1; i >= 0; i--) {
                 var m = movers[i];
 
@@ -561,11 +562,9 @@ function render() {
 
                         biggest = m;
 
-                        m.biggest = true;
+                    }
 
-                    } else if (m.biggest) { m.biggest = false; }
-
-
+                    // SECOND LOOP 
                     for (var j = movers.length - 1; j >= 0; j--) {
                         var a = movers[j];
                         if (movers[i].alive && movers[j].alive && i != j) {
@@ -609,14 +608,7 @@ function render() {
             m.display(displayMass); // ME déplacé ici 
             updateTrails(m);
         }
-/*
-        if(textlabels && !pause){
-            // UPDATE LABELS
-            for(var i=0; i<textlabels.length; i++) {
-                textlabels[i].updatePosition();
-            }
-        }
-*/
+
         // Fix FPS CAM if Enabled 
         if (isMoverSelected && document.getElementById('cbFPS').checked) {
             camera.lookAt(selection.mesh.position);
@@ -647,8 +639,6 @@ function render() {
         // camera 
         $camera_info.html('<br/>' + format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') );
 
-        //speedometer.innerHTML = 'XX'; // format2Vector(camera.position)
-
         // selection info/debug
         if (selection) {
             var selectionMsg = '<br/> id:' + selection.id;
@@ -659,11 +649,11 @@ function render() {
                 selectionMsg += ' Killed by ' + selection.killedBy;
 
             selectionMsg += '<br/>' + format2Vector(selection.mesh.position);
-            selectionMsg += 'Dcam: ' + NumToFormat(selection.location.distanceTo(camera.position));
+            selectionMsg += 'Distance: ' + NumToFormat(selection.location.distanceTo(camera.position));
             selectionMsg += '<br/>Mass: ' + NumToFormat(selection.mass);
            
-            if (selection.biggest)
-                selectionMsg += ' BIGGEST';
+            // if (selection.biggest)
+            //     selectionMsg += ' BIGGEST';
 
             selectionMsg += '<br/>Velocity: ' + NumToFormat(selection.velocity.length(),2);
             
@@ -688,7 +678,7 @@ window.onmousemove = function (e) {
     if (onMouseDown) onMouseDown.moved = true;
 
     var vector = new THREE.Vector3(
-        (e.clientX / window.innerWidth) * 2 - 1,
+        +(e.clientX / window.innerWidth) * 2 - 1,
         -(e.clientY / window.innerHeight) * 2 + 1, 0.5);
     //projector.unprojectVector( vector, camera );
 
@@ -1310,7 +1300,8 @@ function Mover(m, vel, loc, id, suffix) {
         scene.add(this.mesh);
 
         this.htmlButton.label.data += 'r'
-        this.htmlButton.style.backgroundColor = 'white'
+        this.htmlButton.style.backgroundColor =  '#' + this.color.getHexString();
+        this.htmlButton.style.color = 'black'
     };
 
     this.attract = function (m) { // m => other Mover object
@@ -1428,9 +1419,8 @@ function Mover(m, vel, loc, id, suffix) {
         camera.position.set(this.mesh.position);
     }
 
-    this.Select = function () {
-        console.log(this);
-        selection = this;
+    this.getHexColor = function(){
+        return '#' + this.mesh.material.color.getHexString();
     }
 }
 
