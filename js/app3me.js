@@ -631,6 +631,7 @@ function render() {
         $movers_alive_count.html(movers_alive_count + ' / ' + movers.length);
         var rapportMasse = maximum_mass / total_mass * 100;
         $maximum_mass.html(NumToFormat(maximum_mass));
+        $maximum_mass.css('color', "#" + biggest.mesh.material.color.getHexString());
         $total_mass.html(NumToFormat(total_mass) + ' = ' + NumToFormat(rapportMasse) + '%' );
 
         $largest_pos.html(largest_pos);
@@ -1402,14 +1403,8 @@ function Mover(m, vel, loc, id, suffix) {
         return '#' + this.mesh.material.color.getHexString();
     }
 
-    this.resetColor = function(str, intensity){
-        if(str)
-            this.color = new THREE.Color(str);
-        else{
-            str = randomLightColor();
-            console.log(str);
-            this.color = new THREE.Color(str);
-        }
+    this.setColor = function(color, intensity){
+        this.color = color;
         this.mesh.material.color = this.color;
         this.line.material.color = this.color;
         this.text.element.style.color = '#' + this.color.getHexString();
@@ -1417,6 +1412,29 @@ function Mover(m, vel, loc, id, suffix) {
 
         if(intensity)
             this.selectionLight.intensity = intensity;
+    }
+
+    this.resetColor = function(str, intensity){
+        if(str)
+            color = new THREE.Color(str);
+        else{
+            str = randomLightColor();
+            console.log(str);
+            color = new THREE.Color(str);
+        }
+        this.setColor(color, intensity);
+    }
+
+    this.lightColor = function(percent) {
+        color = this.color.getHexString();
+        newColor = darkenColor(color, percent);
+        this.resetColor(newColor)
+    }
+
+    this.newColor = function(){
+        this.color.setHSL( Math.random() , 1, 0.7);
+        console.log(this.color);
+        this.setColor(this.color);
     }
 }
 

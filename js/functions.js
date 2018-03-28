@@ -113,7 +113,7 @@ function inverseDirection() {
 
 function newColor() {
     if (selection)
-        selection.resetColor();
+        selection.newColor();
 }
 
 function lookSun(string) {
