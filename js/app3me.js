@@ -98,7 +98,7 @@ f.add(options, 'AddBigStar');
 f.add(options, 'RESET');
 f.add(options, 'SAVECONFIG');
 
-console.log(gui);
+//console.log(gui);
 
 //var HTTP_GET_VARS=new Array();
 //var strGET=document.location.search.substr(1,document.location.search.length);
@@ -404,6 +404,28 @@ var $camera_info = $("#camera_info");
 //var speedometer = document.getElementById('speedometer');
 var IHMButtons = document.getElementById('IHMButtons');
 var tracker;
+
+// BUTTON IHM ALL 
+// --------------
+var htmlButtonALL = document.createElement("BUTTON")
+//htmlButtonALL.style.backgroundColor = '#' + this.color.getHexString();
+
+htmlButtonALL.label = t = document.createTextNode('ALL');
+htmlButtonALL.label.data = 'ALL'; 
+htmlButtonALL.appendChild(t);
+IHMButtons.appendChild(htmlButtonALL);
+
+// $(document).ready(function () {
+//     $('#ALL').click(function () {
+//         alert('ALL'); 
+//     });
+// });
+
+htmlButtonALL.addEventListener ("click", function() {
+    //alert("did something");
+    ClearSelection();
+    isMoverSelected = false; 
+  });
 
 
 var displayMass = false;
@@ -1042,8 +1064,8 @@ function addClickButtonEvent(name) {
             console.log(this.id)
             //console.log(this);
 
-            if (id === parseInt(id, 10))
-                console.log("int")
+            // if (id === parseInt(id, 10))
+            //     console.log("int")
 
             mover = movers[this.id]
 
