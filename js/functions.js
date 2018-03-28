@@ -52,6 +52,7 @@ function NumToFormat(float, nbDigit, prefix) {
     }
 }
 
+// LIST
 
 function ListAlive() {
     for (var i = movers.length - 1; i >= 0; i--) {
@@ -67,7 +68,53 @@ function ListAlive() {
     }
 }
 
+function RebornAllDied() {
+    for (var i = movers.length - 1; i >= 0; i--) {
+        var m = movers[i];
 
+        if (!m.alive) {
+            m.reborn(); 
+        }
+    }
+}
+
+// FOR SELECTION 
+
+function setSelection(thelist, theinput)
+{
+ // theinput = document.getElementById(theinput);  
+  var idx = thelist.selectedIndex;
+  var content = thelist.options[idx].innerHTML;
+ // theinput.value = content;	
+    alert(content);
+}
+
+function inverseSelectionStatus() {
+    if(!selection)
+     return;
+     if(selection.alive)
+         return selection.kill();
+     else 
+         return selection.reborn()
+ }
+ 
+ function inverseDirection() {
+     if(selection)
+         selection.velocity.multiplyScalar(-1);
+ }
+
+ function newColor() {
+    if(selection)
+        selection.resetColor();
+}
+ 
+ function lookSun(string) {
+     console.log(string);
+     document.getElementById('cbFPS').checked = false; 
+     camera.lookAt(new THREE.Vector3(0, 0, 0));
+ }
+
+// ADD HELPER
 
 function AddArrowHelper(direction) {
     // ArrowHelper

@@ -1,94 +1,131 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title>P2</title>
+    <title>v90</title>
 
     <meta charset="utf-8" />
     <style>
-        body,input,textarea,select{font:1em "Source Code Pro",monospace}
-        canvas{position:absolute;left:0;right:0;top:0;bottom:0;}
+        body,
+        input,
+        textarea,
+        select {
+            font: 1em "Source Code Pro", monospace
+        }
 
-        #controls{position:absolute;z-index:100;color:white;}
-        #controls input[type=range]{background:none;}
-        #controls input[type=number]{width:3em}
+        canvas {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
 
-        label{display:block;}
-		
-		label2{bottom: 0px; font-size:small;}
+        #controls {
+            position: absolute;
+            z-index: 100;
+            color: white;
+        }
 
-        .dg.ac{z-index:100!important}
-		
+        #controls input[type=range] {
+            background: none;
+        }
+
+        #controls input[type=number] {
+            width: 3em
+        }
+
+        label {
+            display: block;
+        }
+
+        label2 {
+            bottom: 0px;
+            font-size: small;
+        }
+
+        .dg.ac {
+            z-index: 100!important
+        }
     </style>
     <style>
+        #speedometer {
+            color: #ffffff;
+            background-color: #990000;
+            position: absolute;
+            bottom: 0px;
+            padding: 5px;
+        }
+    </style>
 
-    #speedometer {
-      color: #ffffff;
-      background-color: #990000;
-      position: absolute;
-      bottom: 0px;
-      padding: 5px;
-    }
-  </style>	
-	
 </head>
+
 <body>
-	<!-- <div id="speedometer">0.0 km/h</div> -->
+    <!-- <div id="speedometer">0.0 km/h</div> -->
 
     <div id="controls">
         <label>
-            target framerate: <input id="framerate" type="number" value="30" max="60" min="1" />
+            target framerate:
+            <input id="framerate" type="number" value="30" max="60" min="1" />
         </label>
         <!--<label>-->
-            <!--real framerate: <span id="real_framerate">0</span>-->
+        <!--real framerate: <span id="real_framerate">0</span>-->
         <!--</label>-->
         <!--<label>-->
-            <!--<input id="activate_trails" type="checkbox" />-->
-            <!--show trails-->
+        <!--<input id="activate_trails" type="checkbox" />-->
+        <!--show trails-->
         <!--</label>-->
         <!--<label>-->
-            <!--Trail length:-->
-            <!--<input id="trails_length" min="0" max="3000" value="100" type="range" />-->
-            <!--<span></span>-->
+        <!--Trail length:-->
+        <!--<input id="trails_length" min="0" max="3000" value="100" type="range" />-->
+        <!--<span></span>-->
         <!--</label>-->
-		
-		
+
+
         <label>
-            particles alive: <span id="movers_alive_count"></span>
+            particles alive:
+            <span id="movers_alive_count"></span>
         </label>
 
         <label>
-            largest / total mass:<br>
-            <span id="maximum_mass"></span> / <span id="total_mass"></span>
+            largest / total mass:
+            <br>
+            <span id="maximum_mass"></span> /
+            <span id="total_mass"></span>
         </label>
-		
-		<label>
-            BIGGEST: <span id="largest_pos"></span>
+
+        <label>
+            BIGGEST:
+            <span id="largest_pos"></span>
         </label>
-		
-		<label2>
-            CAMERA: <span id="camera_info"></span>
+
+        <label2>
+            <input id="cbCam" type="checkbox"> CAMERA:
+            <span id="camera_info"></span>
         </label2>
 
-		<label2>
-            SELECTED: <span id="select_infos"></span>
+        <label2>
+            SELECTED:
+            <span id="select_infos"></span>
         </label2>
-        
-		<div id='IHMButtons' style='position:absolute'>
-			<!-- <button onclick='lookSun(this.innerHTML);'>lookOrigin</button> -->
+
+        <div id='IHMButtons' style='position:absolute'>
+            <!-- <button onclick='lookSun(this.innerHTML);'>lookOrigin</button> -->
             <button onclick='inverseSelectionStatus();'>kill/reborn</button>
             <button onclick='inverseDirection();'>inverse direction</button>
-		
-			<div>
-				<input id="cbFPS" type="checkbox" name="camFPS" value="FPS">FPS Follow Cam?
+            <button onclick='newColor();'>newColor</button>
+
+            <div>
+                <input id="cbFPS" type="checkbox" name="camFPS" value="FPS">FPS Follow Cam?
             </div>
-            
+
             <div>
                 <input id="cbZoom" type="checkbox" name="cbZoom">AutoZoomIn
                 <!-- <label for="cbZoom">ZoomIn</label> -->
             </div>
-		
+
         </div>
-        
+
 
 
     </div>
@@ -96,11 +133,12 @@
     <script src="js/dat.gui.min.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/three.min-v90.js"></script>
-   
+
     <script src="js/OrbitControls.js"></script>
     <script src="js/FirstPersonControls.js"></script>
 
-	<script src="js/functions.js"></script>
+    <script src="js/functions.js"></script>
     <script src="js/app3me.js"></script>
 </body>
+
 </html>

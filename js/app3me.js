@@ -637,7 +637,9 @@ function render() {
         $largest_pos.css('color', "#" + biggest.mesh.material.color.getHexString());
 
         // camera 
-        $camera_info.html('<br/>' + format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') );
+        if(document.getElementById('cbCam').checked)
+            $camera_info.html('<br/>' + format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') );
+        else $camera_info.html('<br/>');
 
         // selection info/debug
         if (selection) {
@@ -649,13 +651,9 @@ function render() {
                 selectionMsg += ' Killed by ' + selection.killedBy;
 
             selectionMsg += '<br/>' + format2Vector(selection.mesh.position);
-            selectionMsg += 'Distance: ' + NumToFormat(selection.location.distanceTo(camera.position));
-            selectionMsg += '<br/>Mass: ' + NumToFormat(selection.mass);
-           
-            // if (selection.biggest)
-            //     selectionMsg += ' BIGGEST';
-
+            selectionMsg += 'Mass: ' + NumToFormat(selection.mass);
             selectionMsg += '<br/>Velocity: ' + NumToFormat(selection.velocity.length(),2);
+            selectionMsg += '<br/>Distance: ' + NumToFormat(selection.location.distanceTo(camera.position));
             
             $select_infos.html(selectionMsg);
             $select_infos.css('color', "#" + selection.mesh.material.color.getHexString());
@@ -1070,27 +1068,6 @@ function addClickButtonEvent(name) {
     });
 }
 
-function inverseSelectionStatus() {
-   if(!selection)
-    return;
-    if(selection.alive)
-        return selection.kill();
-    else 
-        return selection.reborn()
-}
-
-function inverseDirection() {
-    if(selection)
-        selection.velocity.multiplyScalar(-1);
-}
-
-function lookSun(string) {
-    console.log(string);
-    document.getElementById('cbFPS').checked = false; 
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
-}
-
-
 function createTextLabel() {
     var div = document.createElement('div');
     div.className = 'text-label';
@@ -1137,8 +1114,6 @@ function createTextLabel() {
   }
 
 
-
-
 // MOVER CLASS
 
 function Mover(m, vel, loc, id, suffix) {
@@ -1149,6 +1124,7 @@ function Mover(m, vel, loc, id, suffix) {
         this.c = 0xffffff,
         this.alive = true;
     this.geometry = new THREE.SphereGeometry(100.0, SPHERE_SIDES, SPHERE_SIDES);
+
     this.id = id;
     if (!suffix) suffix = "";
     this.name = id + suffix;
@@ -1421,6 +1397,23 @@ function Mover(m, vel, loc, id, suffix) {
 
     this.getHexColor = function(){
         return '#' + this.mesh.material.color.getHexString();
+    }
+
+    this.resetColor = function(str, intensity){
+        if(str)
+            this.color = new THREE.Color(str);
+        else{
+            str = randomLightColor();
+            console.log(str);
+            this.color = new THREE.Color(str);
+        }
+        this.mesh.material.color = this.color;
+        this.line.material.color = this.color;
+        this.text.element.style.color = '#' + this.color.getHexString();
+        this.htmlButton.style.backgroundColor = '#' + this.color.getHexString();
+
+        if(intensity)
+            this.selectionLight.intensity = intensity;
     }
 }
 
