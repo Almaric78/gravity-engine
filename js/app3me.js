@@ -638,8 +638,8 @@ function render() {
 
         // camera 
         if(document.getElementById('cbCam').checked)
-            $camera_info.html('<br/>' + format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') );
-        else $camera_info.html('<br/>');
+            $camera_info.html( format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') );
+        else $camera_info.html('');
 
         // selection info/debug
         if (selection) {

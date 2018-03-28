@@ -44,6 +44,11 @@
             font-size: small;
         }
 
+        #IHMSelection{
+            bottom: 0px;
+            font-size: small;
+        }
+
         .dg.ac {
             z-index: 100!important
         }
@@ -99,21 +104,20 @@
             <span id="largest_pos"></span>
         </label>
 
-        <label2>
+        <label>
             <input id="cbCam" type="checkbox"> CAMERA:
+        </label>
+        <label2>
             <span id="camera_info"></span>
         </label2>
 
-        <label2>
+        <div id="IHMSelection">
             SELECTED:
             <span id="select_infos"></span>
-        </label2>
-
-        <div id='IHMButtons' style='position:absolute'>
+            <br/>
             <!-- <button onclick='lookSun(this.innerHTML);'>lookOrigin</button> -->
             <button onclick='inverseSelectionStatus();'>kill/reborn</button>
             <button onclick='inverseDirection();'>inverse direction</button>
-
             <div>
                 <input id="cbFPS" type="checkbox" name="camFPS" value="FPS">FPS Follow Cam?
             </div>
@@ -122,6 +126,12 @@
                 <input id="cbZoom" type="checkbox" name="cbZoom">AutoZoomIn
                 <!-- <label for="cbZoom">ZoomIn</label> -->
             </div>
+        </div>
+
+        <div id='IHMButtons' style='position:absolute'>
+
+
+
 
         </div>
 
