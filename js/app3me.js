@@ -94,9 +94,9 @@ f.add(options, 'MoveSpeed', 1, 1000).onFinishChange(function (value) {
     console.log(moveSpeed);
 });
 
-f.add(options, 'AddBigStar');
-f.add(options, 'RESET');
-f.add(options, 'SAVECONFIG');
+f.add(options, 'AddBigStar').name('Add Big Star !');
+f.add(options, 'RESET').name('RESET ALL !');
+f.add(options, 'SAVECONFIG').name('SaveTheConf');
 
 //console.log(gui);
 
@@ -583,7 +583,6 @@ function render() {
                         maximum_mass = m.mass;
 
                         biggest = m;
-
                     }
 
                     // SECOND LOOP 
@@ -609,20 +608,11 @@ function render() {
                 }
             }
         }
-        /*
-            if(!tracker) {
-                tracker = document.createElement('div');
-                IHMButtons.appendChild(tracker)
-            } else {
-                IHMButtons.removeChild(tracker)
-                tracker = document.createElement('div');
-                IHMButtons.appendChild(tracker)
-            }
-        */
+
         // DISPLAY
         for (var i = movers.length - 1; i >= 0; i--) {
             var m = movers[i];
-            if (m.alive) {
+            if (m.alive && m.distanceToCenter() < 200000) {
                 if (!pause) {
                     m.update();
                 }
@@ -631,8 +621,8 @@ function render() {
             updateTrails(m);
         }
 
-        // Fix FPS CAM if Enabled 
-        if (isMoverSelected && document.getElementById('cbFPS').checked) {
+        // Fix Follow FPC CAM if Enabled 
+        if (selection && document.getElementById('cbFPS').checked) {
             camera.lookAt(selection.mesh.position);
 
             if(!pause && document.getElementById('cbZoom').checked){
@@ -643,6 +633,7 @@ function render() {
                     camera.position.y += direction2.y;
                     camera.position.z += direction2.z;
                 } else {
+                    // STOP The AutoZoomIn
                     document.getElementById("cbZoom").checked = false;
                 }
             }
@@ -661,7 +652,8 @@ function render() {
 
         // camera 
         if(document.getElementById('cbCam').checked)
-            $camera_info.html( format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') );
+            $camera_info.html( format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') 
+            + 'Distance to Center:' + NumToFormat(camera.position.distanceTo(new THREE.Vector3(0,0,0))) ) ;
         else $camera_info.html('');
 
         // selection info/debug
@@ -676,7 +668,7 @@ function render() {
             selectionMsg += '<br/>' + format2Vector(selection.mesh.position);
             selectionMsg += 'Mass: ' + NumToFormat(selection.mass);
             selectionMsg += '<br/>Velocity: ' + NumToFormat(selection.velocity.length(),2);
-            selectionMsg += '<br/>Distance: ' + NumToFormat(selection.location.distanceTo(camera.position));
+            selectionMsg += '<br/>DistanceToCam: ' + NumToFormat(selection.location.distanceTo(camera.position));
             
             $select_infos.html(selectionMsg);
             $select_infos.css('color', "#" + selection.mesh.material.color.getHexString());
@@ -786,7 +778,7 @@ function initMouseEvent() {
         if (e.target.tagName === "CANVAS") {
             if (!onMouseDown.moved) {
                 var vector = new THREE.Vector3(
-                    (e.clientX / window.innerWidth) * 2 - 1,
+                    +(e.clientX / window.innerWidth) * 2 - 1,
                     -(e.clientY / window.innerHeight) * 2 + 1, 0.5);
 
                 vector.unproject(camera);
@@ -898,7 +890,8 @@ window.onkeydown = function (e) {
     var charTMP = String.fromCharCode(e.which);
     console.count("key:" + charTMP + ':' + e.which);
 
-    direction = camera.getWorldDirection().clone();
+    var vector = new THREE.Vector3(); // for Three.js > 80 ?? 
+    direction = camera.getWorldDirection(vector).clone();
 
     // ECHAP
     if (e.which == 27) {
@@ -985,7 +978,7 @@ window.onkeydown = function (e) {
 
 
 function reset() {
-    console.log("RESET !")
+    console.log("RESET ALL !")
     if (movers) {
         for (var i = 0; i < movers.length; i = i + 1) {
             scene.remove(movers[i].mesh);
@@ -1043,13 +1036,12 @@ function AddBigMoverToCenter() {
     var vel = new THREE.Vector3(0, 0, 0);
     var loc = new THREE.Vector3(0, 0, 0);
 
-    name = movers.length + 'Big'
+    //name = movers.length + 'Big'
     big = new Mover(mass, vel, loc, movers.length, 'Big');
     big.mesh.material.transparent = true;
     big.mesh.material.opacity = 0.8
 
     big.addToMovers();
-
 }
 
 
@@ -1081,8 +1073,9 @@ function onCbFPSCam() {
         //if(!(controls instanceof (THREE.FirstPersonControls))) {
         SwitchControl(2);
         controls.enabled = false;
+        document.getElementById('cbZoom').disabled = false;
         //} else console.log('orbit');
-    }
+    } else document.getElementById('cbZoom').disabled = true;
 
    // camera.lookAt(mover.mesh.position);
 /*
@@ -1127,6 +1120,8 @@ function createTextLabel() {
             this.element.style.left = coords2d.x + 'px';
             this.element.style.top = coords2d.y + 'px';
             this.element.style.display = ''; // SHOW IT
+        } else {
+            this.element.style.display = 'none'; // HIDE
         }
       },
 
@@ -1135,6 +1130,10 @@ function createTextLabel() {
         vector.x = (vector.x + 1)/2 * window.innerWidth;
         vector.y = -(vector.y - 1)/2 * window.innerHeight;
         return vector;
+      },
+
+      hide: function() {
+        this.element.style.display = 'none'; // HIDE
       }
     };
   }
@@ -1330,11 +1329,11 @@ function Mover(m, vel, loc, id, suffix) {
                 if(options.SHOW_LABELS)
                     this.text.updatePosition();
                 else
-                    this.text.element.style.display = 'none'
+                    this.text.hide();
             } else {
                 this.selectionLight.intensity = 1; // ME
                 this.htmlButton.style.border = "";
-                this.text.element.style.display = 'none'
+                this.text.hide();
             }
         } else {
             this.selectionLight.intensity = 1; //MME 2 * this.mass / total_mass;
@@ -1342,7 +1341,7 @@ function Mover(m, vel, loc, id, suffix) {
             if(options.SHOW_LABELS)
                 this.text.updatePosition();
             else
-                this.text.element.style.display = 'none' 
+                this.text.hide();
 
             /*
                 var emissiveColor = this.color.getHex().toString(16);
@@ -1374,7 +1373,7 @@ function Mover(m, vel, loc, id, suffix) {
                     this.htmlButton.style.display='inline';
                 }else{
                     this.htmlButton.style.display='none';
-                    this.text.element.style.display = 'none';
+                    this.text.hide();
                 }
             }
             //this.selectionLight.intensity = 0.5; // ME ! a remettre à Zéro !
