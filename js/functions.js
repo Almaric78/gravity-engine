@@ -24,7 +24,7 @@ function darkenColor(color, percent) {
 function randomLightColor() {
     color = "hsl(" + Math.random() * 360 + ", 100%, 75%)";
     return color;
-  }
+}
 
 
 // FORMAT NUMBER / VECTOR
@@ -47,7 +47,7 @@ function NumToFormat(float, nbDigit, prefix) {
     if (!prefix)
         return ' ' + float.toLocaleString(undefined, { maximumFractionDigits: nbDigit });
     else {
-        if(prefix.startsWith('r')) { float *= 180/Math.PI; } // conversion in degree for Rotation
+        if (prefix.startsWith('r')) { float *= 180 / Math.PI; } // conversion in degree for Rotation
         return prefix + ': ' + float.toLocaleString(undefined, { maximumFractionDigits: nbDigit }) + '<br/>';
     }
 }
@@ -73,46 +73,54 @@ function RebornAllDied() {
         var m = movers[i];
 
         if (!m.alive) {
-            m.reborn(); 
+            m.reborn();
         }
     }
 }
 
 // FOR SELECTION 
 
-function setSelection(thelist, theinput)
-{
- // theinput = document.getElementById(theinput);  
-  var idx = thelist.selectedIndex;
-  var content = thelist.options[idx].innerHTML;
- // theinput.value = content;	
-    alert(content);
+function setSelection(thelist, theinput) {
+    // theinput = document.getElementById(theinput);  
+    var idx = thelist.selectedIndex;
+    //console.log(idx);
+    var content = thelist.options[idx].innerHTML;
+    functionName = thelist.options[idx].value; 
+    // theinput.value = content;	
+    //alert(content);
+
+    // call the function by name value 
+    setTimeout(functionName+'()', 0);
+
+    // RESET the Select on first item
+    //​document.getElementById('mySelect').value = '0';​​​​​​​​​​
+    $('#mySelect').val('0');
 }
 
 function inverseSelectionStatus() {
-    if(!selection)
-     return;
-     if(selection.alive)
-         return selection.kill();
-     else 
-         return selection.reborn()
- }
- 
- function inverseDirection() {
-     if(selection)
-         selection.velocity.multiplyScalar(-1);
- }
+    if (!selection)
+        return;
+    if (selection.alive)
+        return selection.kill();
+    else
+        return selection.reborn()
+}
 
- function newColor() {
-    if(selection)
+function inverseDirection() {
+    if (selection)
+        selection.velocity.multiplyScalar(-1);
+}
+
+function newColor() {
+    if (selection)
         selection.resetColor();
 }
- 
- function lookSun(string) {
-     console.log(string);
-     document.getElementById('cbFPS').checked = false; 
-     camera.lookAt(new THREE.Vector3(0, 0, 0));
- }
+
+function lookSun(string) {
+    console.log(string);
+    document.getElementById('cbFPS').checked = false;
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+}
 
 // ADD HELPER
 
@@ -135,7 +143,7 @@ function AddArrowHelper(direction) {
     scene.add(arrowHelper2);
 
     // FRONT YELLOW
-    var arrowHelper = new THREE.ArrowHelper(direction, camera.position, length, 0xffff00); 
+    var arrowHelper = new THREE.ArrowHelper(direction, camera.position, length, 0xffff00);
     scene.add(arrowHelper);
 
     // BACK PINK
@@ -149,10 +157,10 @@ function LogFPS() {
         return;
     }
     console.group();
-    console.log("lon:" + NumToFormat(controls.lon,2));
-    console.log("lat:" + NumToFormat(controls.lat,2));
-    console.log("phi:" + NumToFormat(controls.phi,2));
-    console.log("theta:" + NumToFormat(controls.theta,2));
+    console.log("lon:" + NumToFormat(controls.lon, 2));
+    console.log("lat:" + NumToFormat(controls.lat, 2));
+    console.log("phi:" + NumToFormat(controls.phi, 2));
+    console.log("theta:" + NumToFormat(controls.theta, 2));
     //console.log(controls.target);
     console.groupEnd();
 }

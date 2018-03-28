@@ -831,6 +831,8 @@ function SelectMeshMover(clickedObj, str) {
     mover.selected = !mover.selected;
 
     isMoverSelected = mover.selected;
+
+    document.getElementById("mySelect").disabled = false;    
 }
 
 function ClearSelection() {
@@ -1046,7 +1048,6 @@ function addClickButtonEvent(name) {
 
             SelectMeshMover(mover.mesh, 'b');
 
-
         });
     });
 }
@@ -1258,7 +1259,7 @@ function Mover(m, vel, loc, id, suffix) {
         scene.remove(this.mesh);
 
         // HTML BUTTON
-        this.htmlButton.label.data += 'k'
+        //this.htmlButton.label.data += 'k'
         this.htmlButton.style.backgroundColor = 'black'
         this.htmlButton.style.color = '#' + this.color.getHexString();
 

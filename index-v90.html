@@ -99,30 +99,42 @@
             <span id="largest_pos"></span>
         </label>
 
-        <label2>
+        <label>
             <input id="cbCam" type="checkbox"> CAMERA:
+        </label>
+        <label2>
             <span id="camera_info"></span>
         </label2>
 
-        <label2>
+        <div id="IHMSelection">
             SELECTED:
             <span id="select_infos"></span>
-        </label2>
-
-        <div id='IHMButtons' style='position:absolute'>
+            <br/>
             <!-- <button onclick='lookSun(this.innerHTML);'>lookOrigin</button> -->
-            <button onclick='inverseSelectionStatus();'>kill/reborn</button>
-            <button onclick='inverseDirection();'>inverse direction</button>
-            <button onclick='newColor();'>newColor</button>
-
+            <!-- <button onclick='inverseSelectionStatus();'>kill/reborn</button>
+            <button onclick='inverseDirection();'>inverse direction</button> -->
+            <!-- <br/> -->
+            <select id="mySelect" onchange="setSelection(this)" disabled>
+                    <option value="0">Action on Selection</option>
+                    <option value="inverseSelectionStatus">kill/reborn</option>
+                    <option value="inverseDirection">inverse direction</option>
+                    <!-- <option value="valeur2" selected>Valeur 2</option> -->
+                    <option value="newColor">newColor</option>
+                </select>
             <div>
-                <input id="cbFPS" type="checkbox" name="camFPS" value="FPS">FPS Follow Cam?
+                <input id="cbFPS" type="checkbox" name="camFPS" value="FPS" onclick="onCbFPSCam();">FPS Follow Cam?
             </div>
 
             <div>
                 <input id="cbZoom" type="checkbox" name="cbZoom">AutoZoomIn
                 <!-- <label for="cbZoom">ZoomIn</label> -->
             </div>
+        </div>
+
+        <div id='IHMButtons' style='position:absolute'>
+
+
+
 
         </div>
 

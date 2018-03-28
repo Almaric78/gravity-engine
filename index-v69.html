@@ -116,8 +116,16 @@
             <span id="select_infos"></span>
             <br/>
             <!-- <button onclick='lookSun(this.innerHTML);'>lookOrigin</button> -->
-            <button onclick='inverseSelectionStatus();'>kill/reborn</button>
-            <button onclick='inverseDirection();'>inverse direction</button>
+            <!-- <button onclick='inverseSelectionStatus();'>kill/reborn</button>
+            <button onclick='inverseDirection();'>inverse direction</button> -->
+            <!-- <br/> -->
+            <select id="mySelect" onchange="setSelection(this)" disabled>
+                    <option value="0">Action on Selection</option>
+                    <option value="inverseSelectionStatus">kill/reborn</option>
+                    <option value="inverseDirection">inverse direction</option>
+                    <!-- <option value="valeur2" selected>Valeur 2</option> -->
+                    <option value="newColor">newColor</option>
+                </select>
             <div>
                 <input id="cbFPS" type="checkbox" name="camFPS" value="FPS" onclick="onCbFPSCam();">FPS Follow Cam?
             </div>
