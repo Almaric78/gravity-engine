@@ -1028,9 +1028,6 @@ function AddBigMoverToCenter() {
 }
 
 
-//Set htmlButtons = new Set();
-var htmlButtons = [];
-
 // CLICK on GUI SELECTION BUTTON
 function addClickButtonEvent(name) {
 
@@ -1049,23 +1046,28 @@ function addClickButtonEvent(name) {
 
             SelectMeshMover(mover.mesh, 'b');
 
-            if (document.getElementById('cbFPS').checked) {
-                //if(!(controls instanceof (THREE.FirstPersonControls))) {
-                SwitchControl(2);
-                controls.enabled = false;
-                //} else console.log('orbit');
-            }
 
-            camera.lookAt(mover.mesh.position);
-/*
-            direction = camera.getWorldDirection().clone();
-
-            angleX = direction.angleTo(new THREE.Vector3(1, 0, 0))
-            console.log("angleX:" + angleX); // direction.normalize())
-            controls.lon = - angleX * 180 / Math.PI;
-*/
         });
     });
+}
+
+// Activate FPS Control for Selection 
+function onCbFPSCam() {
+    if (document.getElementById('cbFPS').checked) {
+        //if(!(controls instanceof (THREE.FirstPersonControls))) {
+        SwitchControl(2);
+        controls.enabled = false;
+        //} else console.log('orbit');
+    }
+
+   // camera.lookAt(mover.mesh.position);
+/*
+    direction = camera.getWorldDirection().clone();
+
+    angleX = direction.angleTo(new THREE.Vector3(1, 0, 0))
+    console.log("angleX:" + angleX); // direction.normalize())
+    controls.lon = - angleX * 180 / Math.PI;
+*/
 }
 
 function createTextLabel() {
