@@ -1,16 +1,25 @@
 # gravity-planets
 
-Gravitational engine for planets and particules in 3D with Three.js
+Gravitational Simulation Engine for Planets and Particles in 3D with Three.js (WebGL library)
 
-Démo : http://htmlpreview.github.io/?https://github.com/Almaric78/gravity-planets/blob/master/index-v69.html
+Live Démo : http://htmlpreview.github.io/?https://github.com/Almaric78/gravity-planets/blob/master/index-v69.html
 
-Commands : 
-- SPACE : Pause
-- Left Click : Select ball
-- Righ Clik : Add velocity ball
-- H : Show/Hide DAT GUI
+It works well on Chrome and Safari but not good on IE.
 
-Contact : adalrik@gmail.com
+Looking forward to contacting me on : adalrik@gmail.com
+
+Have fun ! 
+
+## Special Commands : 
+- SPACE : Pause state (the most important !)
+- Left Click : Select a ball
+- Righ Clik : Add velocity ball throught the raycast hit with the START_SPEED specified on right DAT Control
+- ESCAPE/ECHAP : Swith Active/Inactive control of Free Cam (for FirstPersonControls.js specifically, but buggy)
+- H : Show/Hide DAT GUI panel
+
+Do not hesitate to add a big star on the center during the simulation. 
+
+Or change the main characteristics (Mass, direction, state, color..) of Planets/Particles
 
 ## History : 
 
