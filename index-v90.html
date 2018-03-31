@@ -41,12 +41,12 @@
 
         label2 {
             bottom: 0px;
-            font-size: small;
+            font-size: x-small;
         }
 
-        #IHMSelection{
+        #IHMCam, #IHMSelection{
             bottom: 0px;
-            font-size: small;
+            font-size: x-small;
             margin: 0px;
             padding: 5px;
         }
@@ -54,12 +54,15 @@
         .dg.ac {
             z-index: 100!important
         }
-    </style>
-    <style>
-        #speedometer {
+
+
+
+        #GeneralInfos {
             color: #ffffff;
             background-color: #990000;
+			font-size: small;
             position: absolute;
+			z-index: 100;
             bottom: 0px;
             padding: 5px;
         }
@@ -68,8 +71,6 @@
 </head>
 
 <body>
-    <!-- <div id="speedometer">0.0 km/h</div> -->
-
     <div id="controls">
         <label>
             target framerate:
@@ -103,15 +104,17 @@
 
         <label>
             BIGGEST:
-            <span id="largest_pos"></span>
+            <span id="largest_pos" onclick="selectBiggest();"></span>
         </label>
 
-        <label>
-            <input id="cbCam" type="checkbox"> CAMERA:
-        </label>
-        <label2>
-            <span id="camera_info"></span>
-        </label2>
+		<fieldset id="IHMCam">
+			<label>
+				<input id="cbCam" type="checkbox"> CAMERA:
+			</label>
+			<label2>
+				<span id="camera_info"></span>
+			</label2>
+		</fieldset>
 
         <fieldset id="IHMSelection">
             LAST SELECTED:
@@ -122,32 +125,34 @@
             <button onclick='inverseDirection();'>inverse direction</button> -->
             <!-- <br/> -->
             <select id="mySelect" onchange="setSelection(this)" disabled>
-                    <option value="0">Action on Selection</option>
+                    <option value="0" selected>Action on Selection</option>
+					<option value="changeMass">change the Mass</option>
                     <option value="inverseSelectionStatus">kill/reborn</option>
                     <option value="inverseDirection">inverse direction</option>
                     <!-- <option value="valeur2" selected>Valeur 2</option> -->
                     <option value="newColor">newColor</option>
                 </select>
             <div>
-                <input id="cbFPS" type="checkbox" name="camFPS" value="FPS" onclick="onCbFPSCam();">Follow by FPC Cam?
+                <input  id="cbFPS" type="checkbox" name="camFPS" value="FPS" onclick="onCbFPSCam();" disabled>Follow by FP Cam?
+				<!-- <label for="cbFPS">Follow by FP Cam?</label> -->
             </div>
 
             <div>
-                <input id="cbZoom" type="checkbox" name="cbZoom">AutoZoomIn on it
+                <input id="cbZoom" type="checkbox" name="cbZoom" disabled>AutoZoomIn on it
                 <!-- <label for="cbZoom">ZoomIn</label> -->
             </div>
         </fieldset>
 
         <div id='IHMButtons' style='position:absolute'>
-
-
-
-
         </div>
 
-
+		<!-- <div id='GeneralInfos' style='position:absolute'> -->
+        <!-- </div> -->
 
     </div>
+	
+    <div id="GeneralInfos">PAUSE</div>
+
 
     <script src="js/dat.gui.min.js"></script>
     <script src="js/jquery.js"></script>

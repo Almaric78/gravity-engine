@@ -122,6 +122,24 @@ function lookSun(string) {
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 }
 
+function selectBiggest(){
+    if(biggest)
+        SelectMeshMover(biggest.mesh)
+}
+
+function changeMass(){
+    if(selection) {
+        pause = true;
+        var initialMass = parseInt(selection.mass, 10);
+        var newMass = prompt("Please enter the new mass:", initialMass);
+        newMass = parseFloat(newMass);
+        if(!newMass)
+            newMass = initialMass;
+        console.log("New mass:" + newMass + " on selection id:"+selection.id)
+        selection.mass = newMass;
+    }
+}
+
 // ADD HELPER
 
 function AddArrowHelper(direction) {

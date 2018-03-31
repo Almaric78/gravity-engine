@@ -10,7 +10,10 @@ var options = {
     MIN_MASS: .01,
     MAX_MASS: 1000,
     DENSITY: 0.1,
+
     MoveSpeed: 500,
+    MAX_DISTANCE: 300000,
+    BIG_STAR_MASS:100000,
 };
 
 // LOAD CONFIG 
@@ -393,7 +396,7 @@ $framerate.bind("change keyup mouseup", function () {
 //});
 //
 
-// JSQUERY
+// JSQUERY GUI
 
 var $movers_alive_count = $("#movers_alive_count");
 var $total_mass = $("#total_mass");
@@ -401,11 +404,11 @@ var $maximum_mass = $("#maximum_mass");
 var $largest_pos = $("#largest_pos");
 var $select_infos = $("#select_infos");
 var $camera_info = $("#camera_info");
-//var speedometer = document.getElementById('speedometer');
+var GeneralInfos = document.getElementById('GeneralInfos');
 var IHMButtons = document.getElementById('IHMButtons');
 var tracker;
 
-// BUTTON IHM ALL 
+// IHM BUTTON ALL 
 // --------------
 var htmlButtonALL = document.createElement("BUTTON")
 //htmlButtonALL.style.backgroundColor = '#' + this.color.getHexString();
@@ -564,7 +567,7 @@ function render() {
     var maximum_mass = 0.00;
 
     if (biggest)
-        largest_pos = 'd: ' + NumToFormat(biggest.location.distanceTo(camera.position)) + ' id:' + biggest.id;
+        largest_pos = 'dist: ' + NumToFormat(biggest.location.distanceTo(camera.position)) + ' id:' + biggest.id;
     else
         largest_pos = 0
 
@@ -612,7 +615,7 @@ function render() {
         // DISPLAY
         for (var i = movers.length - 1; i >= 0; i--) {
             var m = movers[i];
-            if (m.alive && m.distanceToCenter() < 200000) {
+            if (m.alive && m.distanceToCenter() < options.MAX_DISTANCE) {
                 if (!pause) {
                     m.update();
                 }
@@ -643,6 +646,7 @@ function render() {
 
         $movers_alive_count.html(movers_alive_count + ' / ' + movers.length);
         var rapportMasse = maximum_mass / total_mass * 100;
+
         $maximum_mass.html(NumToFormat(maximum_mass));
         $maximum_mass.css('color', "#" + biggest.mesh.material.color.getHexString());
         $total_mass.html(NumToFormat(total_mass) + ' = ' + NumToFormat(rapportMasse) + '%' );
@@ -668,11 +672,19 @@ function render() {
             selectionMsg += '<br/>' + format2Vector(selection.mesh.position);
             selectionMsg += 'Mass: ' + NumToFormat(selection.mass);
             selectionMsg += '<br/>Velocity: ' + NumToFormat(selection.velocity.length(),2);
-            selectionMsg += '<br/>DistanceToCam: ' + NumToFormat(selection.location.distanceTo(camera.position));
+            selectionMsg += '<br/>DistanceToCamera: ' + NumToFormat(selection.location.distanceTo(camera.position));
+            selectionMsg += '<br/>DistanceToCenter: ' + NumToFormat(selection.distanceToCenter());
             
             $select_infos.html(selectionMsg);
             $select_infos.css('color', "#" + selection.mesh.material.color.getHexString());
         }
+
+    
+        if(pause)
+            document.getElementById('GeneralInfos').innerHTML='PAUSE : Press SPACE to Run';
+        else 
+            document.getElementById('GeneralInfos').innerHTML='RUNNING : Press SPACE to Stop'; 
+    
     }
 
     // RENDERER
@@ -847,7 +859,8 @@ function SelectMeshMover(clickedObj, str) {
 
     isMoverSelected = mover.selected;
 
-    document.getElementById("mySelect").disabled = false;    
+    document.getElementById("mySelect").disabled = false;   
+    document.getElementById("cbFPS").disabled = false; 
 }
 
 function ClearSelection() {
@@ -1003,6 +1016,8 @@ function reset() {
         AddRandomMover(i);
     }
 
+    AddBigMoverToCenter();
+
     // SVG LAST CONFIG OPTIONS
     // localStorage.setItem("options", JSON.stringify(options));
 }
@@ -1031,7 +1046,7 @@ function AddRandomMover(id) {
 }
 
 function AddBigMoverToCenter() {
-    var mass = 100000;
+    var mass = options.BIG_STAR_MASS;
 
     var vel = new THREE.Vector3(0, 0, 0);
     var loc = new THREE.Vector3(0, 0, 0);
@@ -1039,7 +1054,7 @@ function AddBigMoverToCenter() {
     //name = movers.length + 'Big'
     big = new Mover(mass, vel, loc, movers.length, 'Big');
     big.mesh.material.transparent = true;
-    big.mesh.material.opacity = 0.8
+    big.mesh.material.opacity = 0.9
 
     big.addToMovers();
 }
@@ -1268,6 +1283,7 @@ function Mover(m, vel, loc, id, suffix) {
 
         if (m.selected) this.selected = true;
 
+        this.nbEat+=m.nbEat;
         this.nbEat+=1; 
         this.htmlButton.label.data = this.id + 'x' + this.nbEat;
 
@@ -1324,19 +1340,19 @@ function Mover(m, vel, loc, id, suffix) {
     this.display = function () {
         if (isMoverSelected) {
             if (this.selected) {
-                this.selectionLight.intensity = 1;
+                //this.selectionLight.intensity = 1;
                 this.htmlButton.style.border = "thick solid #FF0000";
                 if(options.SHOW_LABELS)
                     this.text.updatePosition();
                 else
                     this.text.hide();
             } else {
-                this.selectionLight.intensity = 1; // ME
+                //this.selectionLight.intensity = 1; // ME
                 this.htmlButton.style.border = "";
                 this.text.hide();
             }
         } else {
-            this.selectionLight.intensity = 1; //MME 2 * this.mass / total_mass;
+            //this.selectionLight.intensity = 1; //MME 2 * this.mass / total_mass;
             this.htmlButton.style.border = "";
             if(options.SHOW_LABELS)
                 this.text.updatePosition();
