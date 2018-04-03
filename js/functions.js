@@ -85,12 +85,12 @@ function setSelection(thelist, theinput) {
     var idx = thelist.selectedIndex;
     //console.log(idx);
     var content = thelist.options[idx].innerHTML;
-    functionName = thelist.options[idx].value; 
+    functionName = thelist.options[idx].value;
     // theinput.value = content;	
     //alert(content);
 
     // call the function by name value 
-    setTimeout(functionName+'()', 0);
+    setTimeout(functionName + '()', 0);
 
     // RESET the Select on first item
     //​document.getElementById('mySelect').value = '0';​​​​​​​​​​
@@ -122,20 +122,20 @@ function lookSun(string) {
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 }
 
-function selectBiggest(){
-    if(biggest)
+function selectBiggest() {
+    if (biggest)
         SelectMeshMover(biggest.mesh)
 }
 
-function changeMass(){
-    if(selection) {
+function changeMass() {
+    if (selection) {
         pause = true;
         var initialMass = parseInt(selection.mass, 10);
         var newMass = prompt("Please enter the new mass:", initialMass);
         newMass = parseFloat(newMass);
-        if(!newMass)
+        if (!newMass)
             newMass = initialMass;
-        console.log("New mass:" + newMass + " on selection id:"+selection.id)
+        console.log("New mass:" + newMass + " on selection id:" + selection.id)
         selection.mass = newMass;
     }
 }
@@ -181,4 +181,18 @@ function LogFPS() {
     console.log("theta:" + NumToFormat(controls.theta, 2));
     //console.log(controls.target);
     console.groupEnd();
+}
+
+function LogFPCam() {
+    if ((controls instanceof (THREE.FirstPersonControls))) {
+        message = "<br/>";
+        message += "status:" + controls.enabled + "<br/>";
+        message += "lon:" + NumToFormat(controls.lon, 2) + "<br/>";
+        message += "lat:" + NumToFormat(controls.lat, 2) + "<br/>";
+        message += "phi:" + NumToFormat(controls.phi, 2) + "<br/>";
+        message += "theta:" + NumToFormat(controls.theta, 2) + "<br/>";
+        message += format2Vector(controls.target, 0, 't');
+        return message;
+    } else 
+        return ""; 
 }

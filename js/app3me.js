@@ -408,6 +408,7 @@ var GeneralInfos = document.getElementById('GeneralInfos');
 var IHMButtons = document.getElementById('IHMButtons');
 var tracker;
 
+
 // IHM BUTTON ALL 
 // --------------
 var htmlButtonALL = document.createElement("BUTTON")
@@ -657,7 +658,7 @@ function render() {
         // camera 
         if(document.getElementById('cbCam').checked)
             $camera_info.html( format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') 
-            + 'Distance to Center:' + NumToFormat(camera.position.distanceTo(new THREE.Vector3(0,0,0))) ) ;
+            + 'Distance to Center:' + NumToFormat(camera.position.distanceTo(new THREE.Vector3(0,0,0))) + LogFPCam() ) ;
         else $camera_info.html('');
 
         // selection info/debug
@@ -917,12 +918,23 @@ window.onkeydown = function (e) {
             strControlName = "OrbitControls"
         else if (controls instanceof (THREE.FirstPersonControls)) {
             strControlName = "FirstPersonControls"
-            /*	
+/*
+            if(!controls.lon){
                 angleX = direction.angleTo (new THREE.Vector3(1,0,0))
                 console.log("angleX:" + angleX); // direction.normalize())
                 controls.lon = - angleX * 180 / Math.PI;
-            */
-            LogFPS();
+            }
+
+            if(!controls.lat){
+                angleY = direction.angleTo(new THREE.Vector3(0, 1, 0))
+                console.log("angleY:" + NumToFormat(angleY,2)); // direction.normalize())
+                controls.lat = - angleY * 180 / Math.PI;
+            }
+*/
+
+            controls.target.copy(direction);
+
+            //LogFPS();
         }
 
         controls.enabled = !controls.enabled
@@ -960,7 +972,7 @@ window.onkeydown = function (e) {
 
         SwitchControl(2);
         AddArrowHelper(direction)
-        LogFPS();
+        //LogFPS();
 
         console.log(direction)
 
@@ -985,7 +997,7 @@ window.onkeydown = function (e) {
 
     } else if (e.which === 51) { // 3 LOG ?
         AddArrowHelper(direction)
-        LogFPS();
+        //LogFPS();
     }
 }
 
@@ -1173,7 +1185,9 @@ function Mover(m, vel, loc, id, suffix) {
 
     this.line = new THREE.Line(); // line to display movement
 
-    this.color = this.line.material.color;
+    this.color = this.line.material.color; // ?? no init Color ?? 
+    this.color.setHSL( Math.random() , 1, 0.5);
+
     //this.line = THREE.Line(this.lineGeometry, lineMaterial);
 
     this.basicMaterial = new THREE.MeshPhongMaterial({
@@ -1219,7 +1233,7 @@ function Mover(m, vel, loc, id, suffix) {
     this.htmlButton.id = this.id;
     this.nbEat=0;
 
-    // LABEL 
+    // Dynamic LABEL 
     this.text = createTextLabel();
     this.text.setHTML(this.id);
     this.text.setParent(this.mesh);
