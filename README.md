@@ -1,4 +1,4 @@
-# gravity-planets
+# 3D gravity-engine with Three.js
 
 Gravitational Simulation Engine for Planets and Particles in 3D with Three.js (WebGL library)
 
@@ -6,7 +6,7 @@ Live Démo : http://htmlpreview.github.io/?https://github.com/Almaric78/gravity-
 
 It works well on Chrome and Safari but not good on IE.
 
-Looking forward to contacting me on : adalrik@gmail.com
+Looking forward to contacting me on : adalrik@gmail.com 
 
 Have fun ! 
 
@@ -17,9 +17,9 @@ Have fun !
 - ESCAPE/ECHAP : Swith Active/Inactive control of Free Cam (for FirstPersonControls.js specifically, but buggy)
 - H : Show/Hide DAT GUI panel
 
-Do not hesitate to add a big star on the center during the simulation. 
+Do not hesitate to add a big star on the center during or after the simulation. 
 
-Or change the main characteristics (Mass, direction, state, color..) of Planets/Particles
+Or change the main characteristics (Mass, direction, state, color..) of Planets/Particles in left control selection. 
 
 ## History : 
 
