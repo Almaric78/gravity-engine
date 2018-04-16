@@ -86,7 +86,7 @@ function RebornAllDied() {
 var isMoverSelected = false;
 
 function SelectMeshMover(clickedObj, str) {
-    console.log(str + " > selected idM:" + clickedObj.id); //, clickedObj); // + '  mass=' + clickedObj.mover.mass.toFixed());
+    console.log(str + " > selected idMesh:" + clickedObj.id); //, clickedObj); // + '  mass=' + clickedObj.mover.mass.toFixed());
     selection = mover = clickedObj.mover;
     //$select_infos.html( clickedObj.id );  // largest_pos.toFixed(2)
 	

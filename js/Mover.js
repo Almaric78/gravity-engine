@@ -388,7 +388,7 @@ function addClickButtonEvent(name) {
 
             var id = this.id;
 
-            console.log(this.id)
+            //console.log(this.id)
             //console.log(this);
 
             // if (id === parseInt(id, 10))
