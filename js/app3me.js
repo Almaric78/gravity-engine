@@ -201,8 +201,6 @@ var renderer = new THREE.WebGLRenderer({
 });
 //var projector = new THREE.Projector();
 
-var isMoverSelected = false;
-
 var theta = 20,
     phi = 10;
 var currentRadius = 5*2000.0;
@@ -368,7 +366,7 @@ directionalLight.castShadow = true;
 
 var selectionLight = new THREE.PointLight(0xff0000, 0);
 selectionLight.castShadow = true;
-//scene.add(selectionLight);
+scene.add(selectionLight); // ?? 
 
 /*var redLight = new THREE.DirectionalLight(0xaa0000);
  redLight.position.set(1, 0, 1);
@@ -680,7 +678,7 @@ function render() {
             var selectionMsg = '<br/> id:' + selection.id;
 
             if (selection.alive)
-                selectionMsg += ' alive';
+                selectionMsg += ' Alive';
             else
                 selectionMsg += ' Killed by ' + selection.killedBy;
 
@@ -710,129 +708,6 @@ function render() {
 
 }
 
-
-
-console.time();
-
-// KEYBOARD 
-
-var holdLeft = false,
-    holdRight = false,
-    holdUp = false,
-    holdDown = false;
-
-window.onkeyup = function (e) {
-    if (e.which == 37) {
-        holdLeft = false;
-    } else if (e.which == 38) {
-        holdUp = false;
-    } else if (e.which == 39) {
-        holdRight = false;
-    } else if (e.which == 40) {
-        holdDown = false;
-    }
-}
-    
-window.onkeydown = function (e) {
-    var charTMP = String.fromCharCode(e.which);
-    console.count("key:" + charTMP + ':' + e.which);
-
-    var vector = new THREE.Vector3(); // for Three.js > 80 ?? 
-    direction = camera.getWorldDirection(vector).clone();
-
-    // ECHAP
-    if (e.which == 27) {
-        //isCameraLookAt = !isCameraLookAt
-
-        // AddArrowHelper(direction);
-
-        var strControlName = "";
-        if (controls instanceof (THREE.OrbitControls))
-            strControlName = "OrbitControls"
-        else if (controls instanceof (THREE.FirstPersonControls)) {
-            strControlName = "FirstPersonControls"
-/*
-            if(!controls.lon){
-                angleX = direction.angleTo (new THREE.Vector3(1,0,0))
-                console.log("angleX:" + angleX); // direction.normalize())
-                controls.lon = - angleX * 180 / Math.PI;
-            }
-
-            if(!controls.lat){
-                angleY = direction.angleTo(new THREE.Vector3(0, 1, 0))
-                console.log("angleY:" + NumToFormat(angleY,2)); // direction.normalize())
-                controls.lat = - angleY * 180 / Math.PI;
-            }
-*/
-
-            controls.target.copy(direction);
-
-            //LogFPS();
-        }
-
-        controls.enabled = !controls.enabled
-
-        console.log(strControlName + " state: " + controls.enabled)
-    }
-
-    else if (e.which == 37) {
-        holdLeft = true;
-    } else if (e.which == 38) {
-        holdUp = true;
-    } else if (e.which == 39) {
-        holdRight = true;
-    } else if (e.which == 40) {
-        holdDown = true;
-        //    } else if (e.which === 82) {
-        //        reset();
-    } else if (e.which === 84) { // [T]rails
-        $activate_trails.prop("checked", !$activate_trails.prop("checked")).change();
-
-    } else if (e.which === 32) { // SPACE
-        pause = !pause;
-        e.preventDefault();
-        if (pause) console.timeEnd()
-        else console.time();
-        return false;
-
-    } else if (e.which === 49) { // 1 OrbitControls
-        controls = controlOrbit
-        console.log("O")
-
-    } else if (e.which === 50) { // 2  FPS
-        //controls = control2FPS
-        //console.log("FPS")
-
-        SwitchControl(2);
-        AddArrowHelper(direction)
-        //LogFPS();
-
-        console.log(direction)
-
-        angleX = direction.angleTo(new THREE.Vector3(1, 0, 0))
-        console.log("angleX:" + NumToFormat(angleX,2)); // direction.normalize())
-        controls.lon = - angleX * 180 / Math.PI;
-
-        angleY = direction.angleTo(new THREE.Vector3(0, 1, 0))
-        console.log("angleY:" + NumToFormat(angleY,2)); // direction.normalize())
-        //controls.lat = - angleY * 180 / Math.PI;
-
-        // https://stackoverflow.com/questions/12500874/three-js-first-person-controls
-        // this.phi = (90 - this.lat) * Math.PI / 180;
-        // this.theta = this.lon * Math.PI / 180;
-
-        //camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-        //controls.enabled = false;
-
-        controls.update(clock.getDelta());
-        renderer.render(scene, camera);
-
-    } else if (e.which === 51) { // 3 LOG ?
-        AddArrowHelper(direction)
-        //LogFPS();
-    }
-}
 
 
 function reset() {

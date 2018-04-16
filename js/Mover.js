@@ -1,7 +1,7 @@
 
 // MOVER CLASS
 
-function Mover(m, vel, loc, id, suffix) {
+function Mover(m, vel, loc, id, suffix, mesh) {
     this.location = loc,
         this.velocity = vel,
         this.acceleration = new THREE.Vector3(0.0, 0.0, 0.0),
@@ -32,8 +32,13 @@ function Mover(m, vel, loc, id, suffix) {
 
     this.selectionLight = new THREE.PointLight(this.color, .1);
     this.selectionLight.position.copy(this.location);
-    this.mesh = new THREE.Mesh(this.geometry, this.basicMaterial);
-    this.mesh.castShadow = false;
+	
+	// MESH 
+	if(!mesh)
+		this.mesh = new THREE.Mesh(this.geometry, this.basicMaterial);
+	else this.mesh = mesh; 
+    
+	this.mesh.castShadow = false;
     this.mesh.receiveShadow = true;
 
     // ME for SELECTED
@@ -104,6 +109,13 @@ function Mover(m, vel, loc, id, suffix) {
         if (this.vertices.length > 10000) this.vertices.splice(0, 1);
 
         this.vertices.push(this.location.clone());
+        //this.lineGeometry.verticesNeedUpdate = true;
+
+    };
+	
+    this.updateMeshPositionInTrail = function () {
+
+        this.vertices.push(this.mesh.position.clone());
         //this.lineGeometry.verticesNeedUpdate = true;
 
     };
@@ -326,15 +338,18 @@ function Mover(m, vel, loc, id, suffix) {
 // TRAIL LINES ---------------
 
 function updateTrails(m) {
+	
     if (isMoverSelected) {
         if (m.selected) {
+			//console.log(m); 
+
             if (options.TRAILS_DISPLAY) {
                 m.showTrails();
             } else {
                 //m.showTrails();
                 m.hideTrails();
             }
-            this.selectionLight.intensity = 1; // ME
+            this.selectionLight.intensity = 1; // ME ??
             //this.directionalLight.intensity = 0.5;
             selectionLight.position = m.location;
 

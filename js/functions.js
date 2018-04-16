@@ -83,20 +83,28 @@ function RebornAllDied() {
 
 // SELECTION :
 
+var isMoverSelected = false;
+
 function SelectMeshMover(clickedObj, str) {
     console.log(str + " > selected idM:" + clickedObj.id); //, clickedObj); // + '  mass=' + clickedObj.mover.mass.toFixed());
     selection = mover = clickedObj.mover;
     //$select_infos.html( clickedObj.id );  // largest_pos.toFixed(2)
+	
+	//console.log(clickedObj);
+	
+	if(mover){
 
-    if (!mover.selected)
-        ClearSelection();
+		if (!mover.selected)
+			ClearSelection();
 
-    mover.selected = !mover.selected;
+		mover.selected = !mover.selected;
 
-    isMoverSelected = mover.selected;
+		isMoverSelected = mover.selected;
 
-    document.getElementById("mySelect").disabled = false;   
-    document.getElementById("cbFPS").disabled = false; 
+		document.getElementById("mySelect").disabled = false;   
+		document.getElementById("cbFPS").disabled = false;
+	
+	}
 }
 
 function ClearSelection() {
@@ -275,19 +283,26 @@ function AddRandomMover(id) {
     newMover.addToMovers();
 }
 
-function AddBigMoverToCenter(mass) {
+function AddBigMoverToCenter(mass, mesh, name) {
+	
 	if(!mass)
 		mass = options.BIG_STAR_MASS;
 
     var vel = new THREE.Vector3(0, 0, 0);
     var loc = new THREE.Vector3(0, 0, 0);
+	
+	if(!name)
+		name = 'Big'
 
     //name = movers.length + 'Big'
-    big = new Mover(mass, vel, loc, movers.length, 'Big');
-    big.mesh.material.transparent = true;
-    big.mesh.material.opacity = 0.9
+    big = new Mover(mass, vel, loc, movers.length, name, mesh);
+    //big.mesh.material.transparent = true;
+    //big.mesh.material.opacity = 0.9
+	big.selected = false; 
 
     big.addToMovers();
+	
+	return big; 
 }
 
 
@@ -450,3 +465,126 @@ window.onresize = function () {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 };
+
+
+// KEYBOARD  --- 
+
+console.time();
+
+var holdLeft = false,
+    holdRight = false,
+    holdUp = false,
+    holdDown = false;
+
+window.onkeyup = function (e) {
+    if (e.which == 37) {
+        holdLeft = false;
+    } else if (e.which == 38) {
+        holdUp = false;
+    } else if (e.which == 39) {
+        holdRight = false;
+    } else if (e.which == 40) {
+        holdDown = false;
+    }
+}
+    
+window.onkeydown = function (e) {
+    var charTMP = String.fromCharCode(e.which);
+    console.count("key:" + charTMP + ':' + e.which);
+
+    var vector = new THREE.Vector3(); // for Three.js > 80 ?? 
+    direction = camera.getWorldDirection(vector).clone();
+
+    // ECHAP
+    if (e.which == 27) {
+        //isCameraLookAt = !isCameraLookAt
+
+        // AddArrowHelper(direction);
+
+        var strControlName = "";
+        if (controls instanceof (THREE.OrbitControls))
+            strControlName = "OrbitControls"
+        else if (controls instanceof (THREE.FirstPersonControls)) {
+            strControlName = "FirstPersonControls"
+/*
+            if(!controls.lon){
+                angleX = direction.angleTo (new THREE.Vector3(1,0,0))
+                console.log("angleX:" + angleX); // direction.normalize())
+                controls.lon = - angleX * 180 / Math.PI;
+            }
+
+            if(!controls.lat){
+                angleY = direction.angleTo(new THREE.Vector3(0, 1, 0))
+                console.log("angleY:" + NumToFormat(angleY,2)); // direction.normalize())
+                controls.lat = - angleY * 180 / Math.PI;
+            }
+*/
+
+            controls.target.copy(direction);
+
+            //LogFPS();
+        }
+
+        controls.enabled = !controls.enabled
+
+        console.log(strControlName + " state: " + controls.enabled)
+    }
+
+    else if (e.which == 37) {
+        holdLeft = true;
+    } else if (e.which == 38) {
+        holdUp = true;
+    } else if (e.which == 39) {
+        holdRight = true;
+    } else if (e.which == 40) {
+        holdDown = true;
+        //    } else if (e.which === 82) {
+        //        reset();
+    } else if (e.which === 84) { // [T]rails
+        $activate_trails.prop("checked", !$activate_trails.prop("checked")).change();
+
+    } else if (e.which === 32) { // SPACE
+        pause = !pause;
+        e.preventDefault();
+        if (pause) console.timeEnd()
+        else console.time();
+        return false;
+
+    } else if (e.which === 49) { // 1 OrbitControls
+        controls = controlOrbit
+        console.log("O")
+
+    } else if (e.which === 50) { // 2  FPS
+        //controls = control2FPS
+        //console.log("FPS")
+
+        SwitchControl(2);
+        AddArrowHelper(direction)
+        //LogFPS();
+
+        console.log(direction)
+
+        angleX = direction.angleTo(new THREE.Vector3(1, 0, 0))
+        console.log("angleX:" + NumToFormat(angleX,2)); // direction.normalize())
+        controls.lon = - angleX * 180 / Math.PI;
+
+        angleY = direction.angleTo(new THREE.Vector3(0, 1, 0))
+        console.log("angleY:" + NumToFormat(angleY,2)); // direction.normalize())
+        //controls.lat = - angleY * 180 / Math.PI;
+
+        // https://stackoverflow.com/questions/12500874/three-js-first-person-controls
+        // this.phi = (90 - this.lat) * Math.PI / 180;
+        // this.theta = this.lon * Math.PI / 180;
+
+        //camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        //controls.enabled = false;
+
+        controls.update(clock.getDelta());
+        renderer.render(scene, camera);
+
+    } else if (e.which === 51) { // 3 LOG ?
+        AddArrowHelper(direction)
+        //LogFPS();
+    }
+}
