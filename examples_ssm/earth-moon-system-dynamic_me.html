@@ -1,11 +1,19 @@
 <html>
-  <head>
+
+<head>
     <title>Spheres</title>
     <style>
-      body { margin: 0; background-color: black;}
-      canvas { width: 100%; height: 100% }
+        body {
+            margin: 0;
+            background-color: black;
+        }
 
-        
+        canvas {
+            width: 100%;
+            height: 100%
+        }
+
+
         input,
         textarea,
         select {
@@ -32,12 +40,13 @@
         }
 
         label2 {
-           // bottom: 0px;
+            // bottom: 0px;
             font-size: x-small;
-			margin: 0px;
+            margin: 0px;
         }
 
-        #IHMCam, #IHMSelection{
+        #IHMCam,
+        #IHMSelection {
             bottom: 0px;
             font-size: x-small;
             margin: 0px;
@@ -47,27 +56,28 @@
         .dg.ac {
             z-index: 100!important
         }
-		
-		labelcb {
-			 border:1px solid #ccc;
-			 padding:10px;
-			 margin:0 0 10px;
-			 display:block; 
-		}
+
+        labelcb {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 0 0 10px;
+            display: block;
+        }
 
         #GeneralInfos {
             color: #ffffff;
             background-color: #990000;
-			font-size: small;
+            font-size: small;
             position: absolute;
-			z-index: 100;
+            z-index: 100;
             bottom: 0px;
             padding: 5px;
         }
     </style>
-	  </head>
-  <body>
-  <div id="controls">
+</head>
+
+<body>
+    <div id="controls">
         <label>
             target framerate:
             <input id="framerate" type="number" value="30" max="60" min="1" />
@@ -103,16 +113,16 @@
             <span id="largest_pos" onclick="selectBiggest();"></span>
         </label2>
 
-		<fieldset id="IHMCam">
-			<label>
-				<input id="cbCam" type="checkbox"> CAMERA:
-			</label>
-			<label2>
-				<span id="camera_info"></span>
-			</label2>
-		</fieldset>
-		</div>
-  
+        <fieldset id="IHMCam">
+            <label>
+                <input id="cbCam" type="checkbox"> CAMERA:
+            </label>
+            <label2>
+                <span id="camera_info"></span>
+            </label2>
+        </fieldset>
+    </div>
+
     <script src="../js/three.min.js"></script>
     <script src="../js/orbit_controls.js"></script>
     <script src="../js/functions.js"></script>
@@ -120,130 +130,135 @@
 
 
     <script>
-      //Camera, scene, and renderer
-      var scene = new THREE.Scene();
-      var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 2000);
-      scene.add(camera);
-      camera.position.set(0,35,70);
 
-      var renderer = new THREE.WebGLRenderer({antialias: true});
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(renderer.domElement);
+        //allow cross origin loading
+        THREE.ImageUtils.crossOrigin = '';
 
-      //Orbit Controls
-      var orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+        //Camera, scene, and renderer
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+        scene.add(camera);
+        camera.position.set(0, 35, 70);
 
-      //Lights
-      var ambientLight = new THREE.AmbientLight(0xf1f1f1);
-      scene.add(ambientLight);
+        var renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-      var spotLight = new THREE.DirectionalLight(0xffffff);
-      spotLight.position.set(50,50,50);
-      scene.add(spotLight);
+        //Orbit Controls
+        var orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
 
-      //Objects (We build a mesh using a geometry and a material)
-	  
-	  // ME 
-	  var baseurl = window.location.origin+window.location.pathname;
+        //Lights
+        var ambientLight = new THREE.AmbientLight(0xf1f1f1);
+        scene.add(ambientLight);
 
+        var spotLight = new THREE.DirectionalLight(0xffffff);
+        spotLight.position.set(50, 50, 50);
+        scene.add(spotLight);
 
-      //Earth
-      var earthGeometry = new THREE.SphereGeometry(6.3, 50, 50);
-      var earthMaterial = new THREE.MeshPhongMaterial({
-        map: new THREE.ImageUtils.loadTexture("../images/earth_3.jpg"),
-        color: 0xf2f2f2,
-        specular: 0xbbbbbb,
-        shininess: 2
-      });
-      var earth = new THREE.Mesh(earthGeometry, earthMaterial);
-      scene.add(earth);
+        //Objects (We build a mesh using a geometry and a material)
 
-      //Clouds
-      var cloudGeometry = new THREE.SphereGeometry(6.5,  50, 50);
-      var cloudMaterial = new THREE.MeshPhongMaterial({
-        map: new THREE.ImageUtils.loadTexture("../images/clouds_2.jpg"),
-        transparent: true,
-        opacity: 0.1
-      });
-      var clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
-      scene.add(clouds);
-
-      //Stars
-      var starGeometry = new THREE.SphereGeometry(1000, 50, 50);
-      var starMaterial = new THREE.MeshPhongMaterial({
-        map: new THREE.ImageUtils.loadTexture("../images/galaxy_starfield.png"),
-        side: THREE.DoubleSide,
-        shininess: 0
-      });
-      var starField = new THREE.Mesh(starGeometry, starMaterial);
-      scene.add(starField);
-
-      //Moon 
-      var moonGeometry = new THREE.SphereGeometry(1.7, 50,50);
-      var moonMaterial = new THREE.MeshPhongMaterial({
-        map: THREE.ImageUtils.loadTexture("../images/moon_texture.jpg")
-      });
-      var moon = new THREE.Mesh(moonGeometry, moonMaterial);
-      moon.position.set(380,0,0);
-      scene.add(moon);
-
-      //Camera vector
-      var earthVec = new THREE.Vector3(0,0,0);
-
-      var r = 380;
-      var theta = 0;
-      var dTheta = 2 * Math.PI / 1000;
-
-      var dx = .01;
-      var dy = -.01;
-      var dz = -.05;
-
-var $camera_info = $("#camera_info");
-
-var axesHelper = new THREE.AxisHelper( 50 );
-scene.add( axesHelper );
+        // ME 
+        var baseurl = window.location.origin + window.location.pathname;
 
 
-      //Render loop
-      var render = function() {
-        earth.rotation.y += .0009;
-        clouds.rotation.y += .00005;
+        //Earth
+        var earthGeometry = new THREE.SphereGeometry(6.3, 50, 50);
+        var earthMaterial = new THREE.MeshPhongMaterial({
+            map: new THREE.ImageUtils.loadTexture("../images/earth_3.jpg"),
+            color: 0xf2f2f2,
+            specular: 0xbbbbbb,
+            shininess: 2
+        });
+        var earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        scene.add(earth);
 
-        //Moon orbit        
-        theta += dTheta;
-        moon.position.x = r * Math.cos(theta);
-        moon.position.z = r * Math.sin(theta);
+        //Clouds
+        var cloudGeometry = new THREE.SphereGeometry(6.5, 50, 50);
+        var cloudMaterial = new THREE.MeshPhongMaterial({
+            map: new THREE.ImageUtils.loadTexture("../images/clouds_2.jpg"),
+            transparent: true,
+            opacity: 0.1
+        });
+        var clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
+        scene.add(clouds);
 
-        //Flyby
-        if (camera.position.z < 0) {
-          dx *= -1;
-        }
-        camera.position.x += dx;
-        camera.position.y += dy;
-        camera.position.z += dz;
+        //Stars
+        var starGeometry = new THREE.SphereGeometry(1000, 50, 50);
+        var starMaterial = new THREE.MeshPhongMaterial({
+            map: new THREE.ImageUtils.loadTexture("../images/galaxy_starfield.png"),
+            side: THREE.DoubleSide,
+            shininess: 0
+        });
+        var starField = new THREE.Mesh(starGeometry, starMaterial);
+        scene.add(starField);
 
-        camera.lookAt(earthVec);
+        //Moon 
+        var moonGeometry = new THREE.SphereGeometry(1.7, 50, 50);
+        var moonMaterial = new THREE.MeshPhongMaterial({
+            map: THREE.ImageUtils.loadTexture("../images/moon_texture.jpg")
+        });
+        var moon = new THREE.Mesh(moonGeometry, moonMaterial);
+        moon.position.set(380, 0, 0);
+        scene.add(moon);
 
-        //Flyby reset
-        if (camera.position.z < -100) {
-          camera.position.set(0,35,70);
-        }
+        //Camera vector
+        var earthVec = new THREE.Vector3(0, 0, 0);
 
-        camera.lookAt(earthVec);
-		
-		
-        // camera 
-        if(document.getElementById('cbCam').checked)
-            $camera_info.html( format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') 
-            + 'Distance to Center:' + NumToFormat(camera.position.distanceTo(new THREE.Vector3(0,0,0))) ) ;
-        else $camera_info.html('');	
-		
-        renderer.render(scene, camera);
-        requestAnimationFrame(render);
-      };
-      render();
+        var r = 380;
+        var theta = 0;
+        var dTheta = 2 * Math.PI / 1000;
+
+        var dx = .01;
+        var dy = -.01;
+        var dz = -.05;
+
+        var $camera_info = $("#camera_info");
+
+        var axesHelper = new THREE.AxisHelper(50);
+        scene.add(axesHelper);
+
+
+        //Render loop
+        var render = function () {
+            earth.rotation.y += .0009;
+            clouds.rotation.y += .00005;
+
+            //Moon orbit        
+            theta += dTheta;
+            moon.position.x = r * Math.cos(theta);
+            moon.position.z = r * Math.sin(theta);
+
+            //Flyby
+            if (camera.position.z < 0) {
+                dx *= -1;
+            }
+            camera.position.x += dx;
+            camera.position.y += dy;
+            camera.position.z += dz;
+
+            camera.lookAt(earthVec);
+
+            //Flyby reset
+            if (camera.position.z < -100) {
+                camera.position.set(0, 35, 70);
+            }
+
+            camera.lookAt(earthVec);
+
+
+            // camera 
+            if (document.getElementById('cbCam').checked)
+                $camera_info.html(format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r')
+                    + 'Distance to Center:' + NumToFormat(camera.position.distanceTo(new THREE.Vector3(0, 0, 0))));
+            else $camera_info.html('');
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(render);
+        };
+        render();
 
 
     </script>
-  </body>
+</body>
+
 </html>
