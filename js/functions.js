@@ -1,3 +1,5 @@
+// MIN / MAX / Random 
+
 function constrain(value, min, max) {
     if (value < min) return min;
     if (value > max) return max;
@@ -27,7 +29,7 @@ function randomLightColor() {
 }
 
 
-// FORMAT NUMBER / VECTOR
+// FORMAT NUMBER / VECTOR for LOG 
 
 function format2Decimales(x) {
     return '  ' + Number(x).toFixed(2);
@@ -52,7 +54,7 @@ function NumToFormat(float, nbDigit, prefix) {
     }
 }
 
-// LIST
+// LIST ALL 
 
 function ListAlive() {
     for (var i = movers.length - 1; i >= 0; i--) {
@@ -140,6 +142,28 @@ function changeMass() {
     }
 }
 
+// For Free FPS CAM 
+
+// Activate FPS Control for Selection 
+function onCbFPSCam() {
+    if (document.getElementById('cbFPS').checked) {
+        //if(!(controls instanceof (THREE.FirstPersonControls))) {
+        SwitchControl(2);
+        controls.enabled = false;
+        document.getElementById('cbZoom').disabled = false;
+        //} else console.log('orbit');
+    } else document.getElementById('cbZoom').disabled = true;
+
+   // camera.lookAt(mover.mesh.position);
+/*
+    direction = camera.getWorldDirection().clone();
+
+    angleX = direction.angleTo(new THREE.Vector3(1, 0, 0))
+    console.log("angleX:" + angleX); // direction.normalize())
+    controls.lon = - angleX * 180 / Math.PI;
+*/
+}
+
 // ADD HELPER
 
 function AddArrowHelper(direction) {
@@ -168,6 +192,8 @@ function AddArrowHelper(direction) {
     var arrowHelper2 = new THREE.ArrowHelper(direction.multiplyScalar(-1), camera.position, length, new THREE.Color('pink'));
     scene.add(arrowHelper2);
 }
+
+// LOG CAM 
 
 function LogFPS() {
     if (!(controls instanceof (THREE.FirstPersonControls))) {
