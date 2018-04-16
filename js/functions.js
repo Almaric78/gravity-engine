@@ -6,7 +6,6 @@ function constrain(value, min, max) {
     return value;
 }
 
-
 function random(min, max) {
     return Math.random() * (max - min) + min;
 }
@@ -80,7 +79,34 @@ function RebornAllDied() {
     }
 }
 
-// FOR SELECTION 
+// FOR SELECTION
+
+// SELECTION :
+
+function SelectMeshMover(clickedObj, str) {
+    console.log(str + " > selected idM:" + clickedObj.id); //, clickedObj); // + '  mass=' + clickedObj.mover.mass.toFixed());
+    selection = mover = clickedObj.mover;
+    //$select_infos.html( clickedObj.id );  // largest_pos.toFixed(2)
+
+    if (!mover.selected)
+        ClearSelection();
+
+    mover.selected = !mover.selected;
+
+    isMoverSelected = mover.selected;
+
+    document.getElementById("mySelect").disabled = false;   
+    document.getElementById("cbFPS").disabled = false; 
+}
+
+function ClearSelection() {
+    for (var i = movers.length - 1; i >= 0; i--) {
+        var m = movers[i];
+        if (m.selected) {
+            m.selected = false;
+        }
+    }
+}
 
 function setSelection(thelist, theinput) {
     // theinput = document.getElementById(theinput);  
@@ -222,3 +248,205 @@ function LogFPCam() {
     } else 
         return ""; 
 }
+
+
+// GENERATION 
+
+function AddRandomMover(id) {
+    var mass = random(options.MIN_MASS, options.MAX_MASS);
+
+    var max_distance = parseFloat(1000 / options.DENSITY);
+    var max_speed = parseFloat(options.START_SPEED);
+
+    var vel = new THREE.Vector3(
+        random(-max_speed, max_speed),
+        random(-max_speed, max_speed),
+        random(-max_speed, max_speed));
+
+    var loc = new THREE.Vector3(
+        random(-max_distance, max_distance),
+        random(-max_distance, max_distance),
+        random(-max_distance, max_distance));
+
+    //movers.push(new Mover(mass, vel, loc, id));
+    //addClickButtonEvent(id);
+
+    var newMover = new Mover(mass, vel, loc, id);
+    newMover.addToMovers();
+}
+
+function AddBigMoverToCenter(mass) {
+	if(!mass)
+		mass = options.BIG_STAR_MASS;
+
+    var vel = new THREE.Vector3(0, 0, 0);
+    var loc = new THREE.Vector3(0, 0, 0);
+
+    //name = movers.length + 'Big'
+    big = new Mover(mass, vel, loc, movers.length, 'Big');
+    big.mesh.material.transparent = true;
+    big.mesh.material.opacity = 0.9
+
+    big.addToMovers();
+}
+
+
+
+// MOUSE EVENT
+
+var onMouseDown = false;
+
+window.onmousemove = function (e) {
+
+    if (onMouseDown) onMouseDown.moved = true;
+
+    var vector = new THREE.Vector3(
+        +(e.clientX / window.innerWidth) * 2 - 1,
+        -(e.clientY / window.innerHeight) * 2 + 1, 0.5);
+    //projector.unprojectVector( vector, camera );
+
+    vector.unproject(camera);
+
+    var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+    var intersects = raycaster.intersectObjects(scene.children);
+
+    if (intersects.length > 0) {
+        $("body").css("cursor", "pointer");
+        /*	
+            if (window.event.ctrlKey) {
+                    var clickedObj = (intersects[0].object);
+                    SelectMeshMover(clickedObj, 'ctlr');
+                }
+        */
+    } else {
+        $("body").css("cursor", "default");
+    }
+
+}
+
+
+// MOUSE EVENT DOWN / UP
+
+initMouseEvent();
+
+function initMouseEvent() {
+
+    //window.onmousedown = MyMouseDown
+    window.addEventListener('mousedown', MyMouseDown, true);
+
+    function MyMouseDown(e) {
+        if (e.target.tagName === "CANVAS") {
+            onMouseDown = {
+                moved: false
+            };
+        }
+
+        switch (e.button) {
+            case 2: // Secondary button ("right")
+
+                //console.log("click2");
+
+                var vector = new THREE.Vector3(
+                    (e.clientX / window.innerWidth) * 2 - 1,
+                    -(e.clientY / window.innerHeight) * 2 + 1, 0.5);
+
+                vector.unproject(camera);
+
+                var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+                var intersects = raycaster.intersectObjects(scene.children);
+
+                if (intersects.length > 0) { // SELECTION
+
+                    var clickedObj = (intersects[0].object);
+
+                    // console.log(intersects[0]);
+
+                    SelectMeshMover(clickedObj, 'c2')
+
+                }
+                else { // ADD NEW BALL MOVER
+
+                    var mass = random(options.MIN_MASS, options.MAX_MASS);
+
+                    var vel = raycaster.ray.direction.clone().multiplyScalar(parseFloat(options.START_SPEED));
+                    var loc = raycaster.ray.origin.clone();
+
+                    var newObject = new Mover(mass, vel, loc, movers.length, 'm');
+                    console.log("c2 > add " + newObject.id + " mass:" + newObject.mass.toFixed(0));
+                    newObject.addToMovers();
+
+
+                    lastOne = newObject;
+
+                } // add ball 
+                break;
+        } // switch 
+    }
+
+    window.onmouseup = function (e) {
+        if (e.target.tagName === "CANVAS") {
+            if (!onMouseDown.moved) {
+                var vector = new THREE.Vector3(
+                    +(e.clientX / window.innerWidth) * 2 - 1,
+                    -(e.clientY / window.innerHeight) * 2 + 1, 0.5);
+
+                vector.unproject(camera);
+
+                var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+                var intersects = raycaster.intersectObjects(scene.children);
+
+                if (intersects.length > 0) {
+
+                    var clickedObj = (intersects[0].object);
+
+                    SelectMeshMover(clickedObj, 'c1')
+
+                    /*
+    
+                    isMoverSelected = false;
+    
+                    for (var i = 0; i < movers.length; i = i + 1) {
+                        let mover = movers[i];
+                        if (mover.mesh == clickedObj) {
+                            mover.selected = !mover.selected;
+    
+                            isMoverSelected = mover.selected;
+                        	
+                            var selectionMsg = i + ' id:' + mover.id + '  mass:' + NumToFormat(mover.mass);
+    
+                            //console.log("click1");
+                            console.log("c1 > SELECTED " + selectionMsg);
+                            //console.log(movers[i]);
+                        	
+                            $select_infos.html( selectionMsg );
+                        	
+                            selection = mover; 
+                        	
+                        /*
+                            var distanceToObject = camera.distanceTo( movers[i].position );
+                            camera.position.add( distanceToObject.multiplyScalar(0.5) );
+                            camera.lookAt(movers[i].position);
+                        *
+                        } else {
+                            movers[i].selected = false;
+                        }
+                    }*/
+
+                } else {
+                    isMoverSelected = false;
+                }
+            }
+        }
+        onMouseDown = false;
+    }
+}
+
+
+window.onresize = function () {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+};
