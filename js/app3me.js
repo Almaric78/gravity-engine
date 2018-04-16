@@ -97,9 +97,26 @@ f.add(options, 'MoveSpeed', 1, 1000).onFinishChange(function (value) {
     console.log(moveSpeed);
 });
 
-f.add(options, 'AddBigStar').name('Add Big Star !');
-f.add(options, 'RESET').name('RESET ALL !');
+f.add(options, 'AddBigStar').name('Add Big Star');
 f.add(options, 'SAVECONFIG').name('SaveTheConf');
+f.add(options, 'RESET').name('RESET ALL');
+
+	// GitHub ICON 
+    var github = gui.add({ fun : function () { window.open('https://github.com/Almaric78/gravity-engine'); } }, 'fun').name('Github');
+    github.__li.className = 'cr function bigFont';
+    github.__li.style.borderLeft = '3px solid #8C8C8C';
+    var githubIcon = document.createElement('span');
+    github.domElement.parentElement.appendChild(githubIcon);
+    githubIcon.className = 'icon github';
+	
+/*
+    var twitter = gui.add({ fun : function () { window.open('https://twitter.com/PavelDoGreat'); } }, 'fun').name('Twitter');
+    twitter.__li.className = 'cr function bigFont';
+    twitter.__li.style.borderLeft = '3px solid #8C8C8C';
+    var twitterIcon = document.createElement('span');
+    twitter.domElement.parentElement.appendChild(twitterIcon);
+    twitterIcon.className = 'icon twitter';
+*/
 
 //console.log(gui);
 
@@ -122,8 +139,6 @@ f.add(options, 'SAVECONFIG').name('SaveTheConf');
 //    return HTTP_GET_VARS[v];
 //}
 //
-
-
 
 
 //var G = 100;
