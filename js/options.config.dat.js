@@ -119,6 +119,7 @@ f.add(options, 'RESET').name('RESET ALL');
 */
 
 //console.log(gui);
+gui.close(); 
 
 //var HTTP_GET_VARS=new Array();
 //var strGET=document.location.search.substr(1,document.location.search.length);
@@ -178,3 +179,40 @@ var translate = new THREE.Vector3();
 var movers = [];
 //var container =  false; // ME
 //var textlabels = [];
+
+
+
+// JSQUERY GUI
+
+var $movers_alive_count = $("#movers_alive_count");
+var $total_mass = $("#total_mass");
+var $maximum_mass = $("#maximum_mass");
+var $largest_pos = $("#largest_pos");
+var $select_infos = $("#select_infos");
+var $camera_info = $("#camera_info");
+var GeneralInfos = document.getElementById('GeneralInfos');
+var IHMButtons = document.getElementById('IHMButtons');
+var tracker;
+
+
+// IHM BUTTON ALL 
+// --------------
+var htmlButtonALL = document.createElement("BUTTON")
+//htmlButtonALL.style.backgroundColor = '#' + this.color.getHexString();
+
+htmlButtonALL.label = t = document.createTextNode('ALL');
+htmlButtonALL.label.data = 'ALL'; 
+htmlButtonALL.appendChild(t);
+IHMButtons.appendChild(htmlButtonALL);
+
+// $(document).ready(function () {
+//     $('#ALL').click(function () {
+//         alert('ALL'); 
+//     });
+// });
+
+htmlButtonALL.addEventListener ("click", function() {
+    //alert("did something");
+    ClearSelection();
+    isMoverSelected = false; 
+  });

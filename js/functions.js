@@ -363,13 +363,17 @@ function AddRandomMover(id) {
     newMover.addToMovers();
 }
 
-function AddBigMoverToCenter(mass, mesh, name) {
+function AddBigMoverToCenter(mass, mesh, name, vel) {
 	
 	if(!mass)
 		mass = options.BIG_STAR_MASS;
 
-    var vel = new THREE.Vector3(0, 0, 0);
-    var loc = new THREE.Vector3(0, 0, 0);
+	if(!vel)
+		vel = new THREE.Vector3(0, 0, 0);
+    
+	if(!mesh)
+		loc = new THREE.Vector3(0, 0, 0);
+	else loc = mesh.position;
 	
 	if(!name)
 		name = 'Big'

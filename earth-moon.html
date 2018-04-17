@@ -178,20 +178,20 @@
         //allow cross origin loading
         THREE.ImageUtils.crossOrigin = '';
 
-        //Camera, scene, and renderer
+        // Camera, scene, and renderer
         var scene = new THREE.Scene();
         var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
         scene.add(camera);
-        camera.position.set(0, 35, 70);
+        camera.position.set(0, 350, 700);
 
         var renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        //Orbit Controls
+        // Orbit Controls
         var orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
 
-        //Lights
+        // Lights
         var ambientLight = new THREE.AmbientLight(0xf1f1f1);
         ambientLight.name = "ambientLight";
         scene.add(ambientLight);
@@ -207,7 +207,7 @@
         var baseurl = window.location.origin + window.location.pathname;
 
 
-        //Earth
+        // Earth
         var earthGeometry = new THREE.SphereGeometry(6.3, 50, 50);
         var earthMaterial = new THREE.MeshPhongMaterial({
             map: new THREE.ImageUtils.loadTexture("./images/earth_3.jpg"),
@@ -219,7 +219,7 @@
         earth.name = "Earth";
         scene.add(earth);
 
-        //Clouds
+        // Clouds
         var cloudGeometry = new THREE.SphereGeometry(6.5, 50, 50);
         var cloudMaterial = new THREE.MeshPhongMaterial({
             map: new THREE.ImageUtils.loadTexture("./images/clouds_2.jpg"),
@@ -230,7 +230,7 @@
         clouds.name = "EarthClouds";
         scene.add(clouds);
 
-        //Stars
+        // Stars
         var starGeometry = new THREE.SphereGeometry(3000, 50, 50);
         var starMaterial = new THREE.MeshPhongMaterial({
             map: new THREE.ImageUtils.loadTexture("./images/galaxy_starfield.png"),
@@ -241,17 +241,22 @@
         starField.name = "starField";
         scene.add(starField);
 
-        //Moon 
+        // Moon 
         var moonGeometry = new THREE.SphereGeometry(1.7, 50, 50);
         var moonMaterial = new THREE.MeshPhongMaterial({
             map: THREE.ImageUtils.loadTexture("./images/moon_texture.jpg")
         });
-        var moon = new THREE.Mesh(moonGeometry, moonMaterial);
-        moon.name = "Moon";
-        moon.position.set(380, 0, 0);
-        scene.add(moon);
+        var moonS = new THREE.Mesh(moonGeometry, moonMaterial);
+        moonS.name = "MoonS";
+        moonS.position.set(380, 0, 0);
+        scene.add(moonS);
 
-        //Camera vector
+        var moonT = new THREE.Mesh(moonGeometry, moonMaterial);
+        moonT.name = "MoonT";
+        moonT.position.set(380, 0, 0);
+        scene.add(moonT);		
+		
+        // Camera vector
         var earthVec = new THREE.Vector3(0, 0, 0);
 
         var r = 380;
@@ -290,7 +295,8 @@
         //AddBigMoverToCenter();
 
         moverEarth = AddBigMoverToCenter(5972, earth, 'Earth');
-        moverMoon  = AddBigMoverToCenter(736,  moon,  'Moon');
+        moverMoonS  = AddBigMoverToCenter(736, moonS, 'MoonSimul', new THREE.Vector3(0, 0, 3680/3600 *10 ));
+		moverMoonT  = AddBigMoverToCenter(736, moonT, 'MoonTheoric');
 
 
         // ------------
@@ -305,10 +311,76 @@
 				camera.position.add(vector.multiplyScalar(moveSpeed));
 			} else if (holdDown) {
 				camera.position.sub(direction.multiplyScalar(moveSpeed));
-			}		
+			}
+			
+			var movers_alive_count = 0;
+			total_mass = 0;
+			var maximum_mass = 0.00;
+			
+			if (biggest)
+				largest_pos = 'dist: ' + NumToFormat(biggest.location.distanceTo(camera.position)) + ' id:' + biggest.id;
+			else
+				largest_pos = 0
+	
+			if (movers && movers.length) {
+				if (!pause) {
 
+					// FIRST LOOP
+					for (var i = movers.length - 1; i >= 0; i--) {
+						var m = movers[i];
+
+						if (m.alive) {
+							movers_alive_count++;
+							total_mass += m.mass;
+							if (m.mass > maximum_mass) {
+								maximum_mass = m.mass;
+
+								biggest = m;
+							}
+
+							// SECOND LOOP 
+							for (var j = movers.length - 1; j >= 0; j--) {
+								var a = movers[j];
+								if (movers[i].alive && movers[j].alive && i != j) {
+									var distance = m.location.distanceTo(a.location);
+
+									var radiusM = Math.pow((m.mass / MASS_FACTOR / MASS_FACTOR / 4 * Math.PI), 1 / 3) / 3;
+									var radiusA = Math.pow((a.mass / MASS_FACTOR / MASS_FACTOR / 4 * Math.PI), 1 / 3) / 3;
+
+								/*
+									if (distance < radiusM + radiusA) {
+										// merge objects
+										if (a.mass > m.mass)
+											a.eat(m);
+										else
+											m.eat(a);
+									} else {
+										a.attract(m);
+									}
+								*/
+								//a.attract(m);
+								}
+							}
+						}
+					}
+				}
+				
+			/*
+				// DISPLAY
+				for (var i = movers.length - 1; i >= 0; i--) {
+					var m = movers[i];
+					if (m.alive && m.distanceToCenter() < options.MAX_DISTANCE) {
+						if (!pause) {
+							m.update();
+						}
+					}
+					m.display(); // ME déplacé ici 
+					updateTrails(m);
+				}		
+			*/
+		
             // UPDATE MOVER 
-            var m = moverMoon;
+            var m = moverMoonS;
             if (!pause) {
 			
 				earth.rotation.y += .0009;
@@ -316,14 +388,21 @@
 
                 //Moon orbit        
                 theta += dTheta;
-                moon.position.x = r * Math.cos(theta);
-                moon.position.z = r * Math.sin(theta);
+                moonT.position.x = r * Math.cos(theta);
+                moonT.position.z = r * Math.sin(theta);
 
-                m.updateMeshPositionInTrail();
+				moverEarth.attract(moverMoonS);
+				moverMoonS.attract(moverEarth);
+				
+				moverMoonS.update();
+                moverMoonT.updateMeshPositionInTrail();
             }
 
-            m.display(); // ME déplacé ici 
-            updateTrails(m);
+            moverMoonS.display(); 
+            updateTrails(moverMoonS);
+			
+			moverMoonT.display(); 
+			updateTrails(moverMoonT);
 
 			
 			// Follow by Free FPC CAM if Enabled 
@@ -352,15 +431,28 @@
 				camera.position.y += dy;
 				camera.position.z += dz;
 
-				camera.lookAt(earthVec);
+				//camera.lookAt(earthVec);
 
 				//Flyby reset
 				if (camera.position.z < -100) {
-					camera.position.set(0, 35, 70);
+					//camera.position.set(0, 35, 70);
 				}
 
-				camera.lookAt(earthVec);					
+				//camera.lookAt(earthVec);					
 			}
+		}
+		
+			// INFOS PANEL
+
+			$movers_alive_count.html(movers_alive_count + ' / ' + movers.length);
+			var rapportMasse = maximum_mass / total_mass * 100;
+
+			$maximum_mass.html(NumToFormat(maximum_mass));
+			$maximum_mass.css('color', "#" + biggest.mesh.material.color.getHexString());
+			$total_mass.html(NumToFormat(total_mass) + ' = ' + NumToFormat(rapportMasse) + '%' );
+
+			$largest_pos.html(largest_pos);
+			$largest_pos.css('color', "#" + biggest.mesh.material.color.getHexString());
 			
 
             // camera 
@@ -372,17 +464,17 @@
 
             // selection info/debug
             if (selection) {
-                var selectionMsg = '<br/> id:' + selection.id;
-
+                var selectionMsg = '<br/> id/name:' + selection.name;
+			/*
                 if (selection.alive)
                     selectionMsg += ' Alive';
                 else
                     selectionMsg += ' Killed by ' + selection.killedBy;
-
+			*/
                 selectionMsg += '<br/>' + format2Vector(selection.mesh.position);
                 selectionMsg += 'Mass: ' + NumToFormat(selection.mass);
                 selectionMsg += '<br/>Velocity: ' + NumToFormat(selection.velocity.length(), 2);
-                selectionMsg += '<br/>DistanceToCamera: ' + NumToFormat(selection.location.distanceTo(camera.position));
+                selectionMsg += '<br/>DistanceToCamera: ' + NumToFormat(selection.distanceTo(camera.position));
                 selectionMsg += '<br/>DistanceToCenter: ' + NumToFormat(selection.distanceToCenter());
 
                 $select_infos.html(selectionMsg);

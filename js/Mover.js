@@ -294,6 +294,10 @@ function Mover(m, vel, loc, id, suffix, mesh) {
     this.distanceToCenter = function () {
         return this.mesh.position.distanceTo(new THREE.Vector3(0, 0, 0));
     }
+	
+	this.distanceTo = function (vector3) {
+        return this.mesh.position.distanceTo(vector3);
+    }
 
     this.zoomToCam = function () {
         camera.position.set(this.mesh.position);
