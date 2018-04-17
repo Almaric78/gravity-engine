@@ -12,7 +12,11 @@ function Mover(m, vel, loc, id, suffix, mesh) {
 
     this.id = id;
     if (!suffix) suffix = "";
-    this.name = id + suffix;
+	
+	if(suffix)
+		this.name = id + ':' + suffix;
+	else 
+		this.name = id
 
     this.vertices = []; // PATH OF MOVEMENT
 

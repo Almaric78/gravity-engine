@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Spheres</title>
+    <title>Earth-Moon Simulation</title>
     <style>
         body {
             margin: 0;
@@ -287,37 +287,38 @@
 
         //AddBigMoverToCenter();
 
-        moverEarth = AddBigMoverToCenter(1000, earth, 'Earth');
-        moverMoon = AddBigMoverToCenter(500, moon, 'Moon');
+        moverEarth = AddBigMoverToCenter(5972, earth, 'Earth');
+        moverMoon  = AddBigMoverToCenter(736, moon, 'Moon');
 
 
         // ------------
 
         //Render loop
         var render = function () {
-            earth.rotation.y += .0009;
-            clouds.rotation.y += .00005;
-
-            //Flyby
-            if (camera.position.z < 0) {
-                dx *= -1;
-            }
-            camera.position.x += dx;
-            camera.position.y += dy;
-            camera.position.z += dz;
-
-            camera.lookAt(earthVec);
-
-            //Flyby reset
-            if (camera.position.z < -100) {
-                //camera.position.set(0, 35, 70);
-            }
-
-            camera.lookAt(earthVec);
 
             // UPDATE MOVER 
             var m = moverMoon;
             if (!pause) {
+			
+				earth.rotation.y += .0009;
+				clouds.rotation.y += .00005;
+
+				//Flyby
+				if (camera.position.z < 0) {
+					dx *= -1;
+				}
+				camera.position.x += dx;
+				camera.position.y += dy;
+				camera.position.z += dz;
+
+				camera.lookAt(earthVec);
+
+				//Flyby reset
+				if (camera.position.z < -100) {
+					camera.position.set(0, 35, 70);
+				}
+
+				camera.lookAt(earthVec);			
 
                 //Moon orbit        
                 theta += dTheta;
