@@ -1,7 +1,7 @@
 var options = {
     framerate: 60,
     G: 10,
-    START_SPEED: 10,
+    START_SPEED: 12,
     MOVER_COUNT: 32,
     TRAILS_DISPLAY: true,
     SHOW_DIED: false,
@@ -44,13 +44,15 @@ var gui = new dat.GUI();
 var f = gui.addFolder('Environment');
 f.open();
 //f.add(options, 'framerate', 1, 120);
-f.add(options, 'G', 1, 1000);
+f.add(options, 'G', 1, 100).name('Gravity');
 
-var fMoverCountE = f.add(options, 'MOVER_COUNT', 1, 128);
-fMoverCountE.onFinishChange(function (value) {
-    // Fires when a controller loses focus.
-    //reset();
-});
+/*
+	var fMoverCountE = f.add(options, 'MOVER_COUNT', 1, 128);
+	fMoverCountE.onFinishChange(function (value) {
+		// Fires when a controller loses focus.
+		//reset();
+	});
+*/
 
 f = gui.addFolder('Trails & Labels');
 f.open();
@@ -80,12 +82,14 @@ fMaxMassChangeE.onFinishChange(function (value) {
 f = gui.addFolder('Start');
 f.open();
 
-var fDensityE = f.add(options, 'DENSITY', 1e-100, 1.0);
-fDensityE.onFinishChange(function (value) {
-    //reset();
-});
+/*
+	var fDensityE = f.add(options, 'DENSITY', 1e-100, 1.0);
+	fDensityE.onFinishChange(function (value) {
+		//reset();
+	});
+*/
 
-var fSpeedE = f.add(options, 'START_SPEED', 1e-100, 100.0);
+var fSpeedE = f.add(options, 'START_SPEED', 1e-100, 20.0);
 fSpeedE.onFinishChange(function (value) {
     //reset();
 });

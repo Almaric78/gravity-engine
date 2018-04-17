@@ -485,13 +485,13 @@ function render() {
     } else if (holdDown) {
         camera.position.sub(direction.multiplyScalar(moveSpeed));
     }
-    /*
+/*
     if(holdLeft){
         camera.rotation.y += 1/100;
     } else if(holdRight){
         camera.rotation.y -= 1/100;
     }
-    */
+*/
 
     // TIMER
     var timeNow = new Date();
@@ -602,7 +602,7 @@ function render() {
 
         // selection info/debug
         if (selection) {
-            var selectionMsg = '<br/> id:' + selection.id;
+            var selectionMsg = '<br/> id/name:' + selection.name;
 
             if (selection.alive)
                 selectionMsg += ' Alive';

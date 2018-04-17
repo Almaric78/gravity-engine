@@ -10,7 +10,7 @@
 
         canvas {
             width: 100%;
-            height: 100%
+            height: 100%;
         }
 
 
@@ -247,12 +247,12 @@
             map: THREE.ImageUtils.loadTexture("./images/moon_texture.jpg")
         });
         var moonS = new THREE.Mesh(moonGeometry, moonMaterial);
-        moonS.name = "MoonS";
+        moonS.name = "MoonSimulation";
         moonS.position.set(380, 0, 0);
         scene.add(moonS);
 
         var moonT = new THREE.Mesh(moonGeometry, moonMaterial);
-        moonT.name = "MoonT";
+        moonT.name = "MoonTheorical";
         moonT.position.set(380, 0, 0);
         scene.add(moonT);		
 		
@@ -292,11 +292,10 @@
 
         var pause = false;
 
-        //AddBigMoverToCenter();
-
+		simulationVelocity = new THREE.Vector3(0, 0, 3680/3600 * 12);
         moverEarth = AddBigMoverToCenter(5972, earth, 'Earth');
-        moverMoonS  = AddBigMoverToCenter(736, moonS, 'MoonSimul', new THREE.Vector3(0, 0, 3680/3600 *10 ));
-		moverMoonT  = AddBigMoverToCenter(736, moonT, 'MoonTheoric');
+        moverMoonS = AddBigMoverToCenter( 736, moonS, 'MoonSimulation', simulationVelocity);
+		moverMoonT = AddBigMoverToCenter( 736, moonT, 'MoonTheorical');
 
 
         // ------------
@@ -464,7 +463,7 @@
 
             // selection info/debug
             if (selection) {
-                var selectionMsg = '<br/> id/name:' + selection.name;
+                var selectionMsg = '<br/> id/name:  ' + selection.name;
 			/*
                 if (selection.alive)
                     selectionMsg += ' Alive';
@@ -493,6 +492,42 @@
             requestAnimationFrame(render);
         };
         render();
+
+function reset() {
+    console.log("RESET ALL !")
+    if (movers) {
+        for (var i = 0; i < movers.length; i = i + 1) {
+            scene.remove(movers[i].mesh);
+            scene.remove(movers[i].selectionLight);
+            scene.remove(movers[i].line);
+
+            if(!movers[i].alive)
+                scene.remove(movers[i].impactCube);
+
+            console.log('Remove:', i, movers[i].id);
+            IHMButtons.removeChild(movers[i].htmlButton);
+            document.body.removeChild(movers[i].text.element);
+        }
+    }
+    movers = [];
+    translate.x = 0.0;
+    translate.y = 0.0;
+    translate.z = 0.0;
+	
+	// Reset Mesh position 
+    moonS.position.set(380, 0, 0);
+	moonT.position.set(380, 0, 0);
+
+	// RESET !
+	simulationVelocity = new THREE.Vector3(0, 0, 3680/3600 * options.START_SPEED);
+	console.log("START_SPEED:"+simulationVelocity.length()); 
+	moverEarth = AddBigMoverToCenter(5972, earth, 'Earth');
+	moverMoonS = AddBigMoverToCenter( 736, moonS, 'MoonSimulation', simulationVelocity);
+	moverMoonT = AddBigMoverToCenter( 736, moonT, 'MoonTheorical');
+
+    // SVG LAST CONFIG OPTIONS
+    // localStorage.setItem("options", JSON.stringify(options));
+}
 
 
     </script>
