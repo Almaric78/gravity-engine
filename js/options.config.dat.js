@@ -6,12 +6,12 @@ var options = {
     TRAILS_DISPLAY: true,
     SHOW_DIED: false,
     SHOW_LABELS: true, 
-    TRAILS_LENGTH: 1000,
+    TRAILS_LENGTH: 500,
     MIN_MASS: .01,
     MAX_MASS: 1000,
     DENSITY: 0.1,
 
-    MoveSpeed: 500,
+    MoveSpeed: 50,
     MAX_DISTANCE: 300000,
     BIG_STAR_MASS:100000,
 };
@@ -90,14 +90,14 @@ fSpeedE.onFinishChange(function (value) {
     //reset();
 });
 
-var moveSpeed = 100;
-f.add(options, 'MoveSpeed', 1, 1000).onFinishChange(function (value) {
+var moveSpeed = 5;
+f.add(options, 'MoveSpeed', 1, 100).onFinishChange(function (value) {
     //console.log(value);
     moveSpeed = Math.floor(options.MoveSpeed);
     console.log(moveSpeed);
 });
 
-f.add(options, 'AddBigStar').name('Add Big Star');
+//f.add(options, 'AddBigStar').name('Add Big Star');
 f.add(options, 'SAVECONFIG').name('SaveTheConf');
 f.add(options, 'RESET').name('RESET ALL');
 

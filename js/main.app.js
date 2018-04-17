@@ -232,84 +232,11 @@ function setCamera() {
 var controlOrbit = new THREE.OrbitControls(camera, renderer.domElement);
 controlOrbit.zoomSpeed = 100
 
-var control2FPS; /* = new THREE.FirstPersonControls(camera);
-	control2FPS.movementSpeed = 1000*5;
-	control2FPS.lookSpeed = 0.1;
-	//control2FPS.lon = -90 // in degree // See : https://stackoverflow.com/questions/20905101/three-js-firstperson-control-start-orientation
-	https://stackoverflow.com/questions/30206243/how-to-switch-three-js-camera-controls-from-first-person-to-orbit-and-back
-			http://jsbin.com/jekebo/2/edit?html,js,output
-			http://jsbin.com/ronovazeca/edit?js,output 
-	https://stackoverflow.com/questions/11304998/switch-threejs-controls-from-trackball-to-flycontrols-and-vice-versa 
-	
-https://stackoverflow.com/questions/16506693/cannot-set-lookat-position-for-camera-with-firstpersoncontrols-js/49343940#49343940
-	Avec ma Réponse sur lon = angle..
-	
-*/
 var controls = controlOrbit;
 
 var direction;
-var camera2FPS
-
-//cameraPerspectiveHelper.visible = true;
-
-function SwitchControl(k) {
-
-    console.log("SwitchControl(" + k + ")");
-
-    direction = camera.getWorldDirection().clone();
-    camRotation = camera.rotation.clone();
-    console.log(direction);
 
 
-    if (k == 2) {
-
-        console.log("FirstPersonControls");
-        if (!control2FPS) {
-            camera2FPS = camera.clone()
-            scene.add(camera2FPS);
-
-            control2FPS = new THREE.FirstPersonControls(camera2FPS, renderer.domElement);
-            control2FPS.movementSpeed = 1000 * 5;
-            control2FPS.lookSpeed = 0.1;
-            control2FPS.enabled = false;
-        }
-        /*	
-            angleX = direction.angleTo (new THREE.Vector3(1,0,0))
-            console.log("angleX:" + angleX); // direction.normalize())
-            controls.lon = - angleX * 180 / Math.PI;
-        */
-
-        controls = control2FPS;
-        camera = camera2FPS;
-
-        camera.lookAt(direction);
-
-        camera.rotation.copy(camera2FPS.rotation)
-
-        //camera.rotation.set(svgCamera.rotation.x, svgCamera.rotation.y, svgCamera.rotation.z);
-		/*
-		camera.rotation.x = svgCamera.rotation.x;
-		camera.rotation.y = svgCamera.rotation.y;
-		camera.rotation.z = svgCamera.rotation.z;
-		*/
-        controls.enabled = true;
-
-        //camera.lookAt(direction);
-    } else if (k == 1) {
-
-        controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.zoomSpeed = 100
-        console.log("OrbitControls");
-        controls.enabled = false;
-
-
-    } else {
-        // TODO 
-        console.log("ArrowHelper");
-    }
-}
-
-//
 //f = gui.addFolder('Blobs');
 //f.open();
 

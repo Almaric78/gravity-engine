@@ -163,7 +163,9 @@
     <script src="./js/libs/jQuery.min.js"></script>
     <script src="./js/libs/dat.gui.min.js"></script>
     <script src="./js/libs/three.min.js"></script>
+	
     <script src="./js/controls/orbit_controls.js"></script>
+    <script src="./js/controls/FirstPersonControls.js"></script>
 
     <script src="./js/functions.js"></script>
     <script src="./js/Mover.js"></script>
@@ -295,6 +297,15 @@
 
         //Render loop
         var render = function () {
+		
+			// DEPLACEMENT 
+			var vector = new THREE.Vector3();
+			var direction = camera.getWorldDirection(vector);
+			if (holdUp) {
+				camera.position.add(vector.multiplyScalar(moveSpeed));
+			} else if (holdDown) {
+				camera.position.sub(direction.multiplyScalar(moveSpeed));
+			}		
 
             // UPDATE MOVER 
             var m = moverMoon;
@@ -303,6 +314,36 @@
 				earth.rotation.y += .0009;
 				clouds.rotation.y += .00005;
 
+                //Moon orbit        
+                theta += dTheta;
+                moon.position.x = r * Math.cos(theta);
+                moon.position.z = r * Math.sin(theta);
+
+                m.updateMeshPositionInTrail();
+            }
+
+            m.display(); // ME déplacé ici 
+            updateTrails(m);
+
+			
+			// Follow by Free FPC CAM if Enabled 
+			if (selection && document.getElementById('cbFPS').checked) {
+				camera.lookAt(selection.mesh.position);
+
+				if(!pause && document.getElementById('cbZoom').checked){
+					if(selection.mesh.position.distanceTo(camera.position)>30){
+						direction2 = direction.clone().multiplyScalar(moveSpeed);
+						//console.log(direction2.length());
+						camera.position.x += direction2.x;
+						camera.position.y += direction2.y;
+						camera.position.z += direction2.z;
+					} else {
+						// STOP The AutoZoomIn
+						document.getElementById("cbZoom").checked = false;
+					}
+				}
+			} else {
+			
 				//Flyby
 				if (camera.position.z < 0) {
 					dx *= -1;
@@ -318,19 +359,9 @@
 					camera.position.set(0, 35, 70);
 				}
 
-				camera.lookAt(earthVec);			
-
-                //Moon orbit        
-                theta += dTheta;
-                moon.position.x = r * Math.cos(theta);
-                moon.position.z = r * Math.sin(theta);
-
-                m.updateMeshPositionInTrail();
-            }
-
-            m.display(); // ME déplacé ici 
-            updateTrails(m);
-
+				camera.lookAt(earthVec);					
+			}
+			
 
             // camera 
             if (document.getElementById('cbCam').checked)
