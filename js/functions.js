@@ -372,6 +372,7 @@ function initMouseEvent() {
 
                 var intersects = raycaster.intersectObjects(scene.children);
 
+			/*
                 if (intersects.length > 0) { // SELECTION
 
                     var clickedObj = (intersects[0].object);
@@ -382,6 +383,7 @@ function initMouseEvent() {
 
                 }
                 else { // ADD NEW BALL MOVER
+			*/
 
                     var mass = random(options.MIN_MASS, options.MAX_MASS);
 
@@ -395,7 +397,7 @@ function initMouseEvent() {
 
                     lastOne = newObject;
 
-                } // add ball 
+            //    } // add ball block 
                 break;
         } // switch 
     }
