@@ -655,7 +655,7 @@ function reset() {
             if(!movers[i].alive)
                 scene.remove(movers[i].impactCube);
 
-            console.log('Remove:', i, movers[i].id);
+            console.log('Remove:', i, movers[i].name);
             IHMButtons.removeChild(movers[i].htmlButton);
             document.body.removeChild(movers[i].text.element);
         }

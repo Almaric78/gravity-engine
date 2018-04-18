@@ -71,7 +71,7 @@ f.add(options, 'TRAILS_LENGTH', 0, 10000);
 f.add(options, 'SHOW_DIED');
 f.add(options, 'SHOW_LABELS');
 
-f = gui.addFolder('Masse and Radius for Dynamics (Right Clic)');
+f = gui.addFolder('Mass and Radius for Dynamics (Right Clic)');
 f.open();
 
 f.add(options, 'SPECIFIC_MASS', .00001, 10000.0).name("MASS");

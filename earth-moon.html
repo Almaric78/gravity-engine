@@ -189,7 +189,7 @@
         document.body.appendChild(renderer.domElement);
 
         // Orbit Controls
-        var orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+        var controlOrbit = new THREE.OrbitControls(camera, renderer.domElement);
 
         // Lights
         var ambientLight = new THREE.AmbientLight(0xf1f1f1);
@@ -293,9 +293,9 @@
         var pause = false;
 
 		simulationVelocity = new THREE.Vector3(0, 0, 3680/3600 * 12);
-        moverEarth = AddSpecialMoverFromMesh(5972, earth, 'Earth');
-        moverMoonS = AddSpecialMoverFromMesh( 736, moonS, 'MoonSimulation', simulationVelocity);
-		moverMoonT = AddSpecialMoverFromMesh( 736, moonT, 'MoonTheorical');
+        moverEarth = AddSpecialMoverFromMesh(5972, earth, 'Earth', null, 0x0000ff );
+        moverMoonS = AddSpecialMoverFromMesh( 736, moonS, 'SimulatedMoon', simulationVelocity);
+		moverMoonT = AddSpecialMoverFromMesh( 736, moonT, 'TheoricMoon');
 
 
         // ------------
@@ -317,7 +317,7 @@
 			var maximum_mass = 0.00;
 			
 			if (biggest)
-				largest_pos = 'dist: ' + NumToFormat(biggest.location.distanceTo(camera.position)) + ' id:' + biggest.id;
+				largest_pos = 'dist: ' + NumToFormat(biggest.location.distanceTo(camera.position)) + ' id:' + biggest.name;
 			else
 				largest_pos = 0
 	
@@ -378,72 +378,79 @@
 							m.update();
 						}
 					}
-					m.display(); // ME moved here ? 
+					m.display();
 					updateTrails(m);
 				}
 			
-		
-            // UPDATE Moon Movers
-            if (!pause) {
 			
-				earth.rotation.y += .0009;
-				clouds.rotation.y += .00005;
-
-                //Moon orbit        
-                theta += dTheta;
-                moonT.position.x = r * Math.cos(theta);
-                moonT.position.z = r * Math.sin(theta);
-
-				moverEarth.attract(moverMoonS);
-				moverMoonS.attract(moverEarth);
+				// UPDATE Moon Movers
+				if (!pause) {
 				
-				moverMoonS.update();
-                moverMoonT.updateMeshPositionInTrail();
-            }
+					earth.rotation.y += .0009;
+					clouds.rotation.y += .00005;
 
-            moverMoonS.display(); 
-            updateTrails(moverMoonS);
-			
-			moverMoonT.display(); 
-			updateTrails(moverMoonT);
+					//Moon orbit        
+					theta += dTheta;
+					moonT.position.x = r * Math.cos(theta);
+					moonT.position.z = r * Math.sin(theta);
 
-			
-			// Follow by Free FPC CAM if Enabled 
-			if (selection && document.getElementById('cbFPS').checked) {
-				camera.lookAt(selection.mesh.position);
+					moverEarth.attract(moverMoonS);
+					//moverEarth.update(); // Don't move Earth for the moment
+					
+					moverMoonS.attract(moverEarth);
+					moverMoonS.update();
+					moverMoonT.updateMeshPositionInTrail();
+				}
+				
+				moverEarth.display();
+				//updateTrails(moverEarth)
 
-				if(!pause && document.getElementById('cbZoom').checked){
-					if(selection.mesh.position.distanceTo(camera.position)>30){
-						direction2 = direction.clone().multiplyScalar(moveSpeed);
-						//console.log(direction2.length());
-						camera.position.x += direction2.x;
-						camera.position.y += direction2.y;
-						camera.position.z += direction2.z;
-					} else {
-						// STOP The AutoZoomIn
-						document.getElementById("cbZoom").checked = false;
+				moverMoonS.display(); 
+				updateTrails(moverMoonS);
+				
+				moverMoonT.display(); 
+				updateTrails(moverMoonT);
+
+				
+				// Follow by Free FPC CAM if Enabled 
+				if (selection && document.getElementById('cbFPS').checked) {
+					camera.lookAt(selection.mesh.position);
+
+					if(!pause && document.getElementById('cbZoom').checked){
+						if(selection.mesh.position.distanceTo(camera.position)>30){
+							direction2 = direction.clone().multiplyScalar(moveSpeed);
+							//console.log(direction2.length());
+							camera.position.x += direction2.x;
+							camera.position.y += direction2.y;
+							camera.position.z += direction2.z;
+						} else {
+							// STOP The AutoZoomIn
+							document.getElementById("cbZoom").checked = false;
+						}
 					}
-				}
-			} else {
-			
-				//Flyby
-				if (camera.position.z < 0) {
-					dx *= -1;
-				}
-				camera.position.x += dx;
-				camera.position.y += dy;
-				camera.position.z += dz;
+				} else {
+				
+					if(!pause){
+						//Flyby
+						if (camera.position.z < 0) {
+							dx *= -1;
+						}
+						camera.position.x += dx;
+						camera.position.y += dy;
+						camera.position.z += dz;
 
-				//camera.lookAt(earthVec);
+						//camera.lookAt(earthVec);
 
-				//Flyby reset
-				if (camera.position.z < -100) {
-					//camera.position.set(0, 35, 70);
+						//Flyby reset
+						if (camera.position.z < -100) {
+							//camera.position.set(0, 35, 70);
+						}
+					
+					}
+
+					//camera.lookAt(earthVec);					
 				}
-
-				//camera.lookAt(earthVec);					
 			}
-		}
 		
 			// INFOS PANEL
 
@@ -455,7 +462,7 @@
 			$total_mass.html(NumToFormat(total_mass) + ' = ' + NumToFormat(rapportMasse) + '%' );
 
 			$largest_pos.html(largest_pos);
-			$largest_pos.css('color', "#" + biggest.mesh.material.color.getHexString());
+			$largest_pos.css('color', "#" + biggest.color.getHexString());
 			
 
             // camera 
@@ -468,12 +475,12 @@
             // selection info/debug
             if (selection) {
                 var selectionMsg = '<br/> id/name:  ' + selection.name;
-			/*
+			
                 if (selection.alive)
                     selectionMsg += ' Alive';
                 else
                     selectionMsg += ' Killed by ' + selection.killedBy;
-			*/
+			
                 selectionMsg += '<br/>' + format2Vector(selection.mesh.position);
                 selectionMsg += 'Mass: ' + NumToFormat(selection.mass);
                 selectionMsg += '<br/>Velocity: ' + NumToFormat(selection.velocity.length(), 2);
@@ -508,7 +515,7 @@ function reset() {
             if(!movers[i].alive)
                 scene.remove(movers[i].impactCube);
 
-            console.log('Remove:', i, movers[i].id);
+            console.log('Remove:', i, movers[i].name);
             IHMButtons.removeChild(movers[i].htmlButton);
             document.body.removeChild(movers[i].text.element);
         }
@@ -526,8 +533,8 @@ function reset() {
 	simulationVelocity = new THREE.Vector3(0, 0, 3680/3600 * options.MOON_SPEED);
 	console.log("MOON_SPEED:"+simulationVelocity.length()); 
 	moverEarth = AddSpecialMoverFromMesh(5972, earth, 'Earth');
-	moverMoonS = AddSpecialMoverFromMesh( 736, moonS, 'MoonSimulation', simulationVelocity);
-	moverMoonT = AddSpecialMoverFromMesh( 736, moonT, 'MoonTheorical');
+    moverMoonS = AddSpecialMoverFromMesh( 736, moonS, 'SimulatedMoon', simulationVelocity);
+	moverMoonT = AddSpecialMoverFromMesh( 736, moonT, 'TheoricMoon');
 
     // SVG LAST CONFIG OPTIONS
     // localStorage.setItem("options", JSON.stringify(options));

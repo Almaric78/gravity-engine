@@ -94,14 +94,14 @@ function SelectMeshMover(clickedObj, str) {
 	
 	if(mover){
 		
-		//console.log(mover)
-
 		if (!mover.selected)
 			ClearSelection();
-
+	
 		mover.selected = !mover.selected;
 
 		isMoverSelected = mover.selected;
+		if(isMoverSelected)
+			console.log('selection '+mover.name)
 
 		document.getElementById("mySelect").disabled = false;   
 		document.getElementById("cbFPS").disabled = false;
@@ -382,10 +382,10 @@ function AddBigMoverToCenter () {
 		//addClickButtonEvent(name)
 }
 
-function AddSpecialMoverFromMesh(mass, mesh, name, vel) {
+function AddSpecialMoverFromMesh(mass, mesh, name, vel, colorHex) {
 	
 	if(!mass)
-		mass = options.BIG_STAR_MASS;
+		mass = options.SPECIFIC_MASS;
 
 	if(!vel)
 		vel = new THREE.Vector3(0, 0, 0);
@@ -395,10 +395,10 @@ function AddSpecialMoverFromMesh(mass, mesh, name, vel) {
 	else loc = mesh.position;
 	
 	if(!name)
-		name = 'Big'
+		name = 'Spc'
 
     //name = movers.length + 'Big'
-    big = new Mover(mass, vel, loc, movers.length, name, mesh);
+    big = new Mover(mass, vel, loc, movers.length, name, mesh, null, colorHex);
     //big.mesh.material.transparent = true;
     //big.mesh.material.opacity = 0.9
 	big.selected = false; 
@@ -449,6 +449,8 @@ window.onmousemove = function (e) {
 initMouseEvent();
 
 function initMouseEvent() {
+	
+	var iMobile=0;
 
     //window.onmousedown = MyMouseDown
     window.addEventListener('mousedown', MyMouseDown, true);
@@ -487,7 +489,7 @@ function initMouseEvent() {
                 }
                 else { // ADD NEW BALL MOVER
 			*/
-
+					iMobile++;
 
                     var vel = raycaster.ray.direction.clone().multiplyScalar(parseFloat(options.START_SPEED));
                     var loc = raycaster.ray.origin.clone();
@@ -500,7 +502,7 @@ function initMouseEvent() {
 						var radius = 100.0;
 					}
 					
-                    var newObject = new Mover(mass, vel, loc, movers.length, 'm', null, radius);
+                    var newObject = new Mover(mass, vel, loc, movers.length, 'm'+iMobile, null, radius);
                     console.log("c2 > add " + newObject.id + " mass:" + newObject.mass.toFixed(0));
                     newObject.addToMovers();
 

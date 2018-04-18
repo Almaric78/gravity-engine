@@ -1,7 +1,7 @@
 
 // MOVER CLASS
 
-function Mover(m, vel, loc, id, suffix, mesh, radius) {
+function Mover(m, vel, loc, id, suffix, mesh, radius, colorHex) {
     this.location = loc,
         this.velocity = vel,
         this.acceleration = new THREE.Vector3(0.0, 0.0, 0.0),
@@ -25,8 +25,12 @@ function Mover(m, vel, loc, id, suffix, mesh, radius) {
 
     this.line = new THREE.Line(); // line to display movement
 
-    this.color = this.line.material.color; // ?? no init Color ?? 
-    this.color.setHSL( Math.random() , 1, 0.5);
+	if(colorHex)
+		this.color = new THREE.Color(colorHex);
+	else {
+		this.color = this.line.material.color; // ?? no init Color ?? 
+		this.color.setHSL( Math.random() , 1, 0.5);
+	}
 
     //this.line = THREE.Line(this.lineGeometry, lineMaterial);
 
@@ -151,13 +155,13 @@ function Mover(m, vel, loc, id, suffix, mesh, radius) {
 
         this.nbEat+=m.nbEat;
         this.nbEat+=1; 
-        this.htmlButton.label.data = this.name + 'x' + this.nbEat;
+        this.htmlButton.label.data = this.name + ':x' + this.nbEat;
 
         m.kill();
     };
 
     this.kill = function () {
-        console.log(this.name + ' was killed - mass: ' + NumToFormat(this.mass) )
+        console.log(this.name + ' was killed by ' + this.killedBy + '- mass:' + NumToFormat(this.mass) )
         this.alive = false;
         this.selectionLight.intensity = 0.7; //ME
         scene.remove(this.mesh);
@@ -236,10 +240,12 @@ function Mover(m, vel, loc, id, suffix, mesh, radius) {
         }
 
         if (this.alive) {
-            this.scale = Math.pow((this.mass * MASS_FACTOR / (4 * Math.PI)), 1 / 3);
-            this.mesh.scale.x = this.scale;
-            this.mesh.scale.y = this.scale;
-            this.mesh.scale.z = this.scale;
+			if(options.NAME=="GENERAL"){
+				this.scale = Math.pow((this.mass * MASS_FACTOR / (4 * Math.PI)), 1 / 3);
+				this.mesh.scale.x = this.scale;
+				this.mesh.scale.y = this.scale;
+				this.mesh.scale.z = this.scale;
+			}
 
             this.htmlButton.style.display='inline';
 
@@ -264,24 +270,29 @@ function Mover(m, vel, loc, id, suffix, mesh, radius) {
     };
 
     this.showTrails = function () {
-        if (!this.lineDrawn) {
+        
+		if (!this.lineDrawn) {
             this.lineDrawn = true;
             scene.add(this.line);
-        } else if (this.lineDrawn === true) {
+        
+		} else if (this.lineDrawn === true) {
             scene.remove(this.line);
-            var newLineGeometry = new THREE.Geometry();
+            
+			var newLineGeometry = new THREE.Geometry();
             newLineGeometry.vertices = this.vertices.slice();
-
             newLineGeometry.verticesNeedUpdate = true;
+			
             if (!pause && !this.alive) {
                 //this.vertices.shift();  // ME !!
             }
             while (newLineGeometry.vertices.length > parseInt(options.TRAILS_LENGTH)) {
                 newLineGeometry.vertices.shift();
             }
-            this.line = new THREE.Line(newLineGeometry, this.line.material);
+            
+			this.line = new THREE.Line(newLineGeometry, this.line.material);
             scene.add(this.line);
-            if(this.impactCube){
+            
+			if(this.impactCube){
                 scene.add(this.impactCube);
             }
         }
@@ -375,7 +386,7 @@ function updateTrails(m) {
             m.mesh.material = selectedMaterial;
 			*/
         } else {
-            m.mesh.material = m.basicMaterial;
+            //m.mesh.material = m.basicMaterial; //TODO
             m.hideTrails();
             //            if (displayTrails)
             //                m.showTrails();
@@ -383,7 +394,7 @@ function updateTrails(m) {
             //                m.hideTrails();
         }
     } else {
-        m.mesh.material = m.basicMaterial;
+        //m.mesh.material = m.basicMaterial; //TODO
         if (options.TRAILS_DISPLAY) {
             if(m.alive || options.SHOW_DIED){
                 m.showTrails();
