@@ -609,20 +609,7 @@ function render() {
 
         // selection info/debug
         if (selection) {
-            var selectionMsg = '<br/> id/name:' + selection.name;
-
-            if (selection.alive)
-                selectionMsg += ' Alive';
-            else
-                selectionMsg += ' Killed by ' + selection.killedBy;
-
-            selectionMsg += '<br/>' + format2Vector(selection.mesh.position);
-            selectionMsg += 'Mass: ' + NumToFormat(selection.mass);
-            selectionMsg += '<br/>Velocity: ' + NumToFormat(selection.velocity.length(),2);
-            selectionMsg += '<br/>DistanceToCamera: ' + NumToFormat(selection.location.distanceTo(camera.position));
-            selectionMsg += '<br/>DistanceToCenter: ' + NumToFormat(selection.distanceToCenter());
-            
-            $select_infos.html(selectionMsg);
+            $select_infos.html(LogSelection());
             $select_infos.css('color', "#" + selection.mesh.material.color.getHexString());
         }
 

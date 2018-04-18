@@ -142,7 +142,7 @@ f.add(options, 'RESET').name('RESET ALL');
 */
 
 //console.log(gui);
-gui.close(); 
+//gui.close();
 
 //var HTTP_GET_VARS=new Array();
 //var strGET=document.location.search.substr(1,document.location.search.length);
