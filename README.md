@@ -2,11 +2,9 @@
 
 Gravitational Simulation Engine for Planets and Particles in 3D with Three.js (WebGL library)
 
-Live Démo : https://almaric78.github.io/gravity-engine/index-v69.html
+[Live Démo](https://almaric78.github.io/gravity-engine/index-v69.html) or : [here](http://htmlpreview.github.io/?https://github.com/Almaric78/gravity-engine/blob/master/index-v69.html)
 
 [Earth-Moon simulation](https://almaric78.github.io/gravity-engine/earth-moon.html)
-
-Or : (http://htmlpreview.github.io/?https://github.com/Almaric78/gravity-engine/blob/master/index-v69.html)
 
 It works well on Chrome and Safari but not good as well on IE.
 
@@ -16,7 +14,7 @@ Have a nice fun !
 
 ## Special Commands and GUI : 
 - SPACE : Pause state (very important !)
-- Left Click : Select a ball
+- Left Click : Select a ball and show information on it
 - Righ Clik : Add velocity ball throught the raycast hit with the START_SPEED specified on right DAT Control panel
 - ESC/ECHAP : Swith Active/Inactive control of Free Cam (for FirstPersonControls.js specifically, but little buggy)
 - H : Show/Hide DAT GUI panel
@@ -38,5 +36,5 @@ I would to optimize the controls of OrbitControls and Free Cam (FirstPersonContr
 ## Other :
 
 Another JavaScript gravity engine (in 2D with p5.js) 
-* https://bruno-m-.github.io/gravity/ (demo)
-* https://github.com/Bruno-M-/gravity (source code)
+* [https://bruno-m-.github.io/gravity/](https://bruno-m-.github.io/gravity/) (démo)
+* [https://github.com/Bruno-M-/gravity](https://github.com/Bruno-M-/gravity) (source code)
