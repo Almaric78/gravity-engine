@@ -190,6 +190,7 @@
 
         // Orbit Controls
         var controlOrbit = new THREE.OrbitControls(camera, renderer.domElement);
+		var controls = controlOrbit;
 
         // Lights
         var ambientLight = new THREE.AmbientLight(0xf1f1f1);
@@ -467,8 +468,7 @@
 
             // camera 
             if (document.getElementById('cbCam').checked)
-                $camera_info.html(format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r')
-                    + 'Distance to Center:' + NumToFormat(camera.position.distanceTo(new THREE.Vector3(0, 0, 0))));
+                $camera_info.html(LogCam() + LogFPCam());
             else $camera_info.html('');
 
 

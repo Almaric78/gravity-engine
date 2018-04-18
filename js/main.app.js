@@ -603,8 +603,7 @@ function render() {
 
         // camera 
         if(document.getElementById('cbCam').checked)
-            $camera_info.html( format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r') 
-            + 'Distance to Center:' + NumToFormat(camera.position.distanceTo(new THREE.Vector3(0,0,0))) + LogFPCam() ) ;
+            $camera_info.html( LogCam() + LogFPCam() ) ;
         else $camera_info.html('');
 
         // selection info/debug
@@ -613,7 +612,6 @@ function render() {
             $select_infos.css('color', "#" + selection.mesh.material.color.getHexString());
         }
 
-    
         if(pause)
             document.getElementById('GeneralInfos').innerHTML='PAUSE : Press SPACE to Run';
         else 

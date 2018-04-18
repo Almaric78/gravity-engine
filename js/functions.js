@@ -325,10 +325,26 @@ function LogFPS() {
     console.groupEnd();
 }
 
+function LogCam() {
+	var msg = format2Vector(camera.position) + format2Vector(camera.rotation, 2, 'r')
+    + 'Distance to Center:' + NumToFormat(camera.position.distanceTo(new THREE.Vector3(0, 0, 0)));
+	var strControlName='';
+	if(controls){
+        if (controls instanceof (THREE.OrbitControls))
+            strControlName = "OrbitControls"
+        else if (controls instanceof (THREE.FirstPersonControls)) {
+            strControlName = "FirstPersonControls"
+		}
+		strControlName += ':' + controls.enabled;
+	}
+	return msg + '<br/>' + strControlName;
+}
+
 function LogFPCam() {
+	return ""; 
     if ((controls instanceof (THREE.FirstPersonControls))) {
         message = "<br/>";
-        message += "status:" + controls.enabled + "<br/>";
+        //message += "status:" + controls.enabled + "<br/>";
         message += "lon:" + NumToFormat(controls.lon, 2) + "<br/>";
         message += "lat:" + NumToFormat(controls.lat, 2) + "<br/>";
         message += "phi:" + NumToFormat(controls.phi, 2) + "<br/>";
