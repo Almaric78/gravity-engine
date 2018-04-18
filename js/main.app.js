@@ -1,4 +1,5 @@
 var options = {
+	NAME:"GENERAL", 
     framerate: 60,
     G: 10,
     START_SPEED: 10,
@@ -7,9 +8,11 @@ var options = {
     SHOW_DIED: false,
     SHOW_LABELS: true, 
     TRAILS_LENGTH: 1000,
+	
     MIN_MASS: .01,
     MAX_MASS: 1000,
-    DENSITY: 0.1,
+    
+	DENSITY: 0.1,
 
     MoveSpeed: 500,
     MAX_DISTANCE: 300000,
@@ -27,7 +30,7 @@ if (localStorage && localStorage.getItem("options")){
 }
 
 options.AddBigStar = function () {
-    AddBigMoverToCenter();
+	AddBigMoverToCenter();
 }
 
 options.RESET = function () {
@@ -74,6 +77,10 @@ fMinMassChangeE.onFinishChange(function (value) {
 
 var fMaxMassChangeE = f.add(options, 'MAX_MASS', .00001, 10000.0);
 fMaxMassChangeE.onFinishChange(function (value) {
+    if(options.MAX_MASS<options.MIN_MASS){
+        options.MIN_MASS = value;
+        fMinMassChangeE.updateDisplay();
+    }
     //reset();
 });
 

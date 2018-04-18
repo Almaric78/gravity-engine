@@ -93,6 +93,8 @@ function SelectMeshMover(clickedObj, str) {
 	//console.log(clickedObj);
 	
 	if(mover){
+		
+		//console.log(mover)
 
 		if (!mover.selected)
 			ClearSelection();
@@ -363,7 +365,24 @@ function AddRandomMover(id) {
     newMover.addToMovers();
 }
 
-function AddBigMoverToCenter(mass, mesh, name, vel) {
+function AddBigMoverToCenter () {
+		var mass = 100000;
+
+        var vel = new THREE.Vector3(0,0,0);
+        var loc = new THREE.Vector3(0,0,0);
+		
+		name = movers.length + 'Big'
+		big = new Mover(mass, vel, loc, movers.length, 'Big');
+		big.mesh.material.transparent = true;
+		big.mesh.material.opacity = 0.8
+		
+		big.addToMovers();
+
+        //movers.push(big);
+		//addClickButtonEvent(name)
+}
+
+function AddSpecialMoverFromMesh(mass, mesh, name, vel) {
 	
 	if(!mass)
 		mass = options.BIG_STAR_MASS;
@@ -469,15 +488,21 @@ function initMouseEvent() {
                 else { // ADD NEW BALL MOVER
 			*/
 
-                    var mass = random(options.MIN_MASS, options.MAX_MASS);
 
                     var vel = raycaster.ray.direction.clone().multiplyScalar(parseFloat(options.START_SPEED));
                     var loc = raycaster.ray.origin.clone();
-
-                    var newObject = new Mover(mass, vel, loc, movers.length, 'm');
+					
+					if(options.NAME=="EARTH_MOON") {
+						var mass = options.SPECIFIC_MASS;
+						var radius = options.RADIUS;
+					} else { 
+						var mass = random(options.MIN_MASS, options.MAX_MASS);
+						var radius = 100.0;
+					}
+					
+                    var newObject = new Mover(mass, vel, loc, movers.length, 'm', null, radius);
                     console.log("c2 > add " + newObject.id + " mass:" + newObject.mass.toFixed(0));
                     newObject.addToMovers();
-
 
                     lastOne = newObject;
 
@@ -485,6 +510,9 @@ function initMouseEvent() {
                 break;
         } // switch 
     }
+	
+    // Desactivate Context Menu on Right Clic 
+	document.oncontextmenu = new Function("return false");
 
     window.onmouseup = function (e) {
         if (e.target.tagName === "CANVAS") {

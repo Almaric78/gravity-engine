@@ -1,14 +1,17 @@
 
 // MOVER CLASS
 
-function Mover(m, vel, loc, id, suffix, mesh) {
+function Mover(m, vel, loc, id, suffix, mesh, radius) {
     this.location = loc,
         this.velocity = vel,
         this.acceleration = new THREE.Vector3(0.0, 0.0, 0.0),
         this.mass = m,
         this.c = 0xffffff,
         this.alive = true;
-    this.geometry = new THREE.SphereGeometry(100.0, SPHERE_SIDES, SPHERE_SIDES);
+		
+	if(!radius)
+		radius = 100.0
+    this.geometry = new THREE.SphereGeometry(radius, SPHERE_SIDES, SPHERE_SIDES);
 
     this.id = id;
     if (!suffix) suffix = "";
@@ -127,7 +130,7 @@ function Mover(m, vel, loc, id, suffix, mesh) {
     this.eat = function (m) { // m => other Mover object
         var newMass = this.mass + m.mass;
 
-        console.log(this.id + ' EAT ' + m.id + ' > newMass=' + NumToFormat(newMass, 0))
+        console.log(this.name + ' EAT ' + m.name + ' > newMass=' + NumToFormat(newMass, 0))
 
         var newLocation = new THREE.Vector3(
             (this.location.x * this.mass + m.location.x * m.mass) / newMass,
@@ -142,19 +145,19 @@ function Mover(m, vel, loc, id, suffix, mesh) {
         this.location = newLocation;
         this.velocity = newVelocity;
         this.mass = newMass;
-        m.killedBy = this.id;
+        m.killedBy = this.name;
 
         if (m.selected) this.selected = true;
 
         this.nbEat+=m.nbEat;
         this.nbEat+=1; 
-        this.htmlButton.label.data = this.id + 'x' + this.nbEat;
+        this.htmlButton.label.data = this.name + 'x' + this.nbEat;
 
         m.kill();
     };
 
     this.kill = function () {
-        console.log(this.id + ' was killed - mass: ' + NumToFormat(this.mass) )
+        console.log(this.name + ' was killed - mass: ' + NumToFormat(this.mass) )
         this.alive = false;
         this.selectionLight.intensity = 0.7; //ME
         scene.remove(this.mesh);
@@ -290,6 +293,10 @@ function Mover(m, vel, loc, id, suffix, mesh) {
             this.lineDrawn = false;
         }
     }
+	
+	this.getRadius = function () {
+		return this.mesh.geometry.boundingSphere.radius;
+	}
 
     this.distanceToCenter = function () {
         return this.mesh.position.distanceTo(new THREE.Vector3(0, 0, 0));

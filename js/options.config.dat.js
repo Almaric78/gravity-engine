@@ -1,19 +1,28 @@
 var options = {
+	NAME:"EARTH_MOON", 
     framerate: 60,
     G: 10,
-    START_SPEED: 12,
     MOVER_COUNT: 32,
     TRAILS_DISPLAY: true,
     SHOW_DIED: false,
     SHOW_LABELS: true, 
-    TRAILS_LENGTH: 500,
-    MIN_MASS: .01,
-    MAX_MASS: 1000,
-    DENSITY: 0.1,
+    TRAILS_LENGTH: 1000,
+	
+    //MIN_MASS: .01,
+    //MAX_MASS: 1000,
+	
+	SPECIFIC_MASS : 500, 
+    START_SPEED: 10,
+	RADIUS:10, 
+	
+    MOON_SPEED: 12,
+	
+    //DENSITY: 0.1,
 
     MoveSpeed: 50,
+
     MAX_DISTANCE: 300000,
-    BIG_STAR_MASS:100000,
+    //BIG_STAR_MASS:100000,
 };
 
 // LOAD CONFIG 
@@ -25,11 +34,11 @@ if (localStorage && localStorage.getItem("options")){
         options[key] = optionsSVG[key];
       }
 }
-
-options.AddBigStar = function () {
-    AddBigMoverToCenter();
-}
-
+/*
+	options.AddBigStar = function () {
+		AddBigMoverToCenter();
+	}
+*/
 options.RESET = function () {
     reset();
 }
@@ -62,9 +71,15 @@ f.add(options, 'TRAILS_LENGTH', 0, 10000);
 f.add(options, 'SHOW_DIED');
 f.add(options, 'SHOW_LABELS');
 
-f = gui.addFolder('Masses');
+f = gui.addFolder('Masse and Radius for Dynamics (Right Clic)');
 f.open();
 
+f.add(options, 'SPECIFIC_MASS', .00001, 10000.0).name("MASS");
+f.add(options, 'RADIUS', .001, 1000.0);
+f.add(options, 'START_SPEED', 1e-100, 20.0);
+
+
+/*
 var fMinMassChangeE = f.add(options, 'MIN_MASS', .00001, 10000.0);
 fMinMassChangeE.onFinishChange(function (value) {
     if(options.MAX_MASS<options.MIN_MASS){
@@ -76,9 +91,13 @@ fMinMassChangeE.onFinishChange(function (value) {
 
 var fMaxMassChangeE = f.add(options, 'MAX_MASS', .00001, 10000.0);
 fMaxMassChangeE.onFinishChange(function (value) {
+    if(options.MAX_MASS<options.MIN_MASS){
+        options.MIN_MASS = value;
+        fMinMassChangeE.updateDisplay();
+    }
     //reset();
 });
-
+*/
 f = gui.addFolder('Start');
 f.open();
 
@@ -89,7 +108,7 @@ f.open();
 	});
 */
 
-var fSpeedE = f.add(options, 'START_SPEED', 1e-100, 20.0);
+var fSpeedE = f.add(options, 'MOON_SPEED', 1e-100, 20.0);
 fSpeedE.onFinishChange(function (value) {
     //reset();
 });

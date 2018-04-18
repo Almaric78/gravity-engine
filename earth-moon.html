@@ -230,7 +230,7 @@
         clouds.name = "EarthClouds";
         scene.add(clouds);
 
-        // Stars
+        // Stars Fields
         var starGeometry = new THREE.SphereGeometry(3000, 50, 50);
         var starMaterial = new THREE.MeshPhongMaterial({
             map: new THREE.ImageUtils.loadTexture("./images/galaxy_starfield.png"),
@@ -293,14 +293,14 @@
         var pause = false;
 
 		simulationVelocity = new THREE.Vector3(0, 0, 3680/3600 * 12);
-        moverEarth = AddBigMoverToCenter(5972, earth, 'Earth');
-        moverMoonS = AddBigMoverToCenter( 736, moonS, 'MoonSimulation', simulationVelocity);
-		moverMoonT = AddBigMoverToCenter( 736, moonT, 'MoonTheorical');
+        moverEarth = AddSpecialMoverFromMesh(5972, earth, 'Earth');
+        moverMoonS = AddSpecialMoverFromMesh( 736, moonS, 'MoonSimulation', simulationVelocity);
+		moverMoonT = AddSpecialMoverFromMesh( 736, moonT, 'MoonTheorical');
 
 
         // ------------
 
-        //Render loop
+        //Render loop 
         var render = function () {
 		
 			// DEPLACEMENT 
@@ -337,17 +337,22 @@
 								biggest = m;
 							}
 
-							// SECOND LOOP 
-							for (var j = movers.length - 1; j >= 0; j--) {
+							// SECOND LOOP for dynamic movers only (not Moon)
+							for (var j = movers.length - 1; j >= 3; j--) {
 								var a = movers[j];
 								if (movers[i].alive && movers[j].alive && i != j) {
 									var distance = m.location.distanceTo(a.location);
 
-									var radiusM = Math.pow((m.mass / MASS_FACTOR / MASS_FACTOR / 4 * Math.PI), 1 / 3) / 3;
-									var radiusA = Math.pow((a.mass / MASS_FACTOR / MASS_FACTOR / 4 * Math.PI), 1 / 3) / 3;
+									//var radiusM = Math.pow((m.mass / MASS_FACTOR / MASS_FACTOR / 4 * Math.PI), 1 / 3) / 3;
+									//var radiusA = Math.pow((a.mass / MASS_FACTOR / MASS_FACTOR / 4 * Math.PI), 1 / 3) / 3;
 
-								/*
+									var radiusA = a.getRadius();
+									var radiusM = m.getRadius(); 
+								
 									if (distance < radiusM + radiusA) {
+										console.log("EAT distance:"+distance)
+										console.log("EAT radiusM:"+radiusM)
+										console.log("EAT radiusA:"+radiusA)
 										// merge objects
 										if (a.mass > m.mass)
 											a.eat(m);
@@ -356,30 +361,29 @@
 									} else {
 										a.attract(m);
 									}
-								*/
-								//a.attract(m);
+								
+									a.attract(m);
 								}
 							}
 						}
 					}
 				}
 				
-			/*
-				// DISPLAY
-				for (var i = movers.length - 1; i >= 0; i--) {
+			
+				// DISPLAY Dynamic movers (added with right clic)
+				for (var i = movers.length - 1; i >= 3; i--) {
 					var m = movers[i];
 					if (m.alive && m.distanceToCenter() < options.MAX_DISTANCE) {
 						if (!pause) {
 							m.update();
 						}
 					}
-					m.display(); // ME déplacé ici 
+					m.display(); // ME moved here ? 
 					updateTrails(m);
-				}		
-			*/
+				}
+			
 		
-            // UPDATE MOVER 
-            var m = moverMoonS;
+            // UPDATE Moon Movers
             if (!pause) {
 			
 				earth.rotation.y += .0009;
@@ -514,16 +518,16 @@ function reset() {
     translate.y = 0.0;
     translate.z = 0.0;
 	
-	// Reset Mesh position 
+	// Reset Moon Mesh positions 
     moonS.position.set(380, 0, 0);
 	moonT.position.set(380, 0, 0);
 
 	// RESET !
-	simulationVelocity = new THREE.Vector3(0, 0, 3680/3600 * options.START_SPEED);
-	console.log("START_SPEED:"+simulationVelocity.length()); 
-	moverEarth = AddBigMoverToCenter(5972, earth, 'Earth');
-	moverMoonS = AddBigMoverToCenter( 736, moonS, 'MoonSimulation', simulationVelocity);
-	moverMoonT = AddBigMoverToCenter( 736, moonT, 'MoonTheorical');
+	simulationVelocity = new THREE.Vector3(0, 0, 3680/3600 * options.MOON_SPEED);
+	console.log("MOON_SPEED:"+simulationVelocity.length()); 
+	moverEarth = AddSpecialMoverFromMesh(5972, earth, 'Earth');
+	moverMoonS = AddSpecialMoverFromMesh( 736, moonS, 'MoonSimulation', simulationVelocity);
+	moverMoonT = AddSpecialMoverFromMesh( 736, moonT, 'MoonTheorical');
 
     // SVG LAST CONFIG OPTIONS
     // localStorage.setItem("options", JSON.stringify(options));
