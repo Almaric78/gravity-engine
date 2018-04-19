@@ -221,7 +221,7 @@
         scene.add(earth);
 
         // Clouds
-        var cloudGeometry = new THREE.SphereGeometry(6.5, 50, 50);
+        var cloudGeometry = new THREE.SphereGeometry(6.378, 50, 50);
         var cloudMaterial = new THREE.MeshPhongMaterial({
             map: new THREE.ImageUtils.loadTexture("./images/clouds_2.jpg"),
             transparent: true,
@@ -241,33 +241,34 @@
         var starField = new THREE.Mesh(starGeometry, starMaterial);
         starField.name = "StarField";
         scene.add(starField);
+		
+		// Moon initial position
+        var rOrbit = 384.405;
+        var theta = 0;
+        var dTheta = 2 * Math.PI / 1000;
 
-        // Moon 
-        var moonGeometry = new THREE.SphereGeometry(1.7, 50, 50);
+		// For Flyby CAM
+        var dx = .01;
+        var dy = -.01;
+        var dz = -.05;
+
+        // Moon Meshs
+        var moonGeometry = new THREE.SphereGeometry(1.738, 50, 50);
         var moonMaterial = new THREE.MeshPhongMaterial({
             map: THREE.ImageUtils.loadTexture("./images/moon_texture.jpg")
         });
         var moonS = new THREE.Mesh(moonGeometry, moonMaterial);
         moonS.name = "MoonSimulation";
-        moonS.position.set(380, 0, 0);
+        moonS.position.set(rOrbit, 0, 0);
         scene.add(moonS);
 
         var moonT = new THREE.Mesh(moonGeometry, moonMaterial);
         moonT.name = "MoonTheorical";
-        moonT.position.set(380, 0, 0);
+        moonT.position.set(rOrbit, 0, 0);
         scene.add(moonT);		
 		
         // Camera vector
         var earthVec = new THREE.Vector3(0, 0, 0);
-
-        var r = 380;
-        var theta = 0;
-        var dTheta = 2 * Math.PI / 1000;
-
-        var dx = .01;
-        var dy = -.01;
-        var dz = -.05;
-
 
         // ME --- CHX
         var $camera_info = $("#camera_info");
@@ -286,7 +287,7 @@
 
         var SPHERE_SIDES = 12;
 
-        // SELECTED VAR
+        // SELECTION VAR
         var biggest
         var selection
         var lastOne
@@ -392,8 +393,8 @@
 
 					//Moon orbit        
 					theta += dTheta;
-					moonT.position.x = r * Math.cos(theta);
-					moonT.position.z = r * Math.sin(theta);
+					moonT.position.x = rOrbit * Math.cos(theta);
+					moonT.position.z = rOrbit * Math.sin(theta);
 
 					//moverEarth.attract(moverMoonS);
 					//moverEarth.update(); // Don't move Earth for the moment
@@ -513,8 +514,8 @@ function reset() {
     translate.z = 0.0;
 	
 	// Reset Moon Mesh positions 
-    moonS.position.set(380, 0, 0);
-	moonT.position.set(380, 0, 0);
+    moonS.position.set(rOrbit, 0, 0);
+	moonT.position.set(rOrbit, 0, 0);
 
 	// RESET !
 	simulationVelocity = new THREE.Vector3(0, 0, 3680/3600 * options.MOON_SPEED);

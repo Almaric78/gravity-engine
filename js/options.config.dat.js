@@ -75,7 +75,7 @@ f = gui.addFolder('Mass and Radius for Dynamics (Right Clic)');
 f.open();
 
 f.add(options, 'SPECIFIC_MASS', .00001, 10000.0).name("MASS");
-f.add(options, 'RADIUS', .001, 1000.0);
+f.add(options, 'RADIUS', .001, 10.0);
 f.add(options, 'START_SPEED', 1e-100, 20.0);
 
 
