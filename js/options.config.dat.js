@@ -1,12 +1,13 @@
 var options = {
-	NAME:"EARTH_MOON", 
+	NAME:"EARTH_MOON",  // name of Simulation 
     framerate: 60,
-    G: 10,
-    MOVER_COUNT: 32,
+    G: 10, // 6.673 ^ -11 ?? 
+    //MOVER_COUNT: 32,
+	
     TRAILS_DISPLAY: true,
     SHOW_DIED: false,
     SHOW_LABELS: true, 
-    TRAILS_LENGTH: 1000,
+    TRAILS_LENGTH: 1000, // Max length of Trails 
 	
     //MIN_MASS: .01,
     //MAX_MASS: 1000,
@@ -15,27 +16,34 @@ var options = {
     START_SPEED: 10,
 	RADIUS:10, 
 	
-    MOON_SPEED: 12,
+    MOON_SPEED: 12, // initial Moon speed 
 	
-    //DENSITY: 0.1,
+    MoveSpeed: 50,  // for moving by keyBoard Up / Down keys
 
-    MoveSpeed: 50,
-
-    MAX_DISTANCE: 300000,
-    //BIG_STAR_MASS:100000,
+    MAX_DISTANCE: 300000,  // Max distance from center to update Movers 
 	
-	MASS_FACTOR   : .01,  // for display of size ? 
-	RADIUS_FACTOR : .001, // for display of size
+	MASS_FACTOR     : 10, // ??
+	DISTANCE_FACTOR : 10,
+/*
+	MASS_FACTOR   : 100000, // 1:10 Gigatonnes = 1:10*10^9 tons = 1:10*10^12 kg ?? 
+	DISTANCE_FACTOR : 1000, // 1:1000 km = 1:10^6 meters
+	RADIUS_FACTOR   : 1000, // for display of size ? not in use for the moment
+*/
 };
 
+// Reset Config ? 
+var httpReset = GET('R');
+if(httpReset){
+	console.log("Reset Initial Config:"+httpReset);
+}
 // LOAD CONFIG 
-if (localStorage && localStorage.getItem("options")){
+else if (localStorage && localStorage.getItem("options")){
     optionsSVG = JSON.parse(localStorage.getItem("options"));
     for (var key in optionsSVG) {
         console.log(key, optionsSVG[key]);
         options.key = optionsSVG.key;
         options[key] = optionsSVG[key];
-      }
+    }
 }
 /*
 	options.AddBigStar = function () {
@@ -83,23 +91,23 @@ f.add(options, 'START_SPEED', 1e-100, 20.0);
 
 
 /*
-var fMinMassChangeE = f.add(options, 'MIN_MASS', .00001, 10000.0);
-fMinMassChangeE.onFinishChange(function (value) {
-    if(options.MAX_MASS<options.MIN_MASS){
-        options.MAX_MASS = value;
-        fMaxMassChangeE.updateDisplay();
-    }
-    //reset();
-});
+	var fMinMassChangeE = f.add(options, 'MIN_MASS', .00001, 10000.0);
+	fMinMassChangeE.onFinishChange(function (value) {
+		if(options.MAX_MASS<options.MIN_MASS){
+			options.MAX_MASS = value;
+			fMaxMassChangeE.updateDisplay();
+		}
+		//reset();
+	});
 
-var fMaxMassChangeE = f.add(options, 'MAX_MASS', .00001, 10000.0);
-fMaxMassChangeE.onFinishChange(function (value) {
-    if(options.MAX_MASS<options.MIN_MASS){
-        options.MIN_MASS = value;
-        fMinMassChangeE.updateDisplay();
-    }
-    //reset();
-});
+	var fMaxMassChangeE = f.add(options, 'MAX_MASS', .00001, 10000.0);
+	fMaxMassChangeE.onFinishChange(function (value) {
+		if(options.MAX_MASS<options.MIN_MASS){
+			options.MIN_MASS = value;
+			fMinMassChangeE.updateDisplay();
+		}
+		//reset();
+	});
 */
 f = gui.addFolder('Start');
 f.open();
@@ -120,7 +128,7 @@ var moveSpeed = 5;
 f.add(options, 'MoveSpeed', 1, 100).onFinishChange(function (value) {
     //console.log(value);
     moveSpeed = Math.floor(options.MoveSpeed);
-    console.log(moveSpeed);
+    console.log("MoveSpeed: " + moveSpeed);
 });
 
 //f.add(options, 'AddBigStar').name('Add Big Star');
@@ -146,26 +154,6 @@ f.add(options, 'RESET').name('RESET ALL');
 
 //console.log(gui);
 //gui.close();
-
-//var HTTP_GET_VARS=new Array();
-//var strGET=document.location.search.substr(1,document.location.search.length);
-//if(strGET!='')
-//{
-//    gArr=strGET.split('&');
-//    for(i=0;i<gArr.length;++i)
-//    {
-//        v='';vArr=gArr[i].split('=');
-//        if(vArr.length>1){v=vArr[1];}
-//        HTTP_GET_VARS[unescape(vArr[0])]=unescape(v);
-//    }
-//}
-//
-//function GET(v)
-//{
-//    if(!HTTP_GET_VARS[v]){return 'undefined';}
-//    return HTTP_GET_VARS[v];
-//}
-//
 
 
 //var G = 100;
@@ -204,7 +192,6 @@ var translate = new THREE.Vector3();
 var movers = [];
 //var container =  false; // ME
 //var textlabels = [];
-
 
 
 // JSQUERY GUI

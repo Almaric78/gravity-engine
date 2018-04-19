@@ -195,6 +195,9 @@ function Mover(m, vel, loc, id, suffix, mesh, radius, colorHex) {
         // console.log(this.id +' est en mouvement p/r à ' + m.id);
         var force = new THREE.Vector3().subVectors(this.location, m.location); // Calculate direction of force
         var d = force.length(); // Distance between objects
+		if(options.NAME=="EARTH_MOON"){
+			d = d * options.DISTANCE_FACTOR;
+		}
         if (d < 0) d *= -1;
         //d = constrain(d,5.0,25.0);                        
 		// Limiting the distance to eliminate "extreme" results for very close or very far objects
@@ -204,6 +207,9 @@ function Mover(m, vel, loc, id, suffix, mesh, radius, colorHex) {
         //console.log("distance", d, "strength", strength);
         //console.log("force",force);
         //console.log(force.x);
+		if(biggest && m==biggest)
+			this.biggestForce = strength; // ME TODO 
+		//this.forceBy = m.id; 
         this.applyForce(force);
         //return m;
     };

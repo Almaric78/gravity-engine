@@ -293,9 +293,9 @@
         var pause = false;
 
 		simulationVelocity = new THREE.Vector3(0, 0, 3680/3600 * 12);
-        moverEarth = AddSpecialMoverFromMesh(5972, earth, 'Earth', null, 0x0000ff );
-        moverMoonS = AddSpecialMoverFromMesh( 736, moonS, 'SimulatedMoon', simulationVelocity);
-		moverMoonT = AddSpecialMoverFromMesh( 736, moonT, 'TheoricMoon');
+        moverEarth = AddSpecialMoverFromMesh(59720 * options.MASS_FACTOR, earth, 'Earth', null, 0x0000ff );
+        moverMoonS = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonS, 'SimulatedMoon', simulationVelocity);
+		moverMoonT = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonT, 'TheoricMoon');
 
 
         // ------------
@@ -518,9 +518,9 @@ function reset() {
 	// RESET !
 	simulationVelocity = new THREE.Vector3(0, 0, 3680/3600 * options.MOON_SPEED);
 	console.log("MOON_SPEED:"+simulationVelocity.length()); 
-	moverEarth = AddSpecialMoverFromMesh(5972, earth, 'Earth');
-    moverMoonS = AddSpecialMoverFromMesh( 736, moonS, 'SimulatedMoon', simulationVelocity);
-	moverMoonT = AddSpecialMoverFromMesh( 736, moonT, 'TheoricMoon');
+    moverEarth = AddSpecialMoverFromMesh(59720 * options.MASS_FACTOR, earth, 'Earth', null, 0x0000ff );
+	moverMoonS = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonS, 'SimulatedMoon', simulationVelocity);
+	moverMoonT = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonT, 'TheoricMoon');
 
     // SVG LAST CONFIG OPTIONS
     // localStorage.setItem("options", JSON.stringify(options));

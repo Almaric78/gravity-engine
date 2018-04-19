@@ -1,3 +1,25 @@
+// HTTP_GET_VARS
+
+var HTTP_GET_VARS=new Array();
+var strGET=document.location.search.substr(1,document.location.search.length);
+if(strGET!='')
+{
+   gArr=strGET.split('&');
+   for(i=0;i<gArr.length;++i)
+   {
+       v='';vArr=gArr[i].split('=');
+       if(vArr.length>1){v=vArr[1];}
+       HTTP_GET_VARS[unescape(vArr[0])]=unescape(v);
+	   // See decodeURI() instead of unescape() 
+   }
+}
+
+function GET(v)
+{
+   if(!HTTP_GET_VARS[v]){return null;}
+   return HTTP_GET_VARS[v];
+}
+
 // MIN / MAX / Random 
 
 function constrain(value, min, max) {
@@ -365,12 +387,18 @@ function LogSelection() {
 		else
 			selectionMsg += ' Killed by ' + selection.killedBy;
 	
+		// position
 		selectionMsg += '<br/>' + format2Vector(selection.mesh.position);
 		selectionMsg += 'Mass: ' + NumToFormat(selection.mass);
+		selectionMsg += '<br/>Vertices: ' + NumToFormat(selection.vertices.length);
 		selectionMsg += '<br/>Velocity: ' + NumToFormat(selection.velocity.length(), 2);
+		
 		selectionMsg += '<br/>Radius/Scale: ' + NumToFormat(selection.getRadius(), 3);
 		if(options.NAME=="GENERAL")
 			selectionMsg += ' X ' + NumToFormat(selection.mesh.scale.length(), 2)
+
+		selectionMsg += '<br/>Biggest Force on: ' + NumToFormat(selection.biggestForce, 3); // '' + selection.forceBy; 
+		
 		selectionMsg += '<br/>DistanceToCamera: ' + NumToFormat(selection.distanceTo(camera.position));
 		selectionMsg += '<br/>DistanceToCenter: ' + NumToFormat(selection.distanceToCenter());
 		return selectionMsg;
