@@ -23,19 +23,24 @@ var options = {
 	MASS_FACTOR : .01 // for display of size
 };
 
-// Reset Config ? 
+// Force Reset Config ? 
 var httpReset = GET('R');
 if(httpReset){
-	console.log("Reset Initial Config:"+httpReset);
+	console.log("Force Reset Initial Config:" + httpReset);
 }
 // LOAD CONFIG 
 else if (localStorage && localStorage.getItem("options")){
     optionsSVG = JSON.parse(localStorage.getItem("options"));
-    for (var key in optionsSVG) {
-        console.log(key, optionsSVG[key]);
-        options.key = optionsSVG.key;
-        options[key] = optionsSVG[key];
-      }
+	if(optionsSVG.NAME==options.NAME){
+		for (var key in optionsSVG) {
+			console.log(key, optionsSVG[key]);
+			options.key = optionsSVG.key;
+			options[key] = optionsSVG[key];
+		}
+	} else {
+		console.log("BAD LOAD CONFIG:" + optionsSVG.NAME + " - EXPECTED:" + options.NAME + " > NO LOAD");
+		console.log(options);
+	}
 }
 
 options.AddBigStar = function () {
@@ -179,8 +184,6 @@ var now;
 var then = Date.now();
 var renderInterval = 1000 / parseInt(options.framerate);
 var renderDelta;
-
-var clock = new THREE.Clock();
 
 var scene = new THREE.Scene({
     castShadow: true
