@@ -227,7 +227,9 @@ function onCbFPSCam() {
 
 var camera2FPS
 
-var control2FPS; 
+var control2FPS;
+
+var clock = new THREE.Clock();
 
 /* = new THREE.FirstPersonControls(camera);
 	control2FPS.movementSpeed = 1000*5;
@@ -305,6 +307,7 @@ function SwitchControl(k) {
 // ADD HELPER
 
 function AddArrowHelper(direction) {
+	console.log("AddArrowHelper")
     // ArrowHelper
     // var origin = new THREE.Vector3( 0, 0, 0 );
     var length = 1000;
@@ -406,7 +409,9 @@ function LogSelection() {
 }
 
 
-// GENERATION 
+// MOVERS : ADD / REMOVE 
+
+//var movers = []; 
 
 function AddRandomMover(id) {
     var mass = random(options.MIN_MASS, options.MAX_MASS);
@@ -461,7 +466,7 @@ function AddSpecialMoverFromMesh(mass, mesh, name, vel, colorHex) {
 	else loc = mesh.position;
 	
 	if(!name)
-		name = 'Spc'
+		name = 's';
 
     //name = movers.length + 'Big'
     big = new Mover(mass, vel, loc, movers.length, name, mesh, null, colorHex);
@@ -474,7 +479,18 @@ function AddSpecialMoverFromMesh(mass, mesh, name, vel, colorHex) {
 	return big; 
 }
 
+function RemoveMover(mover, i){
+	scene.remove(mover.mesh);
+	scene.remove(mover.selectionLight);
+	scene.remove(mover.line);
 
+	if(!mover.alive)
+		scene.remove(mover.impactCube);
+
+	console.log('Remove:', i, mover.name);
+	IHMButtons.removeChild(mover.htmlButton);
+	document.body.removeChild(mover.text.element);
+}	
 
 // MOUSE EVENT ---
 
@@ -515,7 +531,7 @@ window.onmousemove = function (e) {
 initMouseEvent();
 
 function initMouseEvent() {
-	
+		
 	var iMobile=0;
 
     //window.onmousedown = MyMouseDown
@@ -732,11 +748,11 @@ window.onkeydown = function (e) {
         else console.time();
         return false;
 
-    } else if (e.which === 49) { // 1 OrbitControls
+    } else if (e.which === 49 && window.event.shiftKey) { // 1 OrbitControls
         controls = controlOrbit
-        console.log("O")
+        console.log("controlOrbit")
 
-    } else if (e.which === 50) { // 2  FPS
+    } else if (e.which === 50 && window.event.shiftKey) { // 2  FPS
         //controls = control2FPS
         //console.log("FPS")
 
@@ -765,7 +781,7 @@ window.onkeydown = function (e) {
         controls.update(clock.getDelta());
         renderer.render(scene, camera);
 
-    } else if (e.which === 51) { // 3 LOG ?
+    } else if (e.which === 51 && window.event.shiftKey) { // 3 LOG ?
         AddArrowHelper(direction)
         //LogFPS();
     }

@@ -2,8 +2,10 @@ var options = {
 	NAME:"GENERAL", 
     framerate: 60,
     G: 10,
+	
     START_SPEED: 10,
     MOVER_COUNT: 32,
+	
     TRAILS_DISPLAY: true,
     SHOW_DIED: false,
     SHOW_LABELS: true, 
@@ -21,8 +23,13 @@ var options = {
 	MASS_FACTOR : .01 // for display of size
 };
 
+// Reset Config ? 
+var httpReset = GET('R');
+if(httpReset){
+	console.log("Reset Initial Config:"+httpReset);
+}
 // LOAD CONFIG 
-if (localStorage && localStorage.getItem("options")){
+else if (localStorage && localStorage.getItem("options")){
     optionsSVG = JSON.parse(localStorage.getItem("options"));
     for (var key in optionsSVG) {
         console.log(key, optionsSVG[key]);
@@ -49,7 +56,7 @@ var gui = new dat.GUI();
 var f = gui.addFolder('Environment');
 f.open();
 //f.add(options, 'framerate', 1, 120);
-f.add(options, 'G', 1, 1000);
+f.add(options, 'G', 1, 1000).name("Gravity");
 
 var fMoverCountE = f.add(options, 'MOVER_COUNT', 1, 128);
 fMoverCountE.onFinishChange(function (value) {
@@ -128,26 +135,6 @@ f.add(options, 'RESET').name('RESET ALL');
 */
 
 //console.log(gui);
-
-//var HTTP_GET_VARS=new Array();
-//var strGET=document.location.search.substr(1,document.location.search.length);
-//if(strGET!='')
-//{
-//    gArr=strGET.split('&');
-//    for(i=0;i<gArr.length;++i)
-//    {
-//        v='';vArr=gArr[i].split('=');
-//        if(vArr.length>1){v=vArr[1];}
-//        HTTP_GET_VARS[unescape(vArr[0])]=unescape(v);
-//    }
-//}
-//
-//function GET(v)
-//{
-//    if(!HTTP_GET_VARS[v]){return 'undefined';}
-//    return HTTP_GET_VARS[v];
-//}
-//
 
 
 //var G = 100;
@@ -635,22 +622,10 @@ function reset() {
     console.log("RESET ALL !")
     if (movers) {
         for (var i = 0; i < movers.length; i = i + 1) {
-            scene.remove(movers[i].mesh);
-            scene.remove(movers[i].selectionLight);
-            scene.remove(movers[i].line);
-
-            if(!movers[i].alive)
-                scene.remove(movers[i].impactCube);
-
-            console.log('Remove:', i, movers[i].name);
-            IHMButtons.removeChild(movers[i].htmlButton);
-            document.body.removeChild(movers[i].text.element);
+			RemoveMover(movers[i], i);
         }
     }
     movers = [];
-    translate.x = 0.0;
-    translate.y = 0.0;
-    translate.z = 0.0;
 
     // generate N movers with random mass (N = MOVER_COUNT)
     for (var i = 0; i < parseInt(options.MOVER_COUNT); i = i + 1) {

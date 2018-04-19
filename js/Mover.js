@@ -100,6 +100,29 @@ function Mover(m, vel, loc, id, suffix, mesh, radius, colorHex) {
       //container.appendChild(renderer.domElement);
 
     };
+	
+    this.attract = function (m) { // m => other Mover object
+        // console.log(this.id +' est en mouvement p/r à ' + m.id);
+        var force = new THREE.Vector3().subVectors(this.location, m.location); // Calculate direction of force
+        var d = force.length(); // Distance between objects
+		if(options.NAME=="EARTH_MOON"){
+			d = d * options.DISTANCE_FACTOR;
+		}
+        if (d < 0) d *= -1;
+        //d = constrain(d,5.0,25.0);                        
+		// Limiting the distance to eliminate "extreme" results for very close or very far objects
+        force = force.normalize(); // Normalize vector (distance doesn't matter here, we just want this vector for direction)
+        var strength = -(options.G * this.mass * m.mass) / (d * d); // Calculate gravitional force magnitude
+        force = force.multiplyScalar(strength); // Get force vector --> magnitude * direction
+        //console.log("distance", d, "strength", strength);
+        //console.log("force",force);
+        //console.log(force.x);
+		if(biggest && m==biggest)
+			this.biggestForce = strength; // ME TODO 
+		//this.forceBy = m.id; 
+        this.applyForce(force);
+        //return m;
+    };
 
     this.applyForce = function (force) {
         if (!this.mass) this.mass = 1.0;
@@ -191,29 +214,6 @@ function Mover(m, vel, loc, id, suffix, mesh, radius, colorHex) {
         this.htmlButton.style.color = 'black'
     };
 
-    this.attract = function (m) { // m => other Mover object
-        // console.log(this.id +' est en mouvement p/r à ' + m.id);
-        var force = new THREE.Vector3().subVectors(this.location, m.location); // Calculate direction of force
-        var d = force.length(); // Distance between objects
-		if(options.NAME=="EARTH_MOON"){
-			d = d * options.DISTANCE_FACTOR;
-		}
-        if (d < 0) d *= -1;
-        //d = constrain(d,5.0,25.0);                        
-		// Limiting the distance to eliminate "extreme" results for very close or very far objects
-        force = force.normalize(); // Normalize vector (distance doesn't matter here, we just want this vector for direction)
-        var strength = -(options.G * this.mass * m.mass) / (d * d); // Calculate gravitional force magnitude
-        force = force.multiplyScalar(strength); // Get force vector --> magnitude * direction
-        //console.log("distance", d, "strength", strength);
-        //console.log("force",force);
-        //console.log(force.x);
-		if(biggest && m==biggest)
-			this.biggestForce = strength; // ME TODO 
-		//this.forceBy = m.id; 
-        this.applyForce(force);
-        //return m;
-    };
-
     this.display = function () {
         if (isMoverSelected) {
             if (this.selected) {
@@ -275,6 +275,8 @@ function Mover(m, vel, loc, id, suffix, mesh, radius, colorHex) {
         }
 
     };
+	
+	// TRAILS 
 
     this.showTrails = function () {
         
@@ -315,6 +317,8 @@ function Mover(m, vel, loc, id, suffix, mesh, radius, colorHex) {
 	this.getRadius = function () {
 		return this.mesh.geometry.boundingSphere.radius;
 	}
+	
+	// DISTANCE
 
     this.distanceToCenter = function () {
         return this.mesh.position.distanceTo(new THREE.Vector3(0, 0, 0));
@@ -327,6 +331,8 @@ function Mover(m, vel, loc, id, suffix, mesh, radius, colorHex) {
     this.zoomToCam = function () {
         camera.position.set(this.mesh.position);
     }
+	
+	// COLORS 
 
     this.getHexColor = function(){
         return '#' + this.mesh.material.color.getHexString();
