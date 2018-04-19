@@ -182,7 +182,7 @@ function Mover(m, vel, loc, id, suffix, mesh, radius, colorHex) {
     };
 
     this.reborn = function () {
-        console.log(this.id + ' reborn - mass: ' + this.mass.toFixed(2));
+        console.log(this.name + ' reborn - mass: ' + this.mass.toFixed(2));
         this.alive = true;
         scene.add(this.mesh);
 
@@ -196,7 +196,8 @@ function Mover(m, vel, loc, id, suffix, mesh, radius, colorHex) {
         var force = new THREE.Vector3().subVectors(this.location, m.location); // Calculate direction of force
         var d = force.length(); // Distance between objects
         if (d < 0) d *= -1;
-        //d = constrain(d,5.0,25.0);                        // Limiting the distance to eliminate "extreme" results for very close or very far objects
+        //d = constrain(d,5.0,25.0);                        
+		// Limiting the distance to eliminate "extreme" results for very close or very far objects
         force = force.normalize(); // Normalize vector (distance doesn't matter here, we just want this vector for direction)
         var strength = -(options.G * this.mass * m.mass) / (d * d); // Calculate gravitional force magnitude
         force = force.multiplyScalar(strength); // Get force vector --> magnitude * direction
@@ -241,7 +242,7 @@ function Mover(m, vel, loc, id, suffix, mesh, radius, colorHex) {
 
         if (this.alive) {
 			if(options.NAME=="GENERAL"){
-				this.scale = Math.pow((this.mass * MASS_FACTOR / (4 * Math.PI)), 1 / 3);
+				this.scale = Math.pow((this.mass * options.MASS_FACTOR / (4 * Math.PI)), 1 / 3);
 				this.mesh.scale.x = this.scale;
 				this.mesh.scale.y = this.scale;
 				this.mesh.scale.z = this.scale;

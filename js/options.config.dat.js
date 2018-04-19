@@ -23,6 +23,9 @@ var options = {
 
     MAX_DISTANCE: 300000,
     //BIG_STAR_MASS:100000,
+	
+	MASS_FACTOR   : .01,  // for display of size ? 
+	RADIUS_FACTOR : .001, // for display of size
 };
 
 // LOAD CONFIG 
@@ -191,7 +194,6 @@ f.add(options, 'RESET').name('RESET ALL');
 //}
 
 //var FPS = 60;
-var MASS_FACTOR = .01; // for display of size
 
 var SPHERE_SIDES = 12;
 //var TRAILS_LENGTH = 100;

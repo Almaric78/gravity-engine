@@ -209,7 +209,7 @@
 
 
         // Earth
-        var earthGeometry = new THREE.SphereGeometry(6.3, 50, 50);
+        var earthGeometry = new THREE.SphereGeometry(6.378, 50, 50);
         var earthMaterial = new THREE.MeshPhongMaterial({
             map: new THREE.ImageUtils.loadTexture("./images/earth_3.jpg"),
             color: 0xf2f2f2,
@@ -221,7 +221,7 @@
         scene.add(earth);
 
         // Clouds
-        var cloudGeometry = new THREE.SphereGeometry(6.378, 50, 50);
+        var cloudGeometry = new THREE.SphereGeometry(6.478, 50, 50);
         var cloudMaterial = new THREE.MeshPhongMaterial({
             map: new THREE.ImageUtils.loadTexture("./images/clouds_2.jpg"),
             transparent: true,
@@ -282,8 +282,6 @@
         scene.add(selectionLight); // ?? 
 
         var movers = [];
-
-        var MASS_FACTOR = .01; // for display of size
 
         var SPHERE_SIDES = 12;
 

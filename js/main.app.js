@@ -17,6 +17,8 @@ var options = {
     MoveSpeed: 500,
     MAX_DISTANCE: 300000,
     BIG_STAR_MASS:100000,
+	
+	MASS_FACTOR : .01 // for display of size
 };
 
 // LOAD CONFIG 
@@ -174,7 +176,7 @@ f.add(options, 'RESET').name('RESET ALL');
 //}
 
 //var FPS = 60;
-var MASS_FACTOR = .01; // for display of size
+var MASS_FACTOR = options.MASS_FACTOR;
 
 var SPHERE_SIDES = 12;
 //var TRAILS_LENGTH = 100;
@@ -540,7 +542,7 @@ function render() {
                         var a = movers[j];
                         if (movers[i].alive && movers[j].alive && i != j) {
                             var distance = m.location.distanceTo(a.location);
-
+							
                             var radiusM = Math.pow((m.mass / MASS_FACTOR / MASS_FACTOR / 4 * Math.PI), 1 / 3) / 3;
                             var radiusA = Math.pow((a.mass / MASS_FACTOR / MASS_FACTOR / 4 * Math.PI), 1 / 3) / 3;
 

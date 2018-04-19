@@ -367,10 +367,10 @@ function LogSelection() {
 	
 		selectionMsg += '<br/>' + format2Vector(selection.mesh.position);
 		selectionMsg += 'Mass: ' + NumToFormat(selection.mass);
+		selectionMsg += '<br/>Velocity: ' + NumToFormat(selection.velocity.length(), 2);
 		selectionMsg += '<br/>Radius/Scale: ' + NumToFormat(selection.getRadius(), 3);
 		if(options.NAME=="GENERAL")
 			selectionMsg += ' X ' + NumToFormat(selection.mesh.scale.length(), 2)
-		selectionMsg += '<br/>Velocity: ' + NumToFormat(selection.velocity.length(), 2);
 		selectionMsg += '<br/>DistanceToCamera: ' + NumToFormat(selection.distanceTo(camera.position));
 		selectionMsg += '<br/>DistanceToCenter: ' + NumToFormat(selection.distanceToCenter());
 		return selectionMsg;
