@@ -23,15 +23,19 @@ var options = {
 	MASS_FACTOR : .01 // for display of size
 };
 
+// LOAD / SAVE CONFIG
+
+var optionsSvgName = "options";
 // Force Reset Config ? 
 var httpReset = GET('R');
 if(httpReset){
 	console.log("Force Reset Initial Config:" + httpReset);
 }
 // LOAD CONFIG 
-else if (localStorage && localStorage.getItem("options")){
-    optionsSVG = JSON.parse(localStorage.getItem("options"));
+else if (localStorage && localStorage.getItem(optionsSvgName)){
+    optionsSVG = JSON.parse(localStorage.getItem(optionsSvgName));
 	if(optionsSVG.NAME==options.NAME){
+		console.log("LOAD CONFIG:" + optionsSvgName);
 		for (var key in optionsSVG) {
 			console.log(key, optionsSVG[key]);
 			options.key = optionsSVG.key;
@@ -41,7 +45,16 @@ else if (localStorage && localStorage.getItem("options")){
 		console.log("BAD LOAD CONFIG:" + optionsSVG.NAME + " - EXPECTED:" + options.NAME + " > NO LOAD");
 		console.log(options);
 	}
+} else {
+	console.log("No Saved Config:" + optionsSvgName);
 }
+options.SAVECONFIG = function () {
+    // SVG CONFIG OPTIONS
+    localStorage.setItem(optionsSvgName, JSON.stringify(options));
+	console.log("Saved Config:" + optionsSvgName);
+}
+
+
 
 options.AddBigStar = function () {
 	AddBigMoverToCenter();
@@ -51,10 +64,6 @@ options.RESET = function () {
     reset();
 }
 
-options.SAVECONFIG = function () {
-    // SVG CONFIG OPTIONS
-    localStorage.setItem("options", JSON.stringify(options));
-}
 
 // dat GUI
 var gui = new dat.GUI();

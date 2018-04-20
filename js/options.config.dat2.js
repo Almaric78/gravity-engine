@@ -1,8 +1,8 @@
 var options = {
 	NAME:"EARTH_MOON",  // name of Simulation 
-	version : 1,
+	version : 2,
     framerate: 60,
-    G: 10, // 6.673 ^ -11 ?? 
+    G: 6.673e-11, // 10 ?? 
     //MOVER_COUNT: 32,
 	
     TRAILS_DISPLAY: true,
@@ -17,14 +17,14 @@ var options = {
     START_SPEED: 10,
 	RADIUS:10, 
 	
-    MOON_SPEED: 12, // initial Moon speed 
+    MOON_SPEED: 12e-4, // initial Moon speed 
 	
     MoveSpeed: 50,  // for moving by keyBoard Up / Down keys
 
     MAX_DISTANCE: 300000,  // Max distance from center to update Movers 
 	
-	MASS_FACTOR     : 10, // ??
-	DISTANCE_FACTOR : 10,
+	MASS_FACTOR     : 1e20, // ??
+	DISTANCE_FACTOR : 1e9,
 /*
 	MASS_FACTOR   : 100000, // 1:10 Gigatonnes = 1:10*10^9 tons = 1:10*10^12 kg ?? 
 	DISTANCE_FACTOR : 1000, // 1:1000 km = 1:10^6 meters
@@ -34,7 +34,7 @@ var options = {
 
 // LOAD / SAVE CONFIG
 
-var optionsSvgName = "options_EM1";
+var optionsSvgName = "options_EM2";
 // Force Reset Config ? 
 var httpReset = GET('R');
 if(httpReset){
@@ -63,10 +63,15 @@ options.SAVECONFIG = function () {
 	console.log("Saved Config:" + optionsSvgName);
 }
 
+
+
 options.RESET = function () {
     reset();
 }
 
+options.RESET_MOON_S = function () {
+    reinitMoonS();
+}
 
 options.REMOVE_DYNAMICS = function () {
     removeDynamicMovers();
@@ -148,6 +153,7 @@ f.add(options, 'MoveSpeed', 1, 100).onFinishChange(function (value) {
 //f.add(options, 'AddBigStar').name('Add Big Star');
 f.add(options, 'SAVECONFIG').name('SaveTheConf');
 f.add(options, 'RESET').name('RESET ALL');
+f.add(options, 'RESET_MOON_S').name('new Moon S');
 
 	// GitHub ICON 
     var github = gui.add({ fun : function () { window.open('https://github.com/Almaric78/gravity-engine'); } }, 'fun').name('Github');

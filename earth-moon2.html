@@ -169,7 +169,7 @@
 
     <script src="./js/functions.js"></script>
     <script src="./js/Mover.js"></script>
-    <script src="./js/options.config.dat.js"></script>
+    <script src="./js/options.config.dat2.js"></script>
 
 
 
@@ -293,7 +293,7 @@
 
         var pause = false;
 
-		simulationVelocity = new THREE.Vector3(0, 0, 3680/3600 * 12);
+		simulationVelocity = new THREE.Vector3(0, 0, 1/100 );
         moverEarth = AddSpecialMoverFromMesh(59720 * options.MASS_FACTOR, earth, 'Earth', null, 0x0000ff );
 		moverMoonT = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonT, 'TheoricMoon', null, 0x7FFF00);
         moverMoonS = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonS, 'SimulatedMoon', simulationVelocity);
@@ -516,6 +516,21 @@ function reset() {
     // localStorage.setItem("options", JSON.stringify(options));
 }
 
+iMoonS = 1;
+
+function reinitMoonS() {
+	moonS2 = moonS.clone();
+	
+	iMoonS++; 
+	
+	// Reset Moon Mesh positions 
+    moonS2.position.set(rOrbit, 0, 0);
+	//moonT.position.set(rOrbit, 0, 0);
+	
+	simulationVelocity = new THREE.Vector3(0, 0, options.MOON_SPEED);
+	console.log("MOON_SPEED:"+simulationVelocity.length()); 
+	moverMoonS = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonS2, 'SimulatedMoon'+iMoonS, simulationVelocity);
+}
 
     </script>
 </body>

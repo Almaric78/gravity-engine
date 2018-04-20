@@ -67,15 +67,26 @@ function format2Vector(v, nbDigit, prefix) {
 function NumToFormat(float, nbDigit, prefix) {
     if (!float) float = 'NULL';
     if (!nbDigit) nbDigit = 0;
+	if(float>1e6 || float <-1e6)
+		return float.toExponential();
     if (!prefix)
         return ' ' + float.toLocaleString(undefined, { maximumFractionDigits: nbDigit });
     else {
-        if (prefix.startsWith('r')) { float *= 180 / Math.PI; } // conversion in degree for Rotation
+        if (prefix.startsWith('r')) { float *= 180 / Math.PI; } // conversion in degree for Rotation Angle
         return prefix + ': ' + float.toLocaleString(undefined, { maximumFractionDigits: nbDigit }) + '<br/>';
     }
 }
 
 // LIST ALL 
+
+function ListAll() {
+	console.log("MOVERS_SIZE:"+movers.length)
+	console.log("SCENE_CHILDREN:"+scene.children.length)
+    for (var i = movers.length - 1; i >= 0; i--) {
+        var m = movers[i];
+            console.log(m.name + '  mass:' + NumToFormat(m.mass, 0) + ' d:' + NumToFormat(m.distanceToCenter(), 0) + '  ' + m.alive)//
+	}	
+}
 
 function ListAlive() {
     for (var i = movers.length - 1; i >= 0; i--) {
@@ -85,7 +96,7 @@ function ListAlive() {
             let isBIG;
             if (m.biggest) isBIG = 'BIG'
             else isBIG = '';
-            console.log(m.id + '  m:' + NumToFormat(m.mass, 0) + ' d:' + NumToFormat(m.distanceToCenter(), 0) + '  ' + isBIG)//
+            console.log(m.name + '  mass:' + NumToFormat(m.mass, 0) + ' d:' + NumToFormat(m.distanceToCenter(), 0) + '  ' + isBIG)//
             // console.log(m);
         }
     }
@@ -103,7 +114,7 @@ function RebornAllDied() {
 
 // FOR SELECTION
 
-// SELECTION :
+// IHM :
 
 var isMoverSelected = false;
 
@@ -128,6 +139,9 @@ function SelectMeshMover(clickedObj, str) {
 		document.getElementById("mySelect").disabled = false;   
 		document.getElementById("cbFPS").disabled = false;
 	
+	} else {
+		ClearSelection();
+		isMoverSelected = false;
 	}
 }
 
@@ -444,8 +458,8 @@ function AddBigMoverToCenter () {
 		
 		name = movers.length + 'Big'
 		big = new Mover(mass, vel, loc, movers.length, 'Big');
-		big.mesh.material.transparent = true;
-		big.mesh.material.opacity = 0.8
+		//big.mesh.material.transparent = true;
+		//big.mesh.material.opacity = 0.8
 		
 		big.addToMovers();
 
@@ -490,7 +504,29 @@ function RemoveMover(mover, i){
 	console.log('Remove:', i, mover.name);
 	IHMButtons.removeChild(mover.htmlButton);
 	document.body.removeChild(mover.text.element);
-}	
+}
+
+function removeDynamicMovers() {
+	console.log("Initial MOVERS:"+movers.length)
+	console.log("SCENE_CHILDREN:"+scene.children.length)
+	var j = 0;
+	for (var i = movers.length - 1; i >= 3; i = i - 1) {
+		RemoveMover(movers[i], i);
+		
+		var index = movers.indexOf(movers[i]);
+		console.log(index, movers[i].name)
+		if (index > -1) {
+		  movers.splice(index, 1);
+		}
+		
+		//var mpop = movers.pop();
+		//console.log(mpop.name);
+		j++;
+	}
+	console.log("nb movers pop:"+j)
+	console.log("MOVERS_SIZE:"+movers.length)
+	console.log("SCENE_CHILDREN:"+scene.children.length)
+}
 
 // MOUSE EVENT ---
 
