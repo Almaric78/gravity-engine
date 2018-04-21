@@ -68,7 +68,7 @@ function NumToFormat(float, nbDigit, prefix) {
     if (!float) float = 'NULL';
     if (!nbDigit) nbDigit = 0;
 	if(float>1e6 || float <-1e6)
-		return float.toExponential();
+		return float.toExponential(5);
     if (!prefix)
         return ' ' + float.toLocaleString(undefined, { maximumFractionDigits: nbDigit });
     else {
@@ -236,6 +236,11 @@ function onCbFPSCam() {
 */
 }
 
+function onCbOrbitCam(){
+    SwitchControl(1);
+	document.getElementById('cbZoom').disabled = false;
+}
+
 
 // CAMERAS -- CONTROLS 
 
@@ -306,10 +311,10 @@ function SwitchControl(k) {
         //camera.lookAt(direction);
     } else if (k == 1) {
 
-        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls = controlOrbit; // new THREE.OrbitControls(camera, renderer.domElement);
         controls.zoomSpeed = 100
         console.log("OrbitControls");
-        controls.enabled = false;
+        //controls.enabled = false;
 
 
     } else {

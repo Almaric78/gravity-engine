@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Gravity Engine with Three v69</title>
+
+    <meta charset="utf-8" />
+    <style>
+        body,
+        input,
+        textarea,
+        select {
+            font: 1em "Source Code Pro", monospace
+        }
+
+        canvas {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        #controls {
+            position: absolute;
+            z-index: 100;
+            color: white;
+        }
+
+        #controls input[type=range] {
+            background: none;
+        }
+
+        #controls input[type=number] {
+            width: 3em
+        }
+
+        label {
+            display: block;
+        }
+
+        label2 {
+           /* bottom: 0px; */
+            font-size: x-small;
+			margin: 0px;
+        }
+
+        #IHMCam, #IHMSelection{
+            bottom: 0px;
+            font-size: x-small;
+            margin: 0px;
+            padding: 5px;
+        }
+
+        .dg.ac {
+            z-index: 100!important
+        }
+		
+		labelcb {
+			 border:1px solid #ccc;
+			 padding:10px;
+			 margin:0 0 10px;
+			 display:block; 
+		}
+
+        #GeneralInfos {
+            color: #ffffff;
+            background-color: #990000;
+			font-size: small;
+            position: absolute;
+			z-index: 100;
+            bottom: 0px;
+            padding: 5px;
+        }
+		
+		/* GitHub Icon */
+
+		@font-face {
+			font-family: 'iconfont';
+			src: url('iconfont.ttf') format('truetype');
+		}
+
+		.bigFont {
+			font-size: 150%;
+			color: #8C8C8C;
+		}
+		
+		.icon {
+			font-family: 'iconfont';
+			font-size: 130%;
+			float: right;
+		}
+
+		.twitter:before {
+			content: 'a';
+		}
+
+		.github:before {
+			content: 'b';
+		}		
+    </style>
+
+</head>
+
+<body>
+    <div id="controls">
+        <label>
+            target framerate:
+            <input id="framerate" type="number" value="30" max="60" min="1" />
+        </label>
+        <!--<label>-->
+        <!--real framerate: <span id="real_framerate">0</span>-->
+        <!--</label>-->
+        <!--<label>-->
+        <!--<input id="activate_trails" type="checkbox" />-->
+        <!--show trails-->
+        <!--</label>-->
+        <!--<label>-->
+        <!--Trail length:-->
+        <!--<input id="trails_length" min="0" max="3000" value="100" type="range" />-->
+        <!--<span></span>-->
+        <!--</label>-->
+
+
+        <label>
+            particles alive:
+            <span id="movers_alive_count"></span>
+        </label>
+
+        <label>
+            largest / total mass:
+            <br>
+            <span id="maximum_mass"></span> /
+            <span id="total_mass"></span>
+        </label>
+
+        <label2>
+            BIGGEST:
+            <span id="largest_pos" onclick="selectBiggest();"></span>
+        </label2>
+
+		<fieldset id="IHMCam">
+			<label>
+				<input id="cbCam" type="checkbox"> CAMERA:
+			</label>
+			<label2>
+				<span id="camera_info"></span>
+			</label2>
+		</fieldset>
+
+        <fieldset id="IHMSelection">
+            LAST SELECTED:
+            <span id="select_infos"></span>
+            <br/>
+            <!-- <button onclick='lookSun(this.innerHTML);'>lookOrigin</button> -->
+            <!-- <button onclick='inverseSelectionStatus();'>kill/reborn</button>
+            <button onclick='inverseDirection();'>inverse direction</button> -->
+            <!-- <br/> -->
+            <select id="mySelect" onchange="setSelection(this)" disabled>
+                    <option value="0" selected>Action on Selection</option>
+					<option value="changeMass">change the Mass</option>
+                    <option value="inverseSelectionStatus">kill/reborn</option>
+                    <option value="inverseDirection">inverse direction</option>
+                    <!-- <option value="valeur2" selected>Valeur 2</option> -->
+                    <option value="newColor">newColor</option>
+                </select>
+            <div>
+                <label for="cbFPS">
+					<input  id="cbFPS" type="checkbox" name="camFPS" value="FPS" onclick="onCbFPSCam();" disabled> 
+				Follow by Free Cam</label>
+            </div>
+
+            <div>
+                <label for="cbZoom">
+					<input id="cbZoom" type="checkbox" name="cbZoom" disabled> AutoZoomIn on it
+                </label>
+            </div>
+        </fieldset>
+
+        <div id='IHMButtons' style='position:absolute'>
+        </div>
+
+		<!-- <div id='GeneralInfos' style='position:absolute'> -->
+        <!-- </div> -->
+
+    </div>
+	
+    <div id="GeneralInfos">PAUSE</div>
+
+
+    <script src="js/libs/dat.gui.min.js"></script>
+    <script src="js/libs/jquery.js"></script>
+    <script src="js/libs/three.min.js"></script>
+
+    <script src="js/controls/FirstPersonControls.js"></script>
+
+    <script src="js/functions.js"></script>
+	<script src="js/Mover.js"></script>
+    <script src="js/main.app.js"></script>
+</body>
+
+</html>

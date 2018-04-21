@@ -115,7 +115,7 @@
 
         <fieldset id="IHMCam">
             <label>
-                <input id="cbCam" type="checkbox"> CAMERA:
+                <input id="cbCam" type="checkbox" checked> CAMERA:
             </label>
             <label2>
                 <span id="camera_info"></span>
@@ -139,8 +139,12 @@
                 <option value="newColor">newColor</option>
             </select>
             <div>
+				<label for="cbFollowOrbitCam">
+                    <input type="radio" name="controlCam" id="cbFollowOrbitCam" onclick="onCbOrbitCam();"> Follow by Orbit Cam
+				</label>
                 <label for="cbFPS">
-                    <input id="cbFPS" type="checkbox" name="camFPS" value="FPS" onclick="onCbFPSCam();"> Follow by Free Cam</label>
+                    <input type="radio" name="controlCam" id="cbFPS" value="FPS" onclick="onCbFPSCam();"> Follow by Free Cam
+				</label>
             </div>
 
             <div>
@@ -413,23 +417,29 @@
 				moverMoonT.display(); 
 				updateTrails(moverMoonT);
 
-				
+	
+				if(!pause && document.getElementById('cbZoom').checked){
+					if(selection.mesh.position.distanceTo(camera.position)>30){
+						direction2 = direction.clone().multiplyScalar(moveSpeed);
+						//console.log(direction2.length());
+						camera.position.x += direction2.x;
+						camera.position.y += direction2.y;
+						camera.position.z += direction2.z;
+					} else {
+						// STOP The AutoZoomIn
+						document.getElementById("cbZoom").checked = false;
+					}
+				}
+	
 				// Follow by Free FPC CAM if Enabled 
 				if (selection && document.getElementById('cbFPS').checked) {
 					camera.lookAt(selection.mesh.position);
 
-					if(!pause && document.getElementById('cbZoom').checked){
-						if(selection.mesh.position.distanceTo(camera.position)>30){
-							direction2 = direction.clone().multiplyScalar(moveSpeed);
-							//console.log(direction2.length());
-							camera.position.x += direction2.x;
-							camera.position.y += direction2.y;
-							camera.position.z += direction2.z;
-						} else {
-							// STOP The AutoZoomIn
-							document.getElementById("cbZoom").checked = false;
-						}
-					}
+	
+				} else if (selection && document.getElementById('cbFollowOrbitCam').checked) {
+					camera.lookAt(selection.mesh.position);
+				
+				
 				} else {
 				
 					if(!pause && isFlybyCam){
