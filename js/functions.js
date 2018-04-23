@@ -119,13 +119,14 @@ function RebornAllDied() {
 var isMoverSelected = false;
 
 function SelectMeshMover(clickedObj, str) {
-    console.log(str + " > selected idMesh:" + clickedObj.id); //, clickedObj); // + '  mass=' + clickedObj.mover.mass.toFixed());
-    selection = mover = clickedObj.mover;
-    //$select_infos.html( clickedObj.id );  // largest_pos.toFixed(2)
-	
+    console.log(str + " > selected idMesh:" + clickedObj.id, clickedObj.name); 
+    //$select_infos.html( clickedObj.id );	
 	//console.log(clickedObj);
 	
+    var mover = clickedObj.mover;
 	if(mover){
+		
+		selection = mover; 
 		
 		if (!mover.selected)
 			ClearSelection();
@@ -190,7 +191,7 @@ function newColor() {
         selection.newColor();
 }
 
-function lookSun(string) {
+function lookCenter(string) {
     console.log(string);
     document.getElementById('cbFPS').checked = false;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -203,14 +204,16 @@ function selectBiggest() {
 
 function changeMass() {
     if (selection) {
+		var svg_pause_status = pause;
         pause = true;
-        var initialMass = parseInt(selection.mass, 10);
+        var initialMass = parseFloat(selection.mass, 10);
         var newMass = prompt("Please enter the new mass:", initialMass);
         newMass = parseFloat(newMass);
         if (!newMass)
             newMass = initialMass;
         console.log("New mass:" + newMass + " on selection id:" + selection.id)
         selection.mass = newMass;
+		pause = svg_pause_status;
     }
 }
 
@@ -221,12 +224,11 @@ function onCbFPSCam() {
     if (document.getElementById('cbFPS').checked) {
         //if(!(controls instanceof (THREE.FirstPersonControls))) {
         SwitchControl(2);
-        controls.enabled = false;
+        //controls.enabled = false;
         document.getElementById('cbZoom').disabled = false;
         //} else console.log('orbit');
     } else document.getElementById('cbZoom').disabled = true;
 
-   // camera.lookAt(mover.mesh.position);
 /*
     direction = camera.getWorldDirection().clone();
 
@@ -274,8 +276,14 @@ function SwitchControl(k) {
     camRotation = camera.rotation.clone();
     console.log(direction);
 
+	if (k == 1) {
 
-    if (k == 2) {
+        controls = controlOrbit; // new THREE.OrbitControls(camera, renderer.domElement);
+        controls.zoomSpeed = 100
+        console.log("OrbitControls");
+        //controls.enabled = false;
+		
+    } else if (k == 2) {
 
         console.log("FirstPersonControls");
         if (!control2FPS) {
@@ -285,7 +293,7 @@ function SwitchControl(k) {
             control2FPS = new THREE.FirstPersonControls(camera2FPS, renderer.domElement);
             control2FPS.movementSpeed = 1000 * 5;
             control2FPS.lookSpeed = 0.1;
-            control2FPS.enabled = false;
+            //control2FPS.enabled = false;
         }
         /*	
             angleX = direction.angleTo (new THREE.Vector3(1,0,0))
@@ -296,7 +304,7 @@ function SwitchControl(k) {
         controls = control2FPS;
         camera = camera2FPS;
 
-        camera.lookAt(direction);
+        //camera.lookAt(direction);
 
         camera.rotation.copy(camera2FPS.rotation)
 
@@ -307,15 +315,6 @@ function SwitchControl(k) {
 		camera.rotation.z = svgCamera.rotation.z;
 		*/
         controls.enabled = true;
-
-        //camera.lookAt(direction);
-    } else if (k == 1) {
-
-        controls = controlOrbit; // new THREE.OrbitControls(camera, renderer.domElement);
-        controls.zoomSpeed = 100
-        console.log("OrbitControls");
-        //controls.enabled = false;
-
 
     } else {
         // TODO 

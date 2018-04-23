@@ -163,7 +163,10 @@
     <script src="../js/libs/jQuery.min.js"></script>
     <script src="../js/libs/dat.gui.min.js"></script>
     <script src="../js/libs/three.min.js"></script>
+	
     <script src="../js/controls/orbit_controls.js"></script>
+    <script src="../js/controls/FirstPersonControls.js"></script>
+
 
     <script src="../js/functions.js"></script>
     <script src="../js/Mover.js"></script>
@@ -287,8 +290,8 @@
 
         //AddBigMoverToCenter();
 
-        moverEarth = AddBigMoverToCenter(5972, earth, 'Earth');
-        moverMoon  = AddBigMoverToCenter(736, moon, 'Moon');
+        moverEarth = AddSpecialMoverFromMesh(5972, earth, 'Earth');
+        moverMoon  = AddSpecialMoverFromMesh(736, moon, 'Moon');
 
 
         // ------------
@@ -328,7 +331,7 @@
                 m.updateMeshPositionInTrail();
             }
 
-            m.display(); // ME déplacé ici 
+            m.display();
             updateTrails(m);
 
 

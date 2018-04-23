@@ -572,23 +572,27 @@ function render() {
             updateTrails(m);
         }
 
+		// AUTOZOOM ON SELECTION 
+		if(!pause && document.getElementById('cbZoom').checked){
+			if(selection.mesh.position.distanceTo(camera.position)>7000){
+				direction2 = direction.clone().multiplyScalar(moveSpeed);
+				//console.log(direction2.length());
+				camera.position.x += direction2.x;
+				camera.position.y += direction2.y;
+				camera.position.z += direction2.z;
+			} else {
+				// STOP The AutoZoomIn
+				document.getElementById("cbZoom").checked = false;
+			}
+		}
+			
         // Fix Follow FPC CAM if Enabled 
         if (selection && document.getElementById('cbFPS').checked) {
             camera.lookAt(selection.mesh.position);
 
-            if(!pause && document.getElementById('cbZoom').checked){
-                if(selection.mesh.position.distanceTo(camera.position)>7000){
-                    direction2 = direction.clone().multiplyScalar(moveSpeed);
-                    //console.log(direction2.length());
-                    camera.position.x += direction2.x;
-                    camera.position.y += direction2.y;
-                    camera.position.z += direction2.z;
-                } else {
-                    // STOP The AutoZoomIn
-                    document.getElementById("cbZoom").checked = false;
-                }
-            }
-        }
+		} else if (selection && document.getElementById('cbFollowOrbitCam').checked) {
+			camera.lookAt(selection.mesh.position);
+		}
 
         // INFOS PANEL
 

@@ -13,9 +13,9 @@ var options = {
     //MIN_MASS: .01,
     //MAX_MASS: 1000,
 	
-	SPECIFIC_MASS : 500, 
-    START_SPEED: 10,
-	RADIUS:10, 
+	SPECIFIC_MASS : 5000,
+    START_SPEED: 2,
+	RADIUS:1, 
 	
     MOON_SPEED: 12e-4, // initial Moon speed 
 	
@@ -24,7 +24,7 @@ var options = {
     MAX_DISTANCE: 300000,  // Max distance from center to update Movers 
 	
 	MASS_FACTOR     : 1e20, // ??
-	DISTANCE_FACTOR : 1e9,
+	DISTANCE_FACTOR : 1e6,
 /*
 	MASS_FACTOR   : 100000, // 1:10 Gigatonnes = 1:10*10^9 tons = 1:10*10^12 kg ?? 
 	DISTANCE_FACTOR : 1000, // 1:1000 km = 1:10^6 meters
@@ -79,6 +79,8 @@ options.REMOVE_DYNAMICS = function () {
 
 // dat GUI
 var gui = new dat.GUI();
+gui.remember(options);
+
 var f = gui.addFolder('Environment');
 f.open();
 //f.add(options, 'framerate', 1, 120);
@@ -109,34 +111,8 @@ f.add(options, 'START_SPEED', 1e-100, 20.0);
 f.add(options, 'REMOVE_DYNAMICS').name('Remove dynamic balls');
 
 
-/*
-	var fMinMassChangeE = f.add(options, 'MIN_MASS', .00001, 10000.0);
-	fMinMassChangeE.onFinishChange(function (value) {
-		if(options.MAX_MASS<options.MIN_MASS){
-			options.MAX_MASS = value;
-			fMaxMassChangeE.updateDisplay();
-		}
-		//reset();
-	});
-
-	var fMaxMassChangeE = f.add(options, 'MAX_MASS', .00001, 10000.0);
-	fMaxMassChangeE.onFinishChange(function (value) {
-		if(options.MAX_MASS<options.MIN_MASS){
-			options.MIN_MASS = value;
-			fMinMassChangeE.updateDisplay();
-		}
-		//reset();
-	});
-*/
 f = gui.addFolder('Start');
 f.open();
-
-/*
-	var fDensityE = f.add(options, 'DENSITY', 1e-100, 1.0);
-	fDensityE.onFinishChange(function (value) {
-		//reset();
-	});
-*/
 
 var fSpeedE = f.add(options, 'MOON_SPEED', 1e-100, 20.0);
 fSpeedE.onFinishChange(function (value) {
@@ -153,15 +129,16 @@ f.add(options, 'MoveSpeed', 1, 100).onFinishChange(function (value) {
 //f.add(options, 'AddBigStar').name('Add Big Star');
 f.add(options, 'SAVECONFIG').name('SaveTheConf');
 f.add(options, 'RESET').name('RESET ALL');
-f.add(options, 'RESET_MOON_S').name('new Moon S');
+f.add(options, 'RESET_MOON_S').name('New Simul Moon');
 
-	// GitHub ICON 
-    var github = gui.add({ fun : function () { window.open('https://github.com/Almaric78/gravity-engine'); } }, 'fun').name('Github');
-    github.__li.className = 'cr function bigFont';
-    github.__li.style.borderLeft = '3px solid #8C8C8C';
-    var githubIcon = document.createElement('span');
-    github.domElement.parentElement.appendChild(githubIcon);
-    githubIcon.className = 'icon github';
+
+// GitHub ICON 
+var github = gui.add({ fun : function () { window.open('https://github.com/Almaric78/gravity-engine'); } }, 'fun').name('Github');
+github.__li.className = 'cr function bigFont';
+github.__li.style.borderLeft = '3px solid #8C8C8C';
+var githubIcon = document.createElement('span');
+github.domElement.parentElement.appendChild(githubIcon);
+githubIcon.className = 'icon github';
 	
 /*
     var twitter = gui.add({ fun : function () { window.open('https://twitter.com/PavelDoGreat'); } }, 'fun').name('Twitter');

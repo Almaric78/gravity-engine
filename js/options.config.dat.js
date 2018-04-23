@@ -74,6 +74,8 @@ options.REMOVE_DYNAMICS = function () {
 
 // dat GUI
 var gui = new dat.GUI();
+gui.remember(options);
+
 var f = gui.addFolder('Environment');
 f.open();
 //f.add(options, 'framerate', 1, 120);
@@ -103,35 +105,9 @@ f.add(options, 'RADIUS', .001, 10.0);
 f.add(options, 'START_SPEED', 1e-100, 20.0);
 f.add(options, 'REMOVE_DYNAMICS').name('Remove dynamic balls');
 
-
-/*
-	var fMinMassChangeE = f.add(options, 'MIN_MASS', .00001, 10000.0);
-	fMinMassChangeE.onFinishChange(function (value) {
-		if(options.MAX_MASS<options.MIN_MASS){
-			options.MAX_MASS = value;
-			fMaxMassChangeE.updateDisplay();
-		}
-		//reset();
-	});
-
-	var fMaxMassChangeE = f.add(options, 'MAX_MASS', .00001, 10000.0);
-	fMaxMassChangeE.onFinishChange(function (value) {
-		if(options.MAX_MASS<options.MIN_MASS){
-			options.MIN_MASS = value;
-			fMinMassChangeE.updateDisplay();
-		}
-		//reset();
-	});
-*/
 f = gui.addFolder('Start');
 f.open();
 
-/*
-	var fDensityE = f.add(options, 'DENSITY', 1e-100, 1.0);
-	fDensityE.onFinishChange(function (value) {
-		//reset();
-	});
-*/
 
 var fSpeedE = f.add(options, 'MOON_SPEED', 1e-100, 20.0);
 fSpeedE.onFinishChange(function (value) {
@@ -149,14 +125,14 @@ f.add(options, 'MoveSpeed', 1, 100).onFinishChange(function (value) {
 f.add(options, 'SAVECONFIG').name('SaveTheConf');
 f.add(options, 'RESET').name('RESET ALL');
 
-	// GitHub ICON 
-    var github = gui.add({ fun : function () { window.open('https://github.com/Almaric78/gravity-engine'); } }, 'fun').name('Github');
-    github.__li.className = 'cr function bigFont';
-    github.__li.style.borderLeft = '3px solid #8C8C8C';
-    var githubIcon = document.createElement('span');
-    github.domElement.parentElement.appendChild(githubIcon);
-    githubIcon.className = 'icon github';
-	
+// GitHub ICON 
+var github = gui.add({ fun : function () { window.open('https://github.com/Almaric78/gravity-engine'); } }, 'fun').name('Github');
+github.__li.className = 'cr function bigFont';
+github.__li.style.borderLeft = '3px solid #8C8C8C';
+var githubIcon = document.createElement('span');
+github.domElement.parentElement.appendChild(githubIcon);
+githubIcon.className = 'icon github';
+
 /*
     var twitter = gui.add({ fun : function () { window.open('https://twitter.com/PavelDoGreat'); } }, 'fun').name('Twitter');
     twitter.__li.className = 'cr function bigFont';
