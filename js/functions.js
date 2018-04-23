@@ -497,6 +497,38 @@ function AddSpecialMoverFromMesh(mass, mesh, name, vel, colorHex) {
 	return big; 
 }
 
+// Same function with options JSON parameters (for future..) 
+function AddSpecialMoverFromMesh2(mass, mesh, name, options) {
+	
+	var options = options || {};
+    var colorHex = options.colorHex || null;
+	var vel = options.vel || new THREE.Vector3(0, 0, 0);
+	console.log(options);
+	
+	if(!mass)
+		mass = options.SPECIFIC_MASS;
+    
+	if(!mesh)
+		loc = new THREE.Vector3(0, 0, 0);
+	else loc = mesh.position;
+	
+	if(!name)
+		name = 's';
+
+    //name = movers.length + 'Big'
+    big = new Mover(mass, vel, loc, movers.length, name, mesh, null, colorHex);
+    //big.mesh.material.transparent = true;
+    //big.mesh.material.opacity = 0.9
+	big.selected = false; 
+
+    big.addToMovers();
+	
+	return big; 
+}
+
+// REMOVE MOVERS 
+
+
 function RemoveMover(mover, i){
 	scene.remove(mover.mesh);
 	scene.remove(mover.selectionLight);

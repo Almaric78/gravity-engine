@@ -139,8 +139,15 @@
                 <option value="newColor">newColor</option>
             </select>
             <div>
+				<label for="cbGeneralOrbitCam">
+                    <input type="radio" name="controlCam" id="cbGeneralOrbitCam" checked> General Orbit Cam
+				</label>
+				<label for="cbFollowOrbitCam">
+                    <input type="radio" name="controlCam" id="cbFollowOrbitCam" onclick="onCbOrbitCam();"> Follow by Orbit Cam
+				</label>
                 <label for="cbFPS">
-                    <input id="cbFPS" type="checkbox" name="camFPS" value="FPS" onclick="onCbFPSCam();"> Follow by Free Cam</label>
+                    <input type="radio" name="controlCam" id="cbFPS" value="FPS" onclick="onCbFPSCam();"> Follow by Free Cam
+				</label>
             </div>
 
             <div>
@@ -353,8 +360,8 @@
 								
 									if (distance < radiusM + radiusA) {
 										console.log("EAT distance:"+distance)
-										console.log("EAT radiusM:"+radiusM)
-										console.log("EAT radiusA:"+radiusA)
+										//console.log("EAT radiusM:"+radiusM)
+										//console.log("EAT radiusA:"+radiusA)
 										// merge objects
 										if (a.mass > m.mass)
 											a.eat(m);
@@ -413,23 +420,34 @@
 				moverMoonT.display(); 
 				updateTrails(moverMoonT);
 
-				
+	
+				// AUTOZOOM :
+				if(!pause && document.getElementById('cbZoom').checked){
+					if(selection.mesh.position.distanceTo(camera.position)>30){
+						moveSpeed = parseFloat(options.MoveSpeed);
+						direction2 = direction.clone().multiplyScalar(moveSpeed);
+						//console.log(direction2.length());
+						camera.position.x += direction2.x;
+						camera.position.y += direction2.y;
+						camera.position.z += direction2.z;
+					} else {
+						// STOP The AutoZoomIn
+						// document.getElementById("cbZoom").checked = false;
+						options.MoveSpeed = 1;
+					    //moveSpeed = Math.floor(options.MoveSpeed);
+						fSpeedMS.updateDisplay(); 
+					}
+				}
+	
 				// Follow by Free FPC CAM if Enabled 
 				if (selection && document.getElementById('cbFPS').checked) {
 					camera.lookAt(selection.mesh.position);
 
-					if(!pause && document.getElementById('cbZoom').checked){
-						if(selection.mesh.position.distanceTo(camera.position)>30){
-							direction2 = direction.clone().multiplyScalar(moveSpeed);
-							//console.log(direction2.length());
-							camera.position.x += direction2.x;
-							camera.position.y += direction2.y;
-							camera.position.z += direction2.z;
-						} else {
-							// STOP The AutoZoomIn
-							document.getElementById("cbZoom").checked = false;
-						}
-					}
+	
+				} else if (selection && document.getElementById('cbFollowOrbitCam').checked) {
+					camera.lookAt(selection.mesh.position);
+				
+				
 				} else {
 				
 					if(!pause && isFlybyCam){

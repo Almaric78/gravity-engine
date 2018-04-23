@@ -181,6 +181,41 @@
 
 
     <script>
+	
+	var options = {
+		NAME:"EARTH_MOON",  // name of Simulation
+		NAME_SVG: "EM2",
+		version : 2,
+		framerate: 60,
+		G: 6.673e-11, // 10 ?? 
+		
+		TRAILS_DISPLAY: true,
+		SHOW_DIED: false,
+		SHOW_LABELS: true, 
+		TRAILS_LENGTH: 1000, // Default length of Trails 
+		
+		SPECIFIC_MASS : 5000, // 5 tons 
+		START_SPEED: 2,
+		RADIUS:1, 
+		
+		MOON_SPEED: 1, // initial Moon speed 
+		
+		MoveSpeed: 50,  // for moving by keyBoard Up / Down keys
+
+		MAX_DISTANCE: 300000,  // Max distance from center to update Movers 
+		
+		MASS_FACTOR     : 1e20, // ??
+		DISTANCE_FACTOR : 1e6,
+		
+		SPECIFIC_GRAVITY_FCT : function (mass, d) {  return - 400000 * mass / (d * d); },
+	/*
+		MASS_FACTOR   : 100000, // 1:10 Gigatonnes = 1:10*10^9 tons = 1:10*10^12 kg ?? 
+		DISTANCE_FACTOR : 1000, // 1:1000 km = 1:10^6 meters
+		RADIUS_FACTOR   : 1000, // for display of size ? not in use for the moment
+	*/
+	};
+	
+	InitGUIFromOptions(options);
 
         //allow cross origin loading
         THREE.ImageUtils.crossOrigin = '';
@@ -301,9 +336,9 @@
         var pause = false;
 
 		simulationVelocity = new THREE.Vector3(0, 0, 1 );
-        moverEarth = AddSpecialMoverFromMesh(59720 * options.MASS_FACTOR, earth, 'Earth', null, 0x0000ff );
-		moverMoonT = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonT, 'TheoricMoon', null, 0x7FFF00);
-        moverMoonS = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonS, 'SimulatedMoon', simulationVelocity);
+        moverEarth = AddSpecialMoverFromMesh2(59720 * options.MASS_FACTOR, earth, 'Earth',       {colorHex:0x0000ff} );
+		moverMoonT = AddSpecialMoverFromMesh2(  736 * options.MASS_FACTOR, moonT, 'TheoricMoon', {colorHex:0x7FFF00});
+        moverMoonS = AddSpecialMoverFromMesh2(  736 * options.MASS_FACTOR, moonS, 'SimulatedMoon', {vel:simulationVelocity});
 
 		selection = moverMoonS;
 
@@ -315,6 +350,7 @@
 			// DEPLACEMENT 
 			var vector = new THREE.Vector3();
 			var direction = camera.getWorldDirection(vector);
+			var moveSpeed = parseFloat(options.MoveSpeed);
 			if (holdUp) {
 				camera.position.add(vector.multiplyScalar(moveSpeed));
 			} else if (holdDown) {
@@ -360,8 +396,8 @@
 								
 									if (distance < radiusM + radiusA) {
 										console.log("EAT distance:"+distance)
-										console.log("EAT radiusM:"+radiusM)
-										console.log("EAT radiusA:"+radiusA)
+										//console.log("EAT radiusM:"+radiusM)
+										//console.log("EAT radiusA:"+radiusA)
 										// merge objects
 										if (a.mass > m.mass)
 											a.eat(m);
@@ -424,6 +460,7 @@
 				// AUTOZOOM :
 				if(!pause && document.getElementById('cbZoom').checked){
 					if(selection.mesh.position.distanceTo(camera.position)>30){
+						moveSpeed = parseFloat(options.MoveSpeed);
 						direction2 = direction.clone().multiplyScalar(moveSpeed);
 						//console.log(direction2.length());
 						camera.position.x += direction2.x;
@@ -433,7 +470,7 @@
 						// STOP The AutoZoomIn
 						// document.getElementById("cbZoom").checked = false;
 						options.MoveSpeed = 1;
-					    moveSpeed = Math.floor(options.MoveSpeed);
+					    //moveSpeed = Math.floor(options.MoveSpeed);
 					}
 				}
 	
@@ -524,9 +561,9 @@ function reset() {
 	// RESET !
 	simulationVelocity = new THREE.Vector3(0, 0, options.MOON_SPEED);
 	console.log("MOON_SPEED:"+simulationVelocity.length()); 
-	moverEarth = AddSpecialMoverFromMesh(59720 * options.MASS_FACTOR, earth, 'Earth', null, 0x0000ff );
-	moverMoonT = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonT, 'TheoricMoon', null, 0x7FFF00);
-	moverMoonS = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonS, 'SimulatedMoon', simulationVelocity);
+	moverEarth = AddSpecialMoverFromMesh2(59720 * options.MASS_FACTOR, earth, 'Earth', {colorHex:0x0000ff} );
+	moverMoonT = AddSpecialMoverFromMesh2(  736 * options.MASS_FACTOR, moonT, 'TheoricMoon', {colorHex:0x7FFF00});
+	moverMoonS = AddSpecialMoverFromMesh2(  736 * options.MASS_FACTOR, moonS, 'SimulatedMoon', {vel:simulationVelocity});
 
     // SVG LAST CONFIG OPTIONS
     // localStorage.setItem("options", JSON.stringify(options));
@@ -545,7 +582,7 @@ function reinitMoonS() {
 	
 	simulationVelocity = new THREE.Vector3(0, 0, options.MOON_SPEED);
 	console.log("MOON_SPEED:"+simulationVelocity.length()); 
-	moverMoonS = AddSpecialMoverFromMesh(  736 * options.MASS_FACTOR, moonS2, 'SimulatedMoon'+iMoonS, simulationVelocity);
+	moverMoonS = AddSpecialMoverFromMesh2(  736 * options.MASS_FACTOR, moonS, 'SimulatedMoon', {vel:simulationVelocity});
 }
 
     </script>

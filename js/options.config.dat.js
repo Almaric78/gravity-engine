@@ -1,17 +1,14 @@
 var options = {
 	NAME:"EARTH_MOON",  // name of Simulation 
+	NAME_SVG: "EM1",
 	version : 1,
     framerate: 60,
     G: 10, // 6.673 ^ -11 ?? 
-    //MOVER_COUNT: 32,
 	
     TRAILS_DISPLAY: true,
     SHOW_DIED: false,
     SHOW_LABELS: true, 
     TRAILS_LENGTH: 1000, // Max length of Trails 
-	
-    //MIN_MASS: .01,
-    //MAX_MASS: 1000,
 	
 	SPECIFIC_MASS : 500, 
     START_SPEED: 10,
@@ -115,7 +112,8 @@ fSpeedE.onFinishChange(function (value) {
 });
 
 var moveSpeed = 5;
-f.add(options, 'MoveSpeed', 1, 100).onFinishChange(function (value) {
+var fSpeedMS = f.add(options, 'MoveSpeed', 1, 100);
+fSpeedMS.onFinishChange(function (value) {
     //console.log(value);
     moveSpeed = Math.floor(options.MoveSpeed);
     console.log("MoveSpeed: " + moveSpeed);

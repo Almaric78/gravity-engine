@@ -1,44 +1,15 @@
-var options = {
-	NAME:"EARTH_MOON",  // name of Simulation 
-	version : 2,
-    framerate: 60,
-    G: 6.673e-11, // 10 ?? 
-    //MOVER_COUNT: 32,
-	
-    TRAILS_DISPLAY: true,
-    SHOW_DIED: false,
-    SHOW_LABELS: true, 
-    TRAILS_LENGTH: 1000, // Max length of Trails 
-	
-    //MIN_MASS: .01,
-    //MAX_MASS: 1000,
-	
-	SPECIFIC_MASS : 5000,
-    START_SPEED: 2,
-	RADIUS:1, 
-	
-    MOON_SPEED: 12e-4, // initial Moon speed 
-	
-    MoveSpeed: 50,  // for moving by keyBoard Up / Down keys
-
-    MAX_DISTANCE: 300000,  // Max distance from center to update Movers 
-	
-	MASS_FACTOR     : 1e20, // ??
-	DISTANCE_FACTOR : 1e6,
-/*
-	MASS_FACTOR   : 100000, // 1:10 Gigatonnes = 1:10*10^9 tons = 1:10*10^12 kg ?? 
-	DISTANCE_FACTOR : 1000, // 1:1000 km = 1:10^6 meters
-	RADIUS_FACTOR   : 1000, // for display of size ? not in use for the moment
-*/
-};
 
 // LOAD / SAVE CONFIG
 
-var optionsSvgName = "options_EM2";
+function InitGUIFromOptions(options){
+
+var optionsSvgName = options.NAME_SVG ? options.NAME_SVG : "options_EM" ;
+
 // Force Reset Config ? 
 var httpReset = GET('R');
 if(httpReset){
 	console.log("Force Reset Initial Config:" + httpReset);
+	console.log("Initial Config :", options);
 }
 // LOAD CONFIG 
 else if (localStorage && localStorage.getItem(optionsSvgName)){
@@ -56,14 +27,16 @@ else if (localStorage && localStorage.getItem(optionsSvgName)){
 	}
 } else {
 	console.log("No Saved Config:" + optionsSvgName);
+	console.log("Initial Config :", options);
 }
+
 options.SAVECONFIG = function () {
     // SVG CONFIG OPTIONS
     localStorage.setItem(optionsSvgName, JSON.stringify(options));
 	console.log("Saved Config:" + optionsSvgName);
 }
 
-
+// ---
 
 options.RESET = function () {
     reset();
@@ -119,12 +92,14 @@ fSpeedE.onFinishChange(function (value) {
     //reset();
 });
 
-var moveSpeed = 5;
-f.add(options, 'MoveSpeed', 1, 100).onFinishChange(function (value) {
+//var moveSpeed = 5;
+f.add(options, 'MoveSpeed', 1, 100)
+/*.onFinishChange(function (value) {
     //console.log(value);
     moveSpeed = Math.floor(options.MoveSpeed);
     console.log("MoveSpeed: " + moveSpeed);
 });
+*/ 
 
 //f.add(options, 'AddBigStar').name('Add Big Star');
 f.add(options, 'SAVECONFIG').name('SaveTheConf');
@@ -152,13 +127,8 @@ githubIcon.className = 'icon github';
 //console.log(gui);
 //gui.close();
 
+}
 
-//var G = 100;
-
-//var MOVER_COUNT = 32;
-
-//var MOVER_MASS_MIN = .0000001;
-//var MOVER_MASS_MAX = 100;
 
 ///* GET parameters for configuration: */
 //var GET_G = parseFloat(GET("G"));
@@ -184,7 +154,6 @@ var SPHERE_SIDES = 12;
 //var TRAILS_LENGTH = 100;
 
 var zoom = 1.0;
-var translate = new THREE.Vector3();
 
 var movers = [];
 //var container =  false; // ME
