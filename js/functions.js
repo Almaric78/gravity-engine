@@ -324,6 +324,23 @@ function SwitchControl(k) {
     }
 }
 
+function setCamera(initCam) {
+    for (var i = 0; i < movers.length; i = i + 1) {
+        updateTrails(movers[i]);
+    }
+    camera.position.x = initCam.radius * Math.sin(initCam.theta * Math.PI / 360) * Math.cos(initCam.phi * Math.PI / 360);
+    camera.position.y = initCam.radius * Math.sin(initCam.phi * Math.PI / 360);
+    camera.position.z = initCam.radius * Math.cos(initCam.theta * Math.PI / 360) * Math.cos(initCam.phi * Math.PI / 360);
+    // ressemble à https://github.com/mrdoob/three.js/issues/974 
+    //        et à https://github.com/mrdoob/three.js/issues/783   **
+    //			   https://github.com/mrdoob/three.js/issues/1468
+
+    // https://github.com/mrdoob/three.js/issues/983  **   pb entre FPS et dat.gui.js
+
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    camera.updateMatrix();
+}
+
 // ADD HELPER
 
 function AddArrowHelper(direction) {

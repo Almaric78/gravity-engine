@@ -209,9 +209,12 @@ var renderer = new THREE.WebGLRenderer({
 });
 //var projector = new THREE.Projector();
 
-var theta = 20,
-    phi = 10;
-var currentRadius = 5*2000.0;
+var initCam = {};
+initCam.theta = 20;
+initCam.phi = 10;
+initCam.radius = 5*2000.0;
+
+setCamera(initCam);
 
 isShowCamPerspectiveHelper = false;
 if(isShowCamPerspectiveHelper){
@@ -219,23 +222,6 @@ if(isShowCamPerspectiveHelper){
     scene.add(cameraPerspectiveHelper);
 }
 
-setCamera();
-function setCamera() {
-    for (var i = 0; i < movers.length; i = i + 1) {
-        updateTrails(movers[i]);
-    }
-    camera.position.x = currentRadius * Math.sin(theta * Math.PI / 360) * Math.cos(phi * Math.PI / 360);
-    camera.position.y = currentRadius * Math.sin(phi * Math.PI / 360);
-    camera.position.z = currentRadius * Math.cos(theta * Math.PI / 360) * Math.cos(phi * Math.PI / 360);
-    // ressemble à https://github.com/mrdoob/three.js/issues/974 
-    //        et à https://github.com/mrdoob/three.js/issues/783   **
-    //			   https://github.com/mrdoob/three.js/issues/1468
-
-    // https://github.com/mrdoob/three.js/issues/983  **   pb entre FPS et dat.gui.js
-
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
-    camera.updateMatrix();
-}
 
 var controlOrbit = new THREE.OrbitControls(camera, renderer.domElement);
 controlOrbit.zoomSpeed = 100
