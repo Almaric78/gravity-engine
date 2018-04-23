@@ -152,7 +152,7 @@
             LAST SELECTED:
             <span id="select_infos"></span>
             <br/>
-            <!-- <button onclick='lookSun(this.innerHTML);'>lookOrigin</button> -->
+            <!-- <button onclick='lookCenter(this.innerHTML);'>lookOrigin</button> -->
             <!-- <button onclick='inverseSelectionStatus();'>kill/reborn</button>
             <button onclick='inverseDirection();'>inverse direction</button> -->
             <!-- <br/> -->
@@ -165,6 +165,9 @@
                     <option value="newColor">newColor</option>
             </select>
             <div>
+				<label for="cbGeneralOrbitCam">
+                    <input type="radio" name="controlCam" id="cbGeneralOrbitCam" checked> General Orbit Cam
+				</label>
 				<label for="cbFollowOrbitCam">
                     <input type="radio" name="controlCam" id="cbFollowOrbitCam" onclick="onCbOrbitCam();"> Follow by Orbit Cam
 				</label>

@@ -221,7 +221,7 @@ function changeMass() {
 
 // Activate FPS Control for Selection 
 function onCbFPSCam() {
-    if (document.getElementById('cbFPS').checked) {
+	if(selection && document.getElementById('cbFPS').checked) {
         //if(!(controls instanceof (THREE.FirstPersonControls))) {
         SwitchControl(2);
         //controls.enabled = false;
@@ -239,8 +239,10 @@ function onCbFPSCam() {
 }
 
 function onCbOrbitCam(){
-    SwitchControl(1);
-	document.getElementById('cbZoom').disabled = false;
+	if(selection) {
+		SwitchControl(1);
+		document.getElementById('cbZoom').disabled = false;
+	}
 }
 
 
@@ -455,20 +457,22 @@ function AddRandomMover(id) {
 }
 
 function AddBigMoverToCenter () {
-		var mass = 100000;
+	var mass = options.BIG_STAR_MASS;
 
-        var vel = new THREE.Vector3(0,0,0);
-        var loc = new THREE.Vector3(0,0,0);
-		
-		name = movers.length + 'Big'
-		big = new Mover(mass, vel, loc, movers.length, 'Big');
-		//big.mesh.material.transparent = true;
-		//big.mesh.material.opacity = 0.8
-		
-		big.addToMovers();
+	var vel = new THREE.Vector3(0,0,0);
+	var loc = new THREE.Vector3(0,0,0);
+	
+	name = movers.length + 'Big'
+	big = new Mover(mass, vel, loc, movers.length, 'Big');
+	//big.mesh.material.transparent = true;
+	//big.mesh.material.opacity = 0.8
+	
+	big.addToMovers();
 
-        //movers.push(big);
-		//addClickButtonEvent(name)
+	//movers.push(big);
+	//addClickButtonEvent(name)
+	
+	return big; 
 }
 
 function AddSpecialMoverFromMesh(mass, mesh, name, vel, colorHex) {
@@ -526,8 +530,8 @@ function AddSpecialMoverFromMesh2(mass, mesh, name, options) {
 	return big; 
 }
 
-// REMOVE MOVERS 
 
+// REMOVE MOVERS 
 
 function RemoveMover(mover, i){
 	scene.remove(mover.mesh);

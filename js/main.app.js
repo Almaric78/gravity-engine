@@ -574,24 +574,32 @@ function render() {
 
 		// AUTOZOOM ON SELECTION 
 		if(!pause && document.getElementById('cbZoom').checked){
-			if(selection.mesh.position.distanceTo(camera.position)>7000){
-				direction2 = direction.clone().multiplyScalar(moveSpeed);
-				//console.log(direction2.length());
-				camera.position.x += direction2.x;
-				camera.position.y += direction2.y;
-				camera.position.z += direction2.z;
+			if(selection.mesh){
+				if(selection.mesh.position.distanceTo(camera.position)>7000){
+					direction2 = direction.clone().multiplyScalar(moveSpeed);
+					//console.log(direction2.length());
+					camera.position.x += direction2.x;
+					camera.position.y += direction2.y;
+					camera.position.z += direction2.z;
+				} else {
+					// STOP The AutoZoomIn
+					document.getElementById("cbZoom").checked = false;
+				}
 			} else {
-				// STOP The AutoZoomIn
-				document.getElementById("cbZoom").checked = false;
+				console.log("selection.mesh undefined :" + selection.id)
 			}
 		}
 			
         // Fix Follow FPC CAM if Enabled 
         if (selection && document.getElementById('cbFPS').checked) {
             camera.lookAt(selection.mesh.position);
+			controls.enabled = false; // TODO WHY HERE ??
 
 		} else if (selection && document.getElementById('cbFollowOrbitCam').checked) {
 			camera.lookAt(selection.mesh.position);
+			// controls.enabled = true; // TODO ?? 
+		} else {
+			
 		}
 
         // INFOS PANEL
@@ -648,7 +656,7 @@ function reset() {
         AddRandomMover(i);
     }
 
-    AddBigMoverToCenter();
+    selection = AddBigMoverToCenter();
 
     // SVG LAST CONFIG OPTIONS
     // localStorage.setItem("options", JSON.stringify(options));

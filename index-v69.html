@@ -163,11 +163,14 @@
                     <option value="inverseDirection">inverse direction</option>
                     <!-- <option value="valeur2" selected>Valeur 2</option> -->
                     <option value="newColor">newColor</option>
-                </select>
+            </select>
             <div>
+				<label for="cbFollowOrbitCam">
+                    <input type="radio" name="controlCam" id="cbFollowOrbitCam" onclick="onCbOrbitCam();"> Follow by Orbit Cam
+				</label>
                 <label for="cbFPS">
-					<input  id="cbFPS" type="checkbox" name="camFPS" value="FPS" onclick="onCbFPSCam();" disabled> 
-				Follow by Free Cam</label>
+                    <input type="radio" name="controlCam" id="cbFPS" value="FPS" onclick="onCbFPSCam();"> Follow by Free Cam
+				</label>
             </div>
 
             <div>
@@ -188,15 +191,15 @@
     <div id="GeneralInfos">PAUSE</div>
 
 
-    <script src="js/libs/dat.gui.min.js"></script>
-    <script src="js/libs/jquery.js"></script>
-    <script src="js/libs/three.min.js"></script>
+    <script src="./js/libs/dat.gui.min.js"></script>
+    <script src="./js/libs/jquery.js"></script>
+    <script src="./js/libs/three.min.js"></script>
 
-    <script src="js/controls/FirstPersonControls.js"></script>
+    <script src="./js/controls/FirstPersonControls.js"></script>
 
-    <script src="js/functions.js"></script>
-	<script src="js/Mover.js"></script>
-    <script src="js/main.app.js"></script>
+    <script src="./js/functions.js"></script>
+	<script src="./js/Mover.js"></script>
+    <script src="./js/main.app.js"></script>
 </body>
 
 </html>
