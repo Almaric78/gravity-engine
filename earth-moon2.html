@@ -182,40 +182,42 @@
 
     <script>
 	
-	var options = {
-		NAME:"EARTH_MOON",  // name of Simulation
-		NAME_SVG: "EM2",
-		version : 2,
-		framerate: 60,
-		G: 6.673e-11, // 10 ?? 
-		
-		TRAILS_DISPLAY: true,
-		SHOW_DIED: false,
-		SHOW_LABELS: true, 
-		TRAILS_LENGTH: 1000, // Default length of Trails 
-		
-		SPECIFIC_MASS : 5000, // 5 tons 
-		START_SPEED: 2,
-		RADIUS:1, 
-		
-		MOON_SPEED: 1, // initial Moon speed 
-		
-		MoveSpeed: 50,  // for moving by keyBoard Up / Down keys
+		var options = {
+			NAME:"EARTH_MOON",  // name of Simulation
+			NAME_SVG: "EM2",
+			version : 2,
+			framerate: 60,
+			G: 6.673e-11, // 10 ?? 
+			
+			TRAILS_DISPLAY: true,
+			SHOW_DIED: false,
+			SHOW_LABELS: true, 
+			TRAILS_LENGTH: 1000, // Max length of Trails 
+			
+			SPECIFIC_MASS : 5000, // 5 tons 
+			START_SPEED: 2,
+			RADIUS:1, 
+			
+			MOON_SPEED: 1, // initial Moon speed 
+			
+			MoveSpeed: 50,  // for moving by keyBoard Up / Down keys
 
-		MAX_DISTANCE: 300000,  // Max distance from center to update Movers 
-		
-		MASS_FACTOR     : 1e20, // ??
-		DISTANCE_FACTOR : 1e6,
-		
-		SPECIFIC_GRAVITY_FCT : function (mass, d) {  return - 400000 * mass / (d * d); },
-	/*
-		MASS_FACTOR   : 100000, // 1:10 Gigatonnes = 1:10*10^9 tons = 1:10*10^12 kg ?? 
-		DISTANCE_FACTOR : 1000, // 1:1000 km = 1:10^6 meters
-		RADIUS_FACTOR   : 1000, // for display of size ? not in use for the moment
-	*/
-	};
+			MAX_DISTANCE: 300000,  // Max distance from center to update Movers 
+			
+			MASS_FACTOR     : 1e20, // ??
+			DISTANCE_FACTOR : 1e6,
+			
+			SPECIFIC_GRAVITY_FCT : function (mass, d) {  return - 400000 * mass / (d * d); },
+			
+			RESET_CAM : function () {  camera.position.set(0, 350, 700); },
+		/*
+			MASS_FACTOR   : 100000, // 1:10 Gigatonnes = 1:10*10^9 tons = 1:10*10^12 kg ?? 
+			DISTANCE_FACTOR : 1000, // 1:1000 km = 1:10^6 meters
+			RADIUS_FACTOR   : 1000, // for display of size ? not in use for the moment
+		*/
+		};
 	
-	InitGUIFromOptions(options);
+		var gui = InitGUIFromOptions(options);
 
         //allow cross origin loading
         THREE.ImageUtils.crossOrigin = '';
@@ -244,11 +246,10 @@
         spotLight.name = "spotLight";
         scene.add(spotLight);
 
-        //Objects (We build a mesh using a geometry and a material)
-
         // ME 
         var baseurl = window.location.origin + window.location.pathname;
 
+        //Objects (We build a mesh using a geometry and a material)
 
         // Earth
         var earthGeometry = new THREE.SphereGeometry(6.378, 50, 50);
@@ -520,7 +521,7 @@
 			$largest_pos.css('color', "#" + biggest.color.getHexString());
 			
 
-            // camera 
+            // camera infos 
             if (document.getElementById('cbCam').checked)
                 $camera_info.html(LogCam() + LogFPCam());
             else $camera_info.html('');
@@ -532,12 +533,11 @@
                 $select_infos.css('color', "#" + selection.mesh.material.color.getHexString());
             }
 
-
+			// GeneralInfos
             if (pause)
                 document.getElementById('GeneralInfos').innerHTML = 'PAUSE : Press SPACE to Run';
             else
                 document.getElementById('GeneralInfos').innerHTML = 'RUNNING : Press SPACE to Stop';
-
 
 
             renderer.render(scene, camera);
@@ -570,7 +570,6 @@ function reset() {
 }
 
 iMoonS = 1;
-
 function reinitMoonS() {
 	moonS2 = moonS.clone();
 	

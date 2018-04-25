@@ -181,6 +181,41 @@
 
 
     <script>
+	
+		var options = {
+			NAME:"EARTH_MOON",  // name of Simulation 
+			NAME_SVG: "EM1",
+			version : 1,
+			framerate: 60,
+			G: 10, // 6.673 ^ -11 ?? 
+			
+			TRAILS_DISPLAY: true,
+			SHOW_DIED: false,
+			SHOW_LABELS: true, 
+			TRAILS_LENGTH: 1000, // Max length of Trails 
+			
+			SPECIFIC_MASS : 500, 
+			START_SPEED: 10,
+			RADIUS:10, 
+			
+			MOON_SPEED: 12, // initial Moon speed 
+			
+			MoveSpeed: 50,  // for moving by keyBoard Up / Down keys  // CAM_MOVESPEED
+			
+			RESET_CAM : function () {  camera.position.set(0, 350, 700); camera.updateProjectionMatrix(); },
+
+			MAX_DISTANCE: 300000,  // Max distance from center to update Movers 
+			
+			MASS_FACTOR     : 10, // ??
+			DISTANCE_FACTOR : 10,
+		/*
+			MASS_FACTOR   : 100000, // 1:10 Gigatonnes = 1:10*10^9 tons = 1:10*10^12 kg ?? 
+			DISTANCE_FACTOR : 1000, // 1:1000 km = 1:10^6 meters
+			RADIUS_FACTOR   : 1000, // for display of size ? not in use for the moment
+		*/
+		};
+	
+		var gui = InitGUIFromOptions(options);
 
         //allow cross origin loading
         THREE.ImageUtils.crossOrigin = '';
@@ -209,11 +244,12 @@
         spotLight.name = "spotLight";
         scene.add(spotLight);
 
-        //Objects (We build a mesh using a geometry and a material)
 
         // ME 
         var baseurl = window.location.origin + window.location.pathname;
 
+		
+        //Objects (We build a mesh using a geometry and a material)
 
         // Earth
         var earthGeometry = new THREE.SphereGeometry(6.378, 50, 50);
@@ -315,6 +351,7 @@
 			// DEPLACEMENT 
 			var vector = new THREE.Vector3();
 			var direction = camera.getWorldDirection(vector);
+			var moveSpeed = parseFloat(options.MoveSpeed);
 			if (holdUp) {
 				camera.position.add(vector.multiplyScalar(moveSpeed));
 			} else if (holdDown) {
@@ -435,7 +472,7 @@
 						// document.getElementById("cbZoom").checked = false;
 						options.MoveSpeed = 1;
 					    //moveSpeed = Math.floor(options.MoveSpeed);
-						fSpeedMS.updateDisplay(); 
+						gui.fSpeedMS.updateDisplay(); 
 					}
 				}
 	
