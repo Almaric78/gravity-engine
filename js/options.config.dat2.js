@@ -80,7 +80,7 @@ function InitGUIFromOptions(options){
 
 	f.add(options, 'SPECIFIC_MASS', .00001, 10000.0).name("MASS");
 	f.add(options, 'RADIUS', .001, 10.0);
-	f.add(options, 'START_SPEED', 1e-100, 20.0);
+	f.add(options, 'START_SPEED', 1e-100, options.START_SPEED * 5);
 	f.add(options, 'REMOVE_DYNAMICS').name('Remove dynamic balls');
 
 
@@ -93,17 +93,17 @@ function InitGUIFromOptions(options){
 	});
 
 	//var moveSpeed = 5;
-	f.add(options, 'MoveSpeed', 1, 100)
-	/*.onFinishChange(function (value) {
+	gui.fSpeedMS = f.add(options, 'MoveSpeed', 1, options.MoveSpeed * 10);
+	gui.fSpeedMS.onFinishChange(function (value) {
 		//console.log(value);
-		moveSpeed = Math.floor(options.MoveSpeed);
-		console.log("MoveSpeed: " + moveSpeed);
+		gui.moveSpeed = Math.floor(options.MoveSpeed);
+		console.log("MoveSpeed: " + value);
 	});
-	*/ 
 
 	//f.add(options, 'AddBigStar').name('Add Big Star');
 	f.add(options, 'SAVECONFIG').name('SaveTheConf');
 	f.add(options, 'RESET').name('RESET ALL');
+	f.add(options, 'RESET_CAM'); // .name('RESET ALL');
 	f.add(options, 'RESET_MOON_S').name('New Simul Moon');
 
 

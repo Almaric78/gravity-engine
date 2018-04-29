@@ -1,9 +1,10 @@
 var options = {
-	NAME:"GENERAL", 
+	NAME:"GENERAL",
+	version:0, 
     framerate: 60,
-    G: 10,
+    G: 20,
 	
-    START_SPEED: 10,
+    START_SPEED: 20,
     MOVER_COUNT: 32,
 	
     TRAILS_DISPLAY: true,
