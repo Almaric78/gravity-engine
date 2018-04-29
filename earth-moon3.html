@@ -234,6 +234,7 @@
 
         // Orbit Controls
         var controlOrbit = new THREE.OrbitControls(camera, renderer.domElement);
+		controlOrbit.enableKeys = false;
 		var controls = controlOrbit;
 
         // Lights
@@ -437,8 +438,8 @@
 
 					//Moon orbit        
 					theta += dTheta;
-					moonT.position.x = rOrbit * Math.cos(theta);
-					moonT.position.z = rOrbit * Math.sin(theta);
+					moonT.position.x = +rOrbit * Math.cos(theta);
+					moonT.position.z = -rOrbit * Math.sin(theta);
 
 					//moverEarth.attract(moverMoonS);
 					//moverEarth.update(); // Don't move Earth for the moment
@@ -460,15 +461,17 @@
 	
 				// AUTOZOOM :
 				if(!pause && document.getElementById('cbZoom').checked){
-					if(selection.mesh.position.distanceTo(camera.position)>20000){
+					var distanceCam = selection.mesh.position.distanceTo(camera.position);
+					if(distanceCam>20e3){
 						moveSpeed = parseFloat(options.MoveSpeed);
 						direction2 = direction.clone().multiplyScalar(moveSpeed);
 						//console.log(direction2.length());
 						camera.position.x += direction2.x;
 						camera.position.y += direction2.y;
 						camera.position.z += direction2.z;
-					} else {
+					} else if (distanceCam<10e3){
 						// STOP The AutoZoomIn
+					} else {
 						// document.getElementById("cbZoom").checked = false;
 						options.MoveSpeed = 1;
 					    //moveSpeed = Math.floor(options.MoveSpeed);
@@ -560,7 +563,7 @@ function reset() {
 	moonT.position.set(rOrbit, 0, 0);
 
 	// RESET !
-	simulationVelocity = new THREE.Vector3(0, 0, options.MOON_SPEED);
+	simulationVelocity = new THREE.Vector3(0, 0, -options.MOON_SPEED);
 	console.log("MOON_SPEED:"+simulationVelocity.length()); 
 	moverEarth = AddSpecialMoverFromMesh2(59720 * options.MASS_FACTOR, earth, 'Earth', {colorHex:0x0000ff} );
 	moverMoonT = AddSpecialMoverFromMesh2(  736 * options.MASS_FACTOR, moonT, 'TheoricMoon', {colorHex:0x7FFF00});
@@ -580,7 +583,7 @@ function reinitMoonS() {
     moonS2.position.set(rOrbit, 0, 0);
 	//moonT.position.set(rOrbit, 0, 0);
 	
-	simulationVelocity = new THREE.Vector3(0, 0, options.MOON_SPEED);
+	simulationVelocity = new THREE.Vector3(0, 0, -options.MOON_SPEED);
 	console.log("MOON_SPEED:"+simulationVelocity.length()); 
 	moverMoonS = AddSpecialMoverFromMesh2(  736 * options.MASS_FACTOR, moonS, 'SimulatedMoon', {vel:simulationVelocity});
 }

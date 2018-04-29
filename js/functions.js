@@ -51,7 +51,7 @@ function randomLightColor() {
 
 
 // FORMAT NUMBER / VECTOR for LOG 
-
+const BRLINE = '<br/>';
 function format2Decimales(x) {
     return '  ' + Number(x).toFixed(2);
 }
@@ -68,13 +68,17 @@ function NumToFormat(float, nbDigit, prefix) {
     if (!float) float = 'NULL';
     if (!nbDigit) nbDigit = 0;
 	if(float>1e6 || float <-1e6)
-		return float.toExponential(5);
-    if (!prefix)
-        return ' ' + float.toLocaleString(undefined, { maximumFractionDigits: nbDigit });
-    else {
-        if (prefix.startsWith('r')) { float *= 180 / Math.PI; } // conversion in degree for Rotation Angle
-        return prefix + ': ' + float.toLocaleString(undefined, { maximumFractionDigits: nbDigit }) + '<br/>';
-    }
+		if (!prefix)
+			return float.toExponential(5);
+		else
+			return prefix + ':' + float.toExponential(5) + BRLINE;
+	else
+		if (!prefix)
+			return ' ' + float.toLocaleString(undefined, { maximumFractionDigits: nbDigit });
+		else {
+			if (prefix.startsWith('r')) { float *= 180 / Math.PI; } // conversion in degree for Rotation Angle
+			return prefix + ': ' + float.toLocaleString(undefined, { maximumFractionDigits: nbDigit }) + BRLINE;
+		}
 }
 
 // LIST ALL 
@@ -280,6 +284,7 @@ function SwitchControl(k) {
 
 	if (k == 1) {
 
+		//controlOrbit.enableKeys = false;
         controls = controlOrbit; // new THREE.OrbitControls(camera, renderer.domElement);
         controls.zoomSpeed = 100
         console.log("OrbitControls");
@@ -519,6 +524,7 @@ function AddSpecialMoverFromMesh(mass, mesh, name, vel, colorHex) {
 }
 
 // Same function with options JSON parameters (for future..) 
+// https://www.markhansen.co.nz/javascript-optional-parameters/ 
 function AddSpecialMoverFromMesh2(mass, mesh, name, options) {
 	
 	var options = options || {};

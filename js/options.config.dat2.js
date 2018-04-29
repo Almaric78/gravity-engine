@@ -57,7 +57,7 @@ function InitGUIFromOptions(options){
 	var f = gui.addFolder('Environment');
 	f.open();
 	//f.add(options, 'framerate', 1, 120);
-	f.add(options, 'G', 1, 100).name('Gravity');
+	f.add(options, 'G', 0, options.G*10).name('Gravity');
 
 	/*
 		var fMoverCountE = f.add(options, 'MOVER_COUNT', 1, 128);
@@ -80,7 +80,7 @@ function InitGUIFromOptions(options){
 
 	f.add(options, 'SPECIFIC_MASS', .00001, 10000.0).name("MASS");
 	f.add(options, 'RADIUS', .001, 10.0);
-	f.add(options, 'START_SPEED', 1e-100, options.START_SPEED * 5);
+	f.add(options, 'START_SPEED', 1e-100, options.START_SPEED * 10);
 	f.add(options, 'REMOVE_DYNAMICS').name('Remove dynamic balls');
 
 
